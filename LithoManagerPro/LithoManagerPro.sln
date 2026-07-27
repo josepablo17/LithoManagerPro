@@ -1,0 +1,51 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36705.20
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LithoManager.Api", "LithoManager.Application\LithoManager.Api.csproj", "{A5D24504-771C-411F-90BE-F61F99A96977}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LithoManager.Domain", "LithoManager.Domain\LithoManager.Domain.csproj", "{79D0F47D-A6CE-4B49-90A6-A2A3B9F6F36E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LithoManager.Infraestructure", "LithoManager.Infraestructure\LithoManager.Infraestructure.csproj", "{BFE79D02-67EE-4AAF-93DC-7306D8C86C9A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LithoManager.Application", "LithoManager.Application\LithoManager.Application.csproj", "{7C6E301A-572C-4387-B191-2A78555EE0CD}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "LithoManager.Database", "LithoManager.Database\LithoManager.Database.sqlproj", "{1DD9BAF3-2EDB-4EB2-AEC1-9BD49DF2F7A5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A5D24504-771C-411F-90BE-F61F99A96977}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5D24504-771C-411F-90BE-F61F99A96977}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5D24504-771C-411F-90BE-F61F99A96977}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5D24504-771C-411F-90BE-F61F99A96977}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79D0F47D-A6CE-4B49-90A6-A2A3B9F6F36E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79D0F47D-A6CE-4B49-90A6-A2A3B9F6F36E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79D0F47D-A6CE-4B49-90A6-A2A3B9F6F36E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79D0F47D-A6CE-4B49-90A6-A2A3B9F6F36E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BFE79D02-67EE-4AAF-93DC-7306D8C86C9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFE79D02-67EE-4AAF-93DC-7306D8C86C9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFE79D02-67EE-4AAF-93DC-7306D8C86C9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFE79D02-67EE-4AAF-93DC-7306D8C86C9A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C6E301A-572C-4387-B191-2A78555EE0CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C6E301A-572C-4387-B191-2A78555EE0CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C6E301A-572C-4387-B191-2A78555EE0CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C6E301A-572C-4387-B191-2A78555EE0CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1DD9BAF3-2EDB-4EB2-AEC1-9BD49DF2F7A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DD9BAF3-2EDB-4EB2-AEC1-9BD49DF2F7A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1DD9BAF3-2EDB-4EB2-AEC1-9BD49DF2F7A5}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{1DD9BAF3-2EDB-4EB2-AEC1-9BD49DF2F7A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1DD9BAF3-2EDB-4EB2-AEC1-9BD49DF2F7A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1DD9BAF3-2EDB-4EB2-AEC1-9BD49DF2F7A5}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5304132C-BEEA-4D15-AF7C-FD98FD301FCE}
+	EndGlobalSection
+EndGlobal

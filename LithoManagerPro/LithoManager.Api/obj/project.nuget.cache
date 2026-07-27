@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "PC7xCU63ENE=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\josep\\OneDrive - ULACIT ED CR\\LithoManagerPro\\LithoManagerPro\\LithoManager.Application\\LithoManager.Api.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\josep\\.nuget\\packages\\microsoft.aspnetcore.openapi\\9.0.11\\microsoft.aspnetcore.openapi.9.0.11.nupkg.sha512",
+    "C:\\Users\\josep\\.nuget\\packages\\microsoft.openapi\\1.6.17\\microsoft.openapi.1.6.17.nupkg.sha512"
+  ],
+  "logs": []
+}

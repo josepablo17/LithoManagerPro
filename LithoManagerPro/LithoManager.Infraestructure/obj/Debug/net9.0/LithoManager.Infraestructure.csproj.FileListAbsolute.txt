@@ -1,0 +1,12 @@
+C:\Users\josep\OneDrive - ULACIT ED CR\LithoManagerPro\LithoManagerPro\LithoManager.Infraestructure\bin\Debug\net9.0\LithoManager.Infraestructure.deps.json
+C:\Users\josep\OneDrive - ULACIT ED CR\LithoManagerPro\LithoManagerPro\LithoManager.Infraestructure\bin\Debug\net9.0\LithoManager.Infraestructure.dll
+C:\Users\josep\OneDrive - ULACIT ED CR\LithoManagerPro\LithoManagerPro\LithoManager.Infraestructure\bin\Debug\net9.0\LithoManager.Infraestructure.pdb
+C:\Users\josep\OneDrive - ULACIT ED CR\LithoManagerPro\LithoManagerPro\LithoManager.Infraestructure\obj\Debug\net9.0\LithoManager.Infraestructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\josep\OneDrive - ULACIT ED CR\LithoManagerPro\LithoManagerPro\LithoManager.Infraestructure\obj\Debug\net9.0\LithoManager.Infraestructure.AssemblyInfoInputs.cache
+C:\Users\josep\OneDrive - ULACIT ED CR\LithoManagerPro\LithoManagerPro\LithoManager.Infraestructure\obj\Debug\net9.0\LithoManager.Infraestructure.AssemblyInfo.cs
+C:\Users\josep\OneDrive - ULACIT ED CR\LithoManagerPro\LithoManagerPro\LithoManager.Infraestructure\obj\Debug\net9.0\LithoManager.Infraestructure.csproj.CoreCompileInputs.cache
+C:\Users\josep\OneDrive - ULACIT ED CR\LithoManagerPro\LithoManagerPro\LithoManager.Infraestructure\obj\Debug\net9.0\LithoManager.Infraestructure.sourcelink.json
+C:\Users\josep\OneDrive - ULACIT ED CR\LithoManagerPro\LithoManagerPro\LithoManager.Infraestructure\obj\Debug\net9.0\LithoManager.Infraestructure.dll
+C:\Users\josep\OneDrive - ULACIT ED CR\LithoManagerPro\LithoManagerPro\LithoManager.Infraestructure\obj\Debug\net9.0\refint\LithoManager.Infraestructure.dll
+C:\Users\josep\OneDrive - ULACIT ED CR\LithoManagerPro\LithoManagerPro\LithoManager.Infraestructure\obj\Debug\net9.0\LithoManager.Infraestructure.pdb
+C:\Users\josep\OneDrive - ULACIT ED CR\LithoManagerPro\LithoManagerPro\LithoManager.Infraestructure\obj\Debug\net9.0\ref\LithoManager.Infraestructure.dll

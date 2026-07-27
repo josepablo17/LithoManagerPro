@@ -1,0 +1,6 @@
+C:\Users\josep\OneDrive - ULACIT ED CR\LithoManagerPro\LithoManagerPro\LithoManager.Database\bin\Debug\LithoManager.Database.dacpac
+C:\Users\josep\OneDrive - ULACIT ED CR\LithoManagerPro\LithoManagerPro\LithoManager.Database\bin\Debug\LithoManager.Database.dll
+C:\Users\josep\OneDrive - ULACIT ED CR\LithoManagerPro\LithoManagerPro\LithoManager.Database\bin\Debug\LithoManager.Database.pdb
+C:\Users\josep\OneDrive - ULACIT ED CR\LithoManagerPro\LithoManagerPro\LithoManager.Database\obj\Debug\LithoManager.Database.sqlproj.AssemblyReference.cache
+C:\Users\josep\OneDrive - ULACIT ED CR\LithoManagerPro\LithoManagerPro\LithoManager.Database\obj\Debug\LithoManager.Database.dll
+C:\Users\josep\OneDrive - ULACIT ED CR\LithoManagerPro\LithoManagerPro\LithoManager.Database\obj\Debug\LithoManager.Database.pdb

@@ -1,0 +1,6 @@
+@LithoManager.Application_HostAddress = http://localhost:5284
+
+GET {{LithoManager.Application_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
