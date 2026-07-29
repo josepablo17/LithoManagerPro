@@ -4,3 +4,7 @@ C:\Users\josep\OneDrive - ULACIT ED CR\LithoManagerPro\LithoManagerPro\LithoMana
 C:\Users\josep\OneDrive - ULACIT ED CR\LithoManagerPro\LithoManagerPro\LithoManager.Database\obj\Debug\LithoManager.Database.sqlproj.AssemblyReference.cache
 C:\Users\josep\OneDrive - ULACIT ED CR\LithoManagerPro\LithoManagerPro\LithoManager.Database\obj\Debug\LithoManager.Database.dll
 C:\Users\josep\OneDrive - ULACIT ED CR\LithoManagerPro\LithoManagerPro\LithoManager.Database\obj\Debug\LithoManager.Database.pdb
+C:\Users\josep\OneDrive - ULACIT ED CR\LithoManagerPro\LithoManagerPro\LithoManager.Database\obj\Debug\Model.xml
+C:\Users\josep\OneDrive - ULACIT ED CR\LithoManagerPro\LithoManagerPro\LithoManager.Database\obj\Debug\refactor.xml
+C:\Users\josep\OneDrive - ULACIT ED CR\LithoManagerPro\LithoManagerPro\LithoManager.Database\obj\Debug\postdeploy.sql
+C:\Users\josep\OneDrive - ULACIT ED CR\LithoManagerPro\LithoManagerPro\LithoManager.Database\obj\Debug\predeploy.sql

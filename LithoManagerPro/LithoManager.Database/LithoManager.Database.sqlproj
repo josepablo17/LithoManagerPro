@@ -78,6 +78,10 @@
     <Build Include="Schemas\HumanResources.sql" />
     <Build Include="Schemas\Security.sql" />
     <None Include="Seeds\Security\Roles.sql" />
+    <Build Include="StoredProcedures\Security\GetUserForAuthentication.sql" />
+    <Build Include="StoredProcedures\Security\RegisterSuccessfulLogin.sql" />
+    <Build Include="StoredProcedures\Security\RegisterFailedLogin.sql" />
+    <Build Include="StoredProcedures\Security\CreateInitialSuperAdministrator.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\PostDeployment.sql" />

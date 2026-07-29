@@ -1,0 +1,23 @@
+﻿** Highlights
+     Tables that will be recreated with data migrated
+       None
+     Clustered indexes that will be dropped
+       None
+     Clustered indexes that will be created
+       None
+     Possible data issues
+       None
+
+** User actions
+     Drop
+       [Audit].[CkAuditLogsActorType] (Check Constraint)
+       [Audit].[CkAuditLogsHttpMethod] (Check Constraint)
+     Create
+       [Audit].[CkAuditLogsActorType] (Check Constraint)
+       [Audit].[CkAuditLogsHttpMethod] (Check Constraint)
+       [Security].[CreateInitialSuperAdministrator] (Procedure)
+       [Security].[GetUserForAuthentication] (Procedure)
+       [Security].[RegisterFailedLogin] (Procedure)
+       [Security].[RegisterSuccessfulLogin] (Procedure)
+
+** Supporting actions

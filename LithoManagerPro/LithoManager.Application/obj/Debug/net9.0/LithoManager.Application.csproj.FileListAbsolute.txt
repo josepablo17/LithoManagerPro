@@ -13,3 +13,7 @@ C:\Users\josep\OneDrive - ULACIT ED CR\LithoManagerPro\LithoManagerPro\LithoMana
 C:\Users\josep\OneDrive - ULACIT ED CR\LithoManagerPro\LithoManagerPro\LithoManager.Application\obj\Debug\net9.0\LithoManager.Application.pdb
 C:\Users\josep\OneDrive - ULACIT ED CR\LithoManagerPro\LithoManagerPro\LithoManager.Application\obj\Debug\net9.0\LithoManager.Application.genruntimeconfig.cache
 C:\Users\josep\OneDrive - ULACIT ED CR\LithoManagerPro\LithoManagerPro\LithoManager.Application\obj\Debug\net9.0\ref\LithoManager.Application.dll
+C:\Users\josep\OneDrive - ULACIT ED CR\LithoManagerPro\LithoManagerPro\LithoManager.Application\bin\Debug\net9.0\LithoManager.Domain.dll
+C:\Users\josep\OneDrive - ULACIT ED CR\LithoManagerPro\LithoManagerPro\LithoManager.Application\bin\Debug\net9.0\LithoManager.Domain.pdb
+C:\Users\josep\OneDrive - ULACIT ED CR\LithoManagerPro\LithoManagerPro\LithoManager.Application\obj\Debug\net9.0\LithoManager.Application.csproj.AssemblyReference.cache
+C:\Users\josep\OneDrive - ULACIT ED CR\LithoManagerPro\LithoManagerPro\LithoManager.Application\obj\Debug\net9.0\LithoMan.BFBD1456.Up2Date

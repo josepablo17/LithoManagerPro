@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace LithoManager.Application.Controllers
+namespace LithoManager.Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]

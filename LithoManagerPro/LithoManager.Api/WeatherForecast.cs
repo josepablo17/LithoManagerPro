@@ -1,4 +1,4 @@
-namespace LithoManager.Application
+namespace LithoManager.Api
 {
     public class WeatherForecast
     {

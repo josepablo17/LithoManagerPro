@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("LithoManager.Infraestructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ed040653d5ca7a6cbcbc4f41a7f3c7a364571cf8")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+60ef778b63e944140ef379a5331c76a586fa488d")]
 [assembly: System.Reflection.AssemblyProductAttribute("LithoManager.Infraestructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("LithoManager.Infraestructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -1,0 +1,4590 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DataSchemaModel FileFormatVersion="1.2" SchemaVersion="2.9" DspName="Microsoft.Data.Tools.Schema.Sql.Sql160DatabaseSchemaProvider" CollationLcid="1033" CollationCaseSensitive="False" xmlns="http://schemas.microsoft.com/sqlserver/dac/Serialization/2012/02">
+	<Header>
+		<CustomData Category="AnsiNulls">
+			<Metadata Name="AnsiNulls" Value="True" />
+		</CustomData>
+		<CustomData Category="QuotedIdentifier">
+			<Metadata Name="QuotedIdentifier" Value="True" />
+		</CustomData>
+		<CustomData Category="CompatibilityMode">
+			<Metadata Name="CompatibilityMode" Value="160" />
+		</CustomData>
+		<CustomData Category="Reference" Type="Assembly">
+			<Metadata Name="LogicalName" Value="LithoManager.Database.dll" />
+			<Metadata Name="FileName" Value="C:\USERS\JOSEP\ONEDRIVE - ULACIT ED CR\LITHOMANAGERPRO\LITHOMANAGERPRO\LITHOMANAGER.DATABASE\OBJ\DEBUG\LITHOMANAGER.DATABASE.DLL" />
+			<Metadata Name="AssemblyName" Value="LithoManager.Database" />
+			<Metadata Name="PermissionSet" Value="SAFE" />
+			<Metadata Name="Owner" Value="" />
+			<Metadata Name="GenerateSqlClrDdl" Value="True" />
+			<Metadata Name="IsVisible" Value="True" />
+			<Metadata Name="IsModelAware" Value="True" />
+			<Metadata Name="SkipCreationIfEmpty" Value="True" />
+			<Metadata Name="AssemblySymbolsName" Value="C:\Users\josep\OneDrive - ULACIT ED CR\LithoManagerPro\LithoManagerPro\LithoManager.Database\obj\Debug\LithoManager.Database.pdb" />
+		</CustomData>
+		<CustomData Category="SqlCmdVariables" Type="SqlCmdVariable" />
+	</Header>
+	<Model>
+		<Element Type="SqlDatabaseOptions">
+			<Property Name="Collation" Value="SQL_Latin1_General_CP1_CI_AS" />
+			<Property Name="IsAnsiNullDefaultOn" Value="True" />
+			<Property Name="IsAnsiNullsOn" Value="True" />
+			<Property Name="IsAnsiWarningsOn" Value="True" />
+			<Property Name="IsArithAbortOn" Value="True" />
+			<Property Name="IsConcatNullYieldsNullOn" Value="True" />
+			<Property Name="IsTornPageProtectionOn" Value="False" />
+			<Property Name="IsFullTextEnabled" Value="True" />
+			<Property Name="PageVerifyMode" Value="3" />
+			<Property Name="DefaultLanguage" Value="" />
+			<Property Name="DefaultFullTextLanguage" Value="" />
+			<Property Name="QueryStoreStaleQueryThreshold" Value="367" />
+			<Relationship Name="DefaultFilegroup">
+				<Entry>
+					<References ExternalSource="BuiltIns" Name="[PRIMARY]" />
+				</Entry>
+			</Relationship>
+		</Element>
+		<Element Type="SqlSchema" Name="[Audit]">
+			<Relationship Name="Authorizer">
+				<Entry>
+					<References ExternalSource="BuiltIns" Name="[dbo]" />
+				</Entry>
+			</Relationship>
+		</Element>
+		<Element Type="SqlTable" Name="[Audit].[AuditLogs]">
+			<Property Name="IsAnsiNullsOn" Value="True" />
+			<Relationship Name="Columns">
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[Audit].[AuditLogs].[AuditLogId]">
+						<Property Name="IsNullable" Value="False" />
+						<Property Name="IsIdentity" Value="True" />
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[bigint]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[Audit].[AuditLogs].[CorrelationId]">
+						<Property Name="IsNullable" Value="False" />
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[uniqueidentifier]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+						<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="3" />
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[Audit].[AuditLogs].[ModuleName]">
+						<Property Name="IsNullable" Value="False" />
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="128" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[Audit].[AuditLogs].[ActionName]">
+						<Property Name="IsNullable" Value="False" />
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="100" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[Audit].[AuditLogs].[EntityName]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="128" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[Audit].[AuditLogs].[EntityId]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="100" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[Audit].[AuditLogs].[ActorType]">
+						<Property Name="IsNullable" Value="False" />
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="20" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[Audit].[AuditLogs].[ActorUserId]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[int]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[Audit].[AuditLogs].[ActorEmailAddress]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="254" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[Audit].[AuditLogs].[ActorRoleCode]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="50" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[Audit].[AuditLogs].[IsSuccessful]">
+						<Property Name="IsNullable" Value="False" />
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[bit]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+						<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="4" />
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[Audit].[AuditLogs].[EventDescription]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="500" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[Audit].[AuditLogs].[ClientIpAddress]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="45" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[Audit].[AuditLogs].[UserAgent]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="512" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[Audit].[AuditLogs].[HttpMethod]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="10" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[Audit].[AuditLogs].[RequestPath]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="500" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[Audit].[AuditLogs].[PreviousValuesJson]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="IsMax" Value="True" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[Audit].[AuditLogs].[NewValuesJson]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="IsMax" Value="True" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[Audit].[AuditLogs].[AdditionalDataJson]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="IsMax" Value="True" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[Audit].[AuditLogs].[ErrorMessage]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="2000" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[Audit].[AuditLogs].[OccurredAtUtc]">
+						<Property Name="IsNullable" Value="False" />
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Scale" Value="3" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[datetime2]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+						<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="5" />
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="Schema">
+				<Entry>
+					<References Name="[Audit]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="6" />
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="7" />
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="8" />
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="9" />
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="10" />
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="11" />
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="12" />
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="13" />
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="14" />
+		</Element>
+		<Element Type="SqlIndex" Name="[Audit].[AuditLogs].[IxAuditLogsActorUserIdOccurredAtUtc]">
+			<Property Name="FilterPredicate">
+				<Value><![CDATA[[ActorUserId] IS NOT NULL]]></Value>
+			</Property>
+			<Relationship Name="BodyDependencies">
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[ActorUserId]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="ColumnSpecifications">
+				<Entry>
+					<Element Type="SqlIndexedColumnSpecification">
+						<Relationship Name="Column">
+							<Entry>
+								<References Name="[Audit].[AuditLogs].[ActorUserId]" />
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlIndexedColumnSpecification">
+						<Property Name="IsAscending" Value="False" />
+						<Relationship Name="Column">
+							<Entry>
+								<References Name="[Audit].[AuditLogs].[OccurredAtUtc]" />
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="IncludedColumns">
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[ModuleName]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[ActionName]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[EntityName]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[EntityId]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[IsSuccessful]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="IndexedObject">
+				<Entry>
+					<References Name="[Audit].[AuditLogs]" />
+				</Entry>
+			</Relationship>
+		</Element>
+		<Element Type="SqlIndex" Name="[Audit].[AuditLogs].[IxAuditLogsCorrelationId]">
+			<Relationship Name="ColumnSpecifications">
+				<Entry>
+					<Element Type="SqlIndexedColumnSpecification">
+						<Relationship Name="Column">
+							<Entry>
+								<References Name="[Audit].[AuditLogs].[CorrelationId]" />
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="IndexedObject">
+				<Entry>
+					<References Name="[Audit].[AuditLogs]" />
+				</Entry>
+			</Relationship>
+		</Element>
+		<Element Type="SqlIndex" Name="[Audit].[AuditLogs].[IxAuditLogsEntityNameEntityIdOccurredAtUtc]">
+			<Property Name="FilterPredicate">
+				<Value><![CDATA[[EntityName] IS NOT NULL
+      AND [EntityId] IS NOT NULL]]></Value>
+			</Property>
+			<Relationship Name="BodyDependencies">
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[EntityName]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[EntityId]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="ColumnSpecifications">
+				<Entry>
+					<Element Type="SqlIndexedColumnSpecification">
+						<Relationship Name="Column">
+							<Entry>
+								<References Name="[Audit].[AuditLogs].[EntityName]" />
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlIndexedColumnSpecification">
+						<Relationship Name="Column">
+							<Entry>
+								<References Name="[Audit].[AuditLogs].[EntityId]" />
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlIndexedColumnSpecification">
+						<Property Name="IsAscending" Value="False" />
+						<Relationship Name="Column">
+							<Entry>
+								<References Name="[Audit].[AuditLogs].[OccurredAtUtc]" />
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="IncludedColumns">
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[ModuleName]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[ActionName]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[ActorUserId]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[IsSuccessful]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="IndexedObject">
+				<Entry>
+					<References Name="[Audit].[AuditLogs]" />
+				</Entry>
+			</Relationship>
+		</Element>
+		<Element Type="SqlIndex" Name="[Audit].[AuditLogs].[IxAuditLogsOccurredAtUtc]">
+			<Relationship Name="ColumnSpecifications">
+				<Entry>
+					<Element Type="SqlIndexedColumnSpecification">
+						<Property Name="IsAscending" Value="False" />
+						<Relationship Name="Column">
+							<Entry>
+								<References Name="[Audit].[AuditLogs].[OccurredAtUtc]" />
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="IndexedObject">
+				<Entry>
+					<References Name="[Audit].[AuditLogs]" />
+				</Entry>
+			</Relationship>
+		</Element>
+		<Element Type="SqlCheckConstraint" Name="[Audit].[CkAuditLogsActionNameNotBlank]">
+			<Property Name="CheckExpressionScript">
+				<Value><![CDATA[LEN(LTRIM(RTRIM([ActionName]))) > 0]]></Value>
+			</Property>
+			<Relationship Name="CheckExpressionDependencies">
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[ActionName]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[Audit].[AuditLogs]" />
+				</Entry>
+			</Relationship>
+			<AttachedAnnotation Disambiguator="8" />
+		</Element>
+		<Element Type="SqlCheckConstraint" Name="[Audit].[CkAuditLogsActorType]">
+			<Property Name="CheckExpressionScript">
+				<Value><![CDATA[[ActorType] IN (N'User', N'System', N'Anonymous')]]></Value>
+			</Property>
+			<Relationship Name="CheckExpressionDependencies">
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[ActorType]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[Audit].[AuditLogs]" />
+				</Entry>
+			</Relationship>
+			<AttachedAnnotation Disambiguator="9" />
+		</Element>
+		<Element Type="SqlCheckConstraint" Name="[Audit].[CkAuditLogsAdditionalDataJson]">
+			<Property Name="CheckExpressionScript">
+				<Value><![CDATA[[AdditionalDataJson] IS NULL OR ISJSON([AdditionalDataJson]) = 1]]></Value>
+			</Property>
+			<Relationship Name="CheckExpressionDependencies">
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[AdditionalDataJson]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[Audit].[AuditLogs]" />
+				</Entry>
+			</Relationship>
+			<AttachedAnnotation Disambiguator="14" />
+		</Element>
+		<Element Type="SqlCheckConstraint" Name="[Audit].[CkAuditLogsHttpMethod]">
+			<Property Name="CheckExpressionScript">
+				<Value><![CDATA[[HttpMethod] IS NULL
+            OR [HttpMethod] IN (N'GET', N'POST', N'PUT', N'PATCH', N'DELETE')]]></Value>
+			</Property>
+			<Relationship Name="CheckExpressionDependencies">
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[HttpMethod]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[Audit].[AuditLogs]" />
+				</Entry>
+			</Relationship>
+			<AttachedAnnotation Disambiguator="11" />
+		</Element>
+		<Element Type="SqlCheckConstraint" Name="[Audit].[CkAuditLogsModuleNameNotBlank]">
+			<Property Name="CheckExpressionScript">
+				<Value><![CDATA[LEN(LTRIM(RTRIM([ModuleName]))) > 0]]></Value>
+			</Property>
+			<Relationship Name="CheckExpressionDependencies">
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[ModuleName]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[Audit].[AuditLogs]" />
+				</Entry>
+			</Relationship>
+			<AttachedAnnotation Disambiguator="7" />
+		</Element>
+		<Element Type="SqlCheckConstraint" Name="[Audit].[CkAuditLogsNewValuesJson]">
+			<Property Name="CheckExpressionScript">
+				<Value><![CDATA[[NewValuesJson] IS NULL OR ISJSON([NewValuesJson]) = 1]]></Value>
+			</Property>
+			<Relationship Name="CheckExpressionDependencies">
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[NewValuesJson]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[Audit].[AuditLogs]" />
+				</Entry>
+			</Relationship>
+			<AttachedAnnotation Disambiguator="13" />
+		</Element>
+		<Element Type="SqlCheckConstraint" Name="[Audit].[CkAuditLogsPreviousValuesJson]">
+			<Property Name="CheckExpressionScript">
+				<Value><![CDATA[[PreviousValuesJson] IS NULL OR ISJSON([PreviousValuesJson]) = 1]]></Value>
+			</Property>
+			<Relationship Name="CheckExpressionDependencies">
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[PreviousValuesJson]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[Audit].[AuditLogs]" />
+				</Entry>
+			</Relationship>
+			<AttachedAnnotation Disambiguator="12" />
+		</Element>
+		<Element Type="SqlCheckConstraint" Name="[Audit].[CkAuditLogsUserActor]">
+			<Property Name="CheckExpressionScript">
+				<Value><![CDATA[[ActorType] <> N'User' OR [ActorUserId] IS NOT NULL]]></Value>
+			</Property>
+			<Relationship Name="CheckExpressionDependencies">
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[ActorType]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[ActorUserId]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[Audit].[AuditLogs]" />
+				</Entry>
+			</Relationship>
+			<AttachedAnnotation Disambiguator="10" />
+		</Element>
+		<Element Type="SqlDefaultConstraint" Name="[Audit].[DfAuditLogsCorrelationId]">
+			<Property Name="DefaultExpressionScript">
+				<Value><![CDATA[(NEWID())]]></Value>
+			</Property>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[Audit].[AuditLogs]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="ForColumn">
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[CorrelationId]" />
+				</Entry>
+			</Relationship>
+			<AttachedAnnotation Disambiguator="3" />
+		</Element>
+		<Element Type="SqlDefaultConstraint" Name="[Audit].[DfAuditLogsIsSuccessful]">
+			<Property Name="DefaultExpressionScript">
+				<Value><![CDATA[(1)]]></Value>
+			</Property>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[Audit].[AuditLogs]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="ForColumn">
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[IsSuccessful]" />
+				</Entry>
+			</Relationship>
+			<AttachedAnnotation Disambiguator="4" />
+		</Element>
+		<Element Type="SqlDefaultConstraint" Name="[Audit].[DfAuditLogsOccurredAtUtc]">
+			<Property Name="DefaultExpressionScript">
+				<Value><![CDATA[(SYSUTCDATETIME())]]></Value>
+			</Property>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[Audit].[AuditLogs]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="ForColumn">
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[OccurredAtUtc]" />
+				</Entry>
+			</Relationship>
+			<AttachedAnnotation Disambiguator="5" />
+		</Element>
+		<Element Type="SqlPrimaryKeyConstraint" Name="[Audit].[PkAuditLogs]">
+			<Relationship Name="ColumnSpecifications">
+				<Entry>
+					<Element Type="SqlIndexedColumnSpecification">
+						<Relationship Name="Column">
+							<Entry>
+								<References Name="[Audit].[AuditLogs].[AuditLogId]" />
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[Audit].[AuditLogs]" />
+				</Entry>
+			</Relationship>
+			<AttachedAnnotation Disambiguator="6" />
+		</Element>
+		<Element Type="SqlSchema" Name="[HumanResources]">
+			<Relationship Name="Authorizer">
+				<Entry>
+					<References ExternalSource="BuiltIns" Name="[dbo]" />
+				</Entry>
+			</Relationship>
+		</Element>
+		<Element Type="SqlCheckConstraint" Name="[HumanResources].[CkDepartmentsDepartmentCodeNoSpaces]">
+			<Property Name="CheckExpressionScript">
+				<Value><![CDATA[[DepartmentCode] NOT LIKE N'% %']]></Value>
+			</Property>
+			<Relationship Name="CheckExpressionDependencies">
+				<Entry>
+					<References Name="[HumanResources].[Departments].[DepartmentCode]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[HumanResources].[Departments]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="15" />
+		</Element>
+		<Element Type="SqlCheckConstraint" Name="[HumanResources].[CkDepartmentsDepartmentCodeNotBlank]">
+			<Property Name="CheckExpressionScript">
+				<Value><![CDATA[LEN(LTRIM(RTRIM([DepartmentCode]))) > 0]]></Value>
+			</Property>
+			<Relationship Name="CheckExpressionDependencies">
+				<Entry>
+					<References Name="[HumanResources].[Departments].[DepartmentCode]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[HumanResources].[Departments]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="16" />
+		</Element>
+		<Element Type="SqlCheckConstraint" Name="[HumanResources].[CkDepartmentsDepartmentCodeTrimmed]">
+			<Property Name="CheckExpressionScript">
+				<Value><![CDATA[[DepartmentCode] = LTRIM(RTRIM([DepartmentCode]))]]></Value>
+			</Property>
+			<Relationship Name="CheckExpressionDependencies">
+				<Entry>
+					<References Name="[HumanResources].[Departments].[DepartmentCode]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[HumanResources].[Departments]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="17" />
+		</Element>
+		<Element Type="SqlCheckConstraint" Name="[HumanResources].[CkDepartmentsDescriptionNotBlank]">
+			<Property Name="CheckExpressionScript">
+				<Value><![CDATA[[Description] IS NULL
+            OR LEN(LTRIM(RTRIM([Description]))) > 0]]></Value>
+			</Property>
+			<Relationship Name="CheckExpressionDependencies">
+				<Entry>
+					<References Name="[HumanResources].[Departments].[Description]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[HumanResources].[Departments]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="18" />
+		</Element>
+		<Element Type="SqlCheckConstraint" Name="[HumanResources].[CkDepartmentsNameNotBlank]">
+			<Property Name="CheckExpressionScript">
+				<Value><![CDATA[LEN(LTRIM(RTRIM([Name]))) > 0]]></Value>
+			</Property>
+			<Relationship Name="CheckExpressionDependencies">
+				<Entry>
+					<References Name="[HumanResources].[Departments].[Name]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[HumanResources].[Departments]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="19" />
+		</Element>
+		<Element Type="SqlCheckConstraint" Name="[HumanResources].[CkDepartmentsNameTrimmed]">
+			<Property Name="CheckExpressionScript">
+				<Value><![CDATA[[Name] = LTRIM(RTRIM([Name]))]]></Value>
+			</Property>
+			<Relationship Name="CheckExpressionDependencies">
+				<Entry>
+					<References Name="[HumanResources].[Departments].[Name]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[HumanResources].[Departments]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="20" />
+		</Element>
+		<Element Type="SqlCheckConstraint" Name="[HumanResources].[CkEmployeesBaseSalaryNonNegative]">
+			<Property Name="CheckExpressionScript">
+				<Value><![CDATA[[BaseSalary] >= 0]]></Value>
+			</Property>
+			<Relationship Name="CheckExpressionDependencies">
+				<Entry>
+					<References Name="[HumanResources].[Employees].[BaseSalary]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[HumanResources].[Employees]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="21" />
+		</Element>
+		<Element Type="SqlCheckConstraint" Name="[HumanResources].[CkEmployeesEmploymentDates]">
+			<Property Name="CheckExpressionScript">
+				<Value><![CDATA[[TerminationDate] IS NULL
+            OR [TerminationDate] >= [HireDate]]]></Value>
+			</Property>
+			<Relationship Name="CheckExpressionDependencies">
+				<Entry>
+					<References Name="[HumanResources].[Employees].[TerminationDate]" />
+				</Entry>
+				<Entry>
+					<References Name="[HumanResources].[Employees].[HireDate]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[HumanResources].[Employees]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="22" />
+		</Element>
+		<Element Type="SqlCheckConstraint" Name="[HumanResources].[CkEmployeesFirstNameNotBlank]">
+			<Property Name="CheckExpressionScript">
+				<Value><![CDATA[LEN(LTRIM(RTRIM([FirstName]))) > 0]]></Value>
+			</Property>
+			<Relationship Name="CheckExpressionDependencies">
+				<Entry>
+					<References Name="[HumanResources].[Employees].[FirstName]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[HumanResources].[Employees]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="23" />
+		</Element>
+		<Element Type="SqlCheckConstraint" Name="[HumanResources].[CkEmployeesFirstNameTrimmed]">
+			<Property Name="CheckExpressionScript">
+				<Value><![CDATA[[FirstName] = LTRIM(RTRIM([FirstName]))]]></Value>
+			</Property>
+			<Relationship Name="CheckExpressionDependencies">
+				<Entry>
+					<References Name="[HumanResources].[Employees].[FirstName]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[HumanResources].[Employees]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="24" />
+		</Element>
+		<Element Type="SqlCheckConstraint" Name="[HumanResources].[CkEmployeesIdentificationNumberNotBlank]">
+			<Property Name="CheckExpressionScript">
+				<Value><![CDATA[LEN(LTRIM(RTRIM([IdentificationNumber]))) > 0]]></Value>
+			</Property>
+			<Relationship Name="CheckExpressionDependencies">
+				<Entry>
+					<References Name="[HumanResources].[Employees].[IdentificationNumber]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[HumanResources].[Employees]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="25" />
+		</Element>
+		<Element Type="SqlCheckConstraint" Name="[HumanResources].[CkEmployeesIdentificationNumberTrimmed]">
+			<Property Name="CheckExpressionScript">
+				<Value><![CDATA[[IdentificationNumber] = LTRIM(RTRIM([IdentificationNumber]))]]></Value>
+			</Property>
+			<Relationship Name="CheckExpressionDependencies">
+				<Entry>
+					<References Name="[HumanResources].[Employees].[IdentificationNumber]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[HumanResources].[Employees]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="26" />
+		</Element>
+		<Element Type="SqlCheckConstraint" Name="[HumanResources].[CkEmployeesJobTitleNotBlank]">
+			<Property Name="CheckExpressionScript">
+				<Value><![CDATA[LEN(LTRIM(RTRIM([JobTitle]))) > 0]]></Value>
+			</Property>
+			<Relationship Name="CheckExpressionDependencies">
+				<Entry>
+					<References Name="[HumanResources].[Employees].[JobTitle]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[HumanResources].[Employees]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="27" />
+		</Element>
+		<Element Type="SqlCheckConstraint" Name="[HumanResources].[CkEmployeesJobTitleTrimmed]">
+			<Property Name="CheckExpressionScript">
+				<Value><![CDATA[[JobTitle] = LTRIM(RTRIM([JobTitle]))]]></Value>
+			</Property>
+			<Relationship Name="CheckExpressionDependencies">
+				<Entry>
+					<References Name="[HumanResources].[Employees].[JobTitle]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[HumanResources].[Employees]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="28" />
+		</Element>
+		<Element Type="SqlCheckConstraint" Name="[HumanResources].[CkEmployeesLastNameNotBlank]">
+			<Property Name="CheckExpressionScript">
+				<Value><![CDATA[LEN(LTRIM(RTRIM([LastName]))) > 0]]></Value>
+			</Property>
+			<Relationship Name="CheckExpressionDependencies">
+				<Entry>
+					<References Name="[HumanResources].[Employees].[LastName]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[HumanResources].[Employees]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="29" />
+		</Element>
+		<Element Type="SqlCheckConstraint" Name="[HumanResources].[CkEmployeesLastNameTrimmed]">
+			<Property Name="CheckExpressionScript">
+				<Value><![CDATA[[LastName] = LTRIM(RTRIM([LastName]))]]></Value>
+			</Property>
+			<Relationship Name="CheckExpressionDependencies">
+				<Entry>
+					<References Name="[HumanResources].[Employees].[LastName]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[HumanResources].[Employees]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="30" />
+		</Element>
+		<Element Type="SqlCheckConstraint" Name="[HumanResources].[CkEmployeesPhoneNumberNotBlank]">
+			<Property Name="CheckExpressionScript">
+				<Value><![CDATA[[PhoneNumber] IS NULL
+            OR LEN(LTRIM(RTRIM([PhoneNumber]))) > 0]]></Value>
+			</Property>
+			<Relationship Name="CheckExpressionDependencies">
+				<Entry>
+					<References Name="[HumanResources].[Employees].[PhoneNumber]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[HumanResources].[Employees]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="31" />
+		</Element>
+		<Element Type="SqlCheckConstraint" Name="[HumanResources].[CkEmployeesProfileImagePathNotBlank]">
+			<Property Name="CheckExpressionScript">
+				<Value><![CDATA[[ProfileImagePath] IS NULL
+            OR LEN(LTRIM(RTRIM([ProfileImagePath]))) > 0]]></Value>
+			</Property>
+			<Relationship Name="CheckExpressionDependencies">
+				<Entry>
+					<References Name="[HumanResources].[Employees].[ProfileImagePath]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[HumanResources].[Employees]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="32" />
+		</Element>
+		<Element Type="SqlTable" Name="[HumanResources].[Departments]">
+			<Property Name="IsAnsiNullsOn" Value="True" />
+			<Relationship Name="Columns">
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[HumanResources].[Departments].[DepartmentId]">
+						<Property Name="IsNullable" Value="False" />
+						<Property Name="IsIdentity" Value="True" />
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[int]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[HumanResources].[Departments].[DepartmentCode]">
+						<Property Name="IsNullable" Value="False" />
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="50" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[HumanResources].[Departments].[Name]">
+						<Property Name="IsNullable" Value="False" />
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="100" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[HumanResources].[Departments].[Description]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="300" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[HumanResources].[Departments].[IsActive]">
+						<Property Name="IsNullable" Value="False" />
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[bit]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+						<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="33" />
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[HumanResources].[Departments].[CreatedAtUtc]">
+						<Property Name="IsNullable" Value="False" />
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Scale" Value="3" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[datetime2]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+						<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="34" />
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[HumanResources].[Departments].[CreatedByUserId]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[int]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[HumanResources].[Departments].[UpdatedAtUtc]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Scale" Value="3" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[datetime2]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[HumanResources].[Departments].[UpdatedByUserId]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[int]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[HumanResources].[Departments].[RowVersion]">
+						<Property Name="IsNullable" Value="False" />
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[rowversion]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="Schema">
+				<Entry>
+					<References Name="[HumanResources]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="35" />
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="36" />
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="37" />
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="38" />
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="39" />
+			<AttachedAnnotation Disambiguator="16" />
+			<AttachedAnnotation Disambiguator="17" />
+			<AttachedAnnotation Disambiguator="15" />
+			<AttachedAnnotation Disambiguator="19" />
+			<AttachedAnnotation Disambiguator="20" />
+			<AttachedAnnotation Disambiguator="18" />
+		</Element>
+		<Element Type="SqlDefaultConstraint" Name="[HumanResources].[DfDepartmentsCreatedAtUtc]">
+			<Property Name="DefaultExpressionScript">
+				<Value><![CDATA[(SYSUTCDATETIME())]]></Value>
+			</Property>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[HumanResources].[Departments]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="ForColumn">
+				<Entry>
+					<References Name="[HumanResources].[Departments].[CreatedAtUtc]" />
+				</Entry>
+			</Relationship>
+			<AttachedAnnotation Disambiguator="34" />
+		</Element>
+		<Element Type="SqlDefaultConstraint" Name="[HumanResources].[DfDepartmentsIsActive]">
+			<Property Name="DefaultExpressionScript">
+				<Value><![CDATA[(1)]]></Value>
+			</Property>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[HumanResources].[Departments]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="ForColumn">
+				<Entry>
+					<References Name="[HumanResources].[Departments].[IsActive]" />
+				</Entry>
+			</Relationship>
+			<AttachedAnnotation Disambiguator="33" />
+		</Element>
+		<Element Type="SqlDefaultConstraint" Name="[HumanResources].[DfEmployeesCreatedAtUtc]">
+			<Property Name="DefaultExpressionScript">
+				<Value><![CDATA[(SYSUTCDATETIME())]]></Value>
+			</Property>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[HumanResources].[Employees]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="ForColumn">
+				<Entry>
+					<References Name="[HumanResources].[Employees].[CreatedAtUtc]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="40" />
+		</Element>
+		<Element Type="SqlDefaultConstraint" Name="[HumanResources].[DfEmployeesIsActive]">
+			<Property Name="DefaultExpressionScript">
+				<Value><![CDATA[(1)]]></Value>
+			</Property>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[HumanResources].[Employees]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="ForColumn">
+				<Entry>
+					<References Name="[HumanResources].[Employees].[IsActive]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="41" />
+		</Element>
+		<Element Type="SqlTable" Name="[HumanResources].[Employees]">
+			<Property Name="IsAnsiNullsOn" Value="True" />
+			<Relationship Name="Columns">
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[HumanResources].[Employees].[EmployeeId]">
+						<Property Name="IsNullable" Value="False" />
+						<Property Name="IsIdentity" Value="True" />
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[int]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[HumanResources].[Employees].[UserId]">
+						<Property Name="IsNullable" Value="False" />
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[int]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[HumanResources].[Employees].[DepartmentId]">
+						<Property Name="IsNullable" Value="False" />
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[int]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[HumanResources].[Employees].[IdentificationNumber]">
+						<Property Name="IsNullable" Value="False" />
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="30" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[HumanResources].[Employees].[FirstName]">
+						<Property Name="IsNullable" Value="False" />
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="100" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[HumanResources].[Employees].[LastName]">
+						<Property Name="IsNullable" Value="False" />
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="150" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[HumanResources].[Employees].[PhoneNumber]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="25" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[HumanResources].[Employees].[BirthDate]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[date]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[HumanResources].[Employees].[HireDate]">
+						<Property Name="IsNullable" Value="False" />
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[date]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[HumanResources].[Employees].[TerminationDate]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[date]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[HumanResources].[Employees].[JobTitle]">
+						<Property Name="IsNullable" Value="False" />
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="100" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[HumanResources].[Employees].[BaseSalary]">
+						<Property Name="IsNullable" Value="False" />
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Scale" Value="2" />
+									<Property Name="Precision" Value="18" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[decimal]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[HumanResources].[Employees].[ProfileImagePath]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="500" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[HumanResources].[Employees].[IsActive]">
+						<Property Name="IsNullable" Value="False" />
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[bit]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+						<AttachedAnnotation Disambiguator="41" />
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[HumanResources].[Employees].[CreatedAtUtc]">
+						<Property Name="IsNullable" Value="False" />
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Scale" Value="3" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[datetime2]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+						<AttachedAnnotation Disambiguator="40" />
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[HumanResources].[Employees].[CreatedByUserId]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[int]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[HumanResources].[Employees].[UpdatedAtUtc]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Scale" Value="3" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[datetime2]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[HumanResources].[Employees].[UpdatedByUserId]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[int]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[HumanResources].[Employees].[RowVersion]">
+						<Property Name="IsNullable" Value="False" />
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[rowversion]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="Schema">
+				<Entry>
+					<References Name="[HumanResources]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="42" />
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="43" />
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="44" />
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="45" />
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="46" />
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="47" />
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="48" />
+			<AttachedAnnotation Disambiguator="25" />
+			<AttachedAnnotation Disambiguator="26" />
+			<AttachedAnnotation Disambiguator="23" />
+			<AttachedAnnotation Disambiguator="24" />
+			<AttachedAnnotation Disambiguator="29" />
+			<AttachedAnnotation Disambiguator="30" />
+			<AttachedAnnotation Disambiguator="27" />
+			<AttachedAnnotation Disambiguator="28" />
+			<AttachedAnnotation Disambiguator="31" />
+			<AttachedAnnotation Disambiguator="32" />
+			<AttachedAnnotation Disambiguator="21" />
+			<AttachedAnnotation Disambiguator="22" />
+		</Element>
+		<Element Type="SqlIndex" Name="[HumanResources].[Employees].[IxEmployeesDepartmentIdIsActive]">
+			<Relationship Name="ColumnSpecifications">
+				<Entry>
+					<Element Type="SqlIndexedColumnSpecification">
+						<Relationship Name="Column">
+							<Entry>
+								<References Name="[HumanResources].[Employees].[DepartmentId]" />
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlIndexedColumnSpecification">
+						<Relationship Name="Column">
+							<Entry>
+								<References Name="[HumanResources].[Employees].[IsActive]" />
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="IncludedColumns">
+				<Entry>
+					<References Name="[HumanResources].[Employees].[UserId]" />
+				</Entry>
+				<Entry>
+					<References Name="[HumanResources].[Employees].[IdentificationNumber]" />
+				</Entry>
+				<Entry>
+					<References Name="[HumanResources].[Employees].[FirstName]" />
+				</Entry>
+				<Entry>
+					<References Name="[HumanResources].[Employees].[LastName]" />
+				</Entry>
+				<Entry>
+					<References Name="[HumanResources].[Employees].[JobTitle]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="IndexedObject">
+				<Entry>
+					<References Name="[HumanResources].[Employees]" />
+				</Entry>
+			</Relationship>
+		</Element>
+		<Element Type="SqlForeignKeyConstraint" Name="[HumanResources].[FkDepartmentsUsersCreatedByUserId]">
+			<Relationship Name="Columns">
+				<Entry>
+					<References Name="[HumanResources].[Departments].[CreatedByUserId]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[HumanResources].[Departments]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="ForeignColumns">
+				<Entry>
+					<References Name="[Security].[Users].[UserId]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="ForeignTable">
+				<Entry>
+					<References Name="[Security].[Users]" />
+				</Entry>
+			</Relationship>
+			<AttachedAnnotation Disambiguator="36" />
+		</Element>
+		<Element Type="SqlForeignKeyConstraint" Name="[HumanResources].[FkDepartmentsUsersUpdatedByUserId]">
+			<Relationship Name="Columns">
+				<Entry>
+					<References Name="[HumanResources].[Departments].[UpdatedByUserId]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[HumanResources].[Departments]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="ForeignColumns">
+				<Entry>
+					<References Name="[Security].[Users].[UserId]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="ForeignTable">
+				<Entry>
+					<References Name="[Security].[Users]" />
+				</Entry>
+			</Relationship>
+			<AttachedAnnotation Disambiguator="37" />
+		</Element>
+		<Element Type="SqlForeignKeyConstraint" Name="[HumanResources].[FkEmployeesDepartmentsDepartmentId]">
+			<Relationship Name="Columns">
+				<Entry>
+					<References Name="[HumanResources].[Employees].[DepartmentId]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[HumanResources].[Employees]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="ForeignColumns">
+				<Entry>
+					<References Name="[HumanResources].[Departments].[DepartmentId]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="ForeignTable">
+				<Entry>
+					<References Name="[HumanResources].[Departments]" />
+				</Entry>
+			</Relationship>
+			<AttachedAnnotation Disambiguator="44" />
+		</Element>
+		<Element Type="SqlForeignKeyConstraint" Name="[HumanResources].[FkEmployeesUsersCreatedByUserId]">
+			<Relationship Name="Columns">
+				<Entry>
+					<References Name="[HumanResources].[Employees].[CreatedByUserId]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[HumanResources].[Employees]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="ForeignColumns">
+				<Entry>
+					<References Name="[Security].[Users].[UserId]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="ForeignTable">
+				<Entry>
+					<References Name="[Security].[Users]" />
+				</Entry>
+			</Relationship>
+			<AttachedAnnotation Disambiguator="45" />
+		</Element>
+		<Element Type="SqlForeignKeyConstraint" Name="[HumanResources].[FkEmployeesUsersUpdatedByUserId]">
+			<Relationship Name="Columns">
+				<Entry>
+					<References Name="[HumanResources].[Employees].[UpdatedByUserId]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[HumanResources].[Employees]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="ForeignColumns">
+				<Entry>
+					<References Name="[Security].[Users].[UserId]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="ForeignTable">
+				<Entry>
+					<References Name="[Security].[Users]" />
+				</Entry>
+			</Relationship>
+			<AttachedAnnotation Disambiguator="46" />
+		</Element>
+		<Element Type="SqlForeignKeyConstraint" Name="[HumanResources].[FkEmployeesUsersUserId]">
+			<Relationship Name="Columns">
+				<Entry>
+					<References Name="[HumanResources].[Employees].[UserId]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[HumanResources].[Employees]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="ForeignColumns">
+				<Entry>
+					<References Name="[Security].[Users].[UserId]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="ForeignTable">
+				<Entry>
+					<References Name="[Security].[Users]" />
+				</Entry>
+			</Relationship>
+			<AttachedAnnotation Disambiguator="43" />
+		</Element>
+		<Element Type="SqlPrimaryKeyConstraint" Name="[HumanResources].[PkDepartments]">
+			<Relationship Name="ColumnSpecifications">
+				<Entry>
+					<Element Type="SqlIndexedColumnSpecification">
+						<Relationship Name="Column">
+							<Entry>
+								<References Name="[HumanResources].[Departments].[DepartmentId]" />
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[HumanResources].[Departments]" />
+				</Entry>
+			</Relationship>
+			<AttachedAnnotation Disambiguator="35" />
+		</Element>
+		<Element Type="SqlPrimaryKeyConstraint" Name="[HumanResources].[PkEmployees]">
+			<Relationship Name="ColumnSpecifications">
+				<Entry>
+					<Element Type="SqlIndexedColumnSpecification">
+						<Relationship Name="Column">
+							<Entry>
+								<References Name="[HumanResources].[Employees].[EmployeeId]" />
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[HumanResources].[Employees]" />
+				</Entry>
+			</Relationship>
+			<AttachedAnnotation Disambiguator="42" />
+		</Element>
+		<Element Type="SqlUniqueConstraint" Name="[HumanResources].[UqDepartmentsDepartmentCode]">
+			<Relationship Name="ColumnSpecifications">
+				<Entry>
+					<Element Type="SqlIndexedColumnSpecification">
+						<Relationship Name="Column">
+							<Entry>
+								<References Name="[HumanResources].[Departments].[DepartmentCode]" />
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[HumanResources].[Departments]" />
+				</Entry>
+			</Relationship>
+			<AttachedAnnotation Disambiguator="38" />
+		</Element>
+		<Element Type="SqlUniqueConstraint" Name="[HumanResources].[UqDepartmentsName]">
+			<Relationship Name="ColumnSpecifications">
+				<Entry>
+					<Element Type="SqlIndexedColumnSpecification">
+						<Relationship Name="Column">
+							<Entry>
+								<References Name="[HumanResources].[Departments].[Name]" />
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[HumanResources].[Departments]" />
+				</Entry>
+			</Relationship>
+			<AttachedAnnotation Disambiguator="39" />
+		</Element>
+		<Element Type="SqlUniqueConstraint" Name="[HumanResources].[UqEmployeesIdentificationNumber]">
+			<Relationship Name="ColumnSpecifications">
+				<Entry>
+					<Element Type="SqlIndexedColumnSpecification">
+						<Relationship Name="Column">
+							<Entry>
+								<References Name="[HumanResources].[Employees].[IdentificationNumber]" />
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[HumanResources].[Employees]" />
+				</Entry>
+			</Relationship>
+			<AttachedAnnotation Disambiguator="48" />
+		</Element>
+		<Element Type="SqlUniqueConstraint" Name="[HumanResources].[UqEmployeesUserId]">
+			<Relationship Name="ColumnSpecifications">
+				<Entry>
+					<Element Type="SqlIndexedColumnSpecification">
+						<Relationship Name="Column">
+							<Entry>
+								<References Name="[HumanResources].[Employees].[UserId]" />
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[HumanResources].[Employees]" />
+				</Entry>
+			</Relationship>
+			<AttachedAnnotation Disambiguator="47" />
+		</Element>
+		<Element Type="SqlSchema" Name="[Security]">
+			<Relationship Name="Authorizer">
+				<Entry>
+					<References ExternalSource="BuiltIns" Name="[dbo]" />
+				</Entry>
+			</Relationship>
+		</Element>
+		<Element Type="SqlCheckConstraint" Name="[Security].[CkRolesDescriptionNotBlank]">
+			<Property Name="CheckExpressionScript">
+				<Value><![CDATA[LEN(LTRIM(RTRIM([Description]))) > 0]]></Value>
+			</Property>
+			<Relationship Name="CheckExpressionDependencies">
+				<Entry>
+					<References Name="[Security].[Roles].[Description]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[Security].[Roles]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="49" />
+		</Element>
+		<Element Type="SqlCheckConstraint" Name="[Security].[CkRolesDisplayNameNotBlank]">
+			<Property Name="CheckExpressionScript">
+				<Value><![CDATA[LEN(LTRIM(RTRIM([DisplayName]))) > 0]]></Value>
+			</Property>
+			<Relationship Name="CheckExpressionDependencies">
+				<Entry>
+					<References Name="[Security].[Roles].[DisplayName]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[Security].[Roles]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="50" />
+		</Element>
+		<Element Type="SqlCheckConstraint" Name="[Security].[CkRolesRoleCodeNotBlank]">
+			<Property Name="CheckExpressionScript">
+				<Value><![CDATA[LEN(LTRIM(RTRIM([RoleCode]))) > 0]]></Value>
+			</Property>
+			<Relationship Name="CheckExpressionDependencies">
+				<Entry>
+					<References Name="[Security].[Roles].[RoleCode]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[Security].[Roles]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="51" />
+		</Element>
+		<Element Type="SqlCheckConstraint" Name="[Security].[CkUsersEmailAddressNoSpaces]">
+			<Property Name="CheckExpressionScript">
+				<Value><![CDATA[[EmailAddress] NOT LIKE N'% %']]></Value>
+			</Property>
+			<Relationship Name="CheckExpressionDependencies">
+				<Entry>
+					<References Name="[Security].[Users].[EmailAddress]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[Security].[Users]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="52" />
+		</Element>
+		<Element Type="SqlCheckConstraint" Name="[Security].[CkUsersEmailAddressNotBlank]">
+			<Property Name="CheckExpressionScript">
+				<Value><![CDATA[LEN(LTRIM(RTRIM([EmailAddress]))) > 0]]></Value>
+			</Property>
+			<Relationship Name="CheckExpressionDependencies">
+				<Entry>
+					<References Name="[Security].[Users].[EmailAddress]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[Security].[Users]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="53" />
+		</Element>
+		<Element Type="SqlCheckConstraint" Name="[Security].[CkUsersEmailAddressTrimmed]">
+			<Property Name="CheckExpressionScript">
+				<Value><![CDATA[[EmailAddress] = LTRIM(RTRIM([EmailAddress]))]]></Value>
+			</Property>
+			<Relationship Name="CheckExpressionDependencies">
+				<Entry>
+					<References Name="[Security].[Users].[EmailAddress]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[Security].[Users]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="54" />
+		</Element>
+		<Element Type="SqlCheckConstraint" Name="[Security].[CkUsersFailedLoginAttempts]">
+			<Property Name="CheckExpressionScript">
+				<Value><![CDATA[[FailedLoginAttempts] >= 0]]></Value>
+			</Property>
+			<Relationship Name="CheckExpressionDependencies">
+				<Entry>
+					<References Name="[Security].[Users].[FailedLoginAttempts]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[Security].[Users]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="55" />
+		</Element>
+		<Element Type="SqlCheckConstraint" Name="[Security].[CkUsersPasswordHashNotBlank]">
+			<Property Name="CheckExpressionScript">
+				<Value><![CDATA[LEN(LTRIM(RTRIM([PasswordHash]))) > 0]]></Value>
+			</Property>
+			<Relationship Name="CheckExpressionDependencies">
+				<Entry>
+					<References Name="[Security].[Users].[PasswordHash]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[Security].[Users]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="56" />
+		</Element>
+		<Element Type="SqlCheckConstraint" Name="[Security].[CkUsersTemporaryPasswordExpiration]">
+			<Property Name="CheckExpressionScript">
+				<Value><![CDATA[[TemporaryPasswordExpiresAtUtc] IS NULL
+            OR [RequiresPasswordChange] = 1]]></Value>
+			</Property>
+			<Relationship Name="CheckExpressionDependencies">
+				<Entry>
+					<References Name="[Security].[Users].[TemporaryPasswordExpiresAtUtc]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[RequiresPasswordChange]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[Security].[Users]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="57" />
+		</Element>
+		<Element Type="SqlProcedure" Name="[Security].[CreateInitialSuperAdministrator]">
+			<Property Name="BodyScript">
+				<Value><![CDATA[
+BEGIN
+    SET NOCOUNT ON;
+    SET XACT_ABORT ON;
+
+    DECLARE @OccurredAtUtc datetime2(3) =
+        SYSUTCDATETIME();
+
+    DECLARE @ResolvedCorrelationId uniqueidentifier =
+        COALESCE(@CorrelationId, NEWID());
+
+    DECLARE @NormalizedEmailAddress nvarchar(254);
+
+    SET @NormalizedEmailAddress =
+        NULLIF(
+            LTRIM(RTRIM(@EmailAddress)),
+            N''
+        );
+
+    IF @NormalizedEmailAddress IS NULL
+    BEGIN
+        THROW 51020,
+            N'EmailAddress is required.',
+            1;
+    END;
+
+    IF @NormalizedEmailAddress LIKE N'% %'
+    BEGIN
+        THROW 51021,
+            N'EmailAddress cannot contain spaces.',
+            1;
+    END;
+
+    IF @PasswordHash IS NULL
+       OR LEN(LTRIM(RTRIM(@PasswordHash))) = 0
+    BEGIN
+        THROW 51022,
+            N'PasswordHash is required.',
+            1;
+    END;
+
+    IF @TemporaryPasswordExpiresAtUtc <= @OccurredAtUtc
+    BEGIN
+        THROW 51023,
+            N'TemporaryPasswordExpiresAtUtc must be in the future.',
+            1;
+    END;
+
+    DECLARE @RoleId int;
+    DECLARE @UserId int;
+
+    BEGIN TRY
+        BEGIN TRANSACTION;
+
+        /*
+            The locking hints prevent two bootstrap processes
+            from creating initial administrators simultaneously.
+        */
+
+        IF EXISTS
+        (
+            SELECT 1
+            FROM [Security].[Users]
+                WITH (UPDLOCK, HOLDLOCK)
+        )
+        BEGIN
+            THROW 51024,
+                N'The initial administrator can only be created when no users exist.',
+                1;
+        END;
+
+        SELECT
+            @RoleId = R.[RoleId]
+        FROM [Security].[Roles] AS R
+            WITH (UPDLOCK, HOLDLOCK)
+        WHERE R.[RoleCode] = N'SuperAdministrator'
+          AND R.[IsActive] = 1;
+
+        IF @RoleId IS NULL
+        BEGIN
+            THROW 51025,
+                N'The active SuperAdministrator role was not found.',
+                1;
+        END;
+
+        INSERT INTO [Security].[Users]
+        (
+            [RoleId],
+            [EmailAddress],
+            [PasswordHash],
+            [IsEmailConfirmed],
+            [IsActive],
+            [RequiresPasswordChange],
+            [TemporaryPasswordExpiresAtUtc],
+            [PasswordChangedAtUtc],
+            [FailedLoginAttempts],
+            [LockoutEndAtUtc],
+            [LastLoginAtUtc],
+            [CreatedByUserId]
+        )
+        VALUES
+        (
+            @RoleId,
+            @NormalizedEmailAddress,
+            @PasswordHash,
+            1,
+            1,
+            1,
+            @TemporaryPasswordExpiresAtUtc,
+            NULL,
+            0,
+            NULL,
+            NULL,
+            NULL
+        );
+
+        SET @UserId =
+            CONVERT(int, SCOPE_IDENTITY());
+
+        INSERT INTO [Audit].[AuditLogs]
+        (
+            [CorrelationId],
+            [ModuleName],
+            [ActionName],
+            [EntityName],
+            [EntityId],
+            [ActorType],
+            [ActorEmailAddress],
+            [ActorRoleCode],
+            [IsSuccessful],
+            [EventDescription],
+            [ClientIpAddress],
+            [UserAgent],
+            [HttpMethod],
+            [RequestPath],
+            [OccurredAtUtc]
+        )
+        VALUES
+        (
+            @ResolvedCorrelationId,
+            N'Security',
+            N'InitialSuperAdministratorCreated',
+            N'Users',
+            CONVERT(nvarchar(100), @UserId),
+            N'System',
+            @NormalizedEmailAddress,
+            N'SuperAdministrator',
+            1,
+            N'Initial SuperAdministrator account created.',
+            @ClientIpAddress,
+            @UserAgent,
+            N'POST',
+            @RequestPath,
+            @OccurredAtUtc
+        );
+
+        COMMIT TRANSACTION;
+
+        SELECT
+            U.[UserId],
+            U.[EmailAddress],
+            R.[RoleCode],
+            U.[IsActive],
+            U.[RequiresPasswordChange],
+            U.[TemporaryPasswordExpiresAtUtc],
+            U.[CreatedAtUtc]
+        FROM [Security].[Users] AS U
+
+        INNER JOIN [Security].[Roles] AS R
+            ON R.[RoleId] = U.[RoleId]
+
+        WHERE U.[UserId] = @UserId;
+    END TRY
+    BEGIN CATCH
+        IF XACT_STATE() <> 0
+        BEGIN
+            ROLLBACK TRANSACTION;
+        END;
+
+        THROW;
+    END CATCH;
+END;]]></Value>
+			</Property>
+			<Property Name="IsAnsiNullsOn" Value="True" />
+			<Relationship Name="BodyDependencies">
+				<Entry>
+					<References ExternalSource="BuiltIns" Name="[datetime2]" />
+				</Entry>
+				<Entry>
+					<References ExternalSource="BuiltIns" Name="[uniqueidentifier]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[CreateInitialSuperAdministrator].[@CorrelationId]" />
+				</Entry>
+				<Entry>
+					<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+				</Entry>
+				<Entry>
+					<References ExternalSource="BuiltIns" Name="[int]" />
+				</Entry>
+				<Entry>
+					<References ExternalSource="BuiltIns" Name="[int]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[CreateInitialSuperAdministrator].[@EmailAddress]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[CreateInitialSuperAdministrator].[@PasswordHash]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[CreateInitialSuperAdministrator].[@TemporaryPasswordExpiresAtUtc]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Roles]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Roles].[RoleId]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Roles].[RoleCode]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Roles].[IsActive]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[RoleId]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[EmailAddress]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[PasswordHash]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[IsEmailConfirmed]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[IsActive]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[RequiresPasswordChange]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[TemporaryPasswordExpiresAtUtc]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[PasswordChangedAtUtc]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[FailedLoginAttempts]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[LockoutEndAtUtc]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[LastLoginAtUtc]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[CreatedByUserId]" />
+				</Entry>
+				<Entry>
+					<References ExternalSource="BuiltIns" Name="[int]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[CorrelationId]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[ModuleName]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[ActionName]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[EntityName]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[EntityId]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[ActorType]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[ActorEmailAddress]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[ActorRoleCode]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[IsSuccessful]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[EventDescription]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[ClientIpAddress]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[UserAgent]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[HttpMethod]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[RequestPath]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[OccurredAtUtc]" />
+				</Entry>
+				<Entry>
+					<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[CreateInitialSuperAdministrator].[@ClientIpAddress]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[CreateInitialSuperAdministrator].[@UserAgent]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[CreateInitialSuperAdministrator].[@RequestPath]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Roles].[RoleId]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[RoleId]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[UserId]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[EmailAddress]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Roles].[RoleCode]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[IsActive]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[RequiresPasswordChange]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[TemporaryPasswordExpiresAtUtc]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[CreatedAtUtc]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="Parameters">
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[Security].[CreateInitialSuperAdministrator].[@EmailAddress]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="254" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[Security].[CreateInitialSuperAdministrator].[@PasswordHash]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="500" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[Security].[CreateInitialSuperAdministrator].[@TemporaryPasswordExpiresAtUtc]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Scale" Value="3" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[datetime2]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[Security].[CreateInitialSuperAdministrator].[@CorrelationId]">
+						<Property Name="DefaultExpressionScript">
+							<Value><![CDATA[NULL]]></Value>
+						</Property>
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[uniqueidentifier]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[Security].[CreateInitialSuperAdministrator].[@ClientIpAddress]">
+						<Property Name="DefaultExpressionScript">
+							<Value><![CDATA[NULL]]></Value>
+						</Property>
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="45" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[Security].[CreateInitialSuperAdministrator].[@UserAgent]">
+						<Property Name="DefaultExpressionScript">
+							<Value><![CDATA[NULL]]></Value>
+						</Property>
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="512" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[Security].[CreateInitialSuperAdministrator].[@RequestPath]">
+						<Property Name="DefaultExpressionScript">
+							<Value><![CDATA[NULL]]></Value>
+						</Property>
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="500" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="Schema">
+				<Entry>
+					<References Name="[Security]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SysCommentsObjectAnnotation">
+				<Property Name="Length" Value="4839" />
+				<Property Name="StartLine" Value="1" />
+				<Property Name="StartColumn" Value="1" />
+				<Property Name="HeaderContents" Value="CREATE PROCEDURE [Security].[CreateInitialSuperAdministrator]&#xD;&#xA;    @EmailAddress nvarchar(254),&#xD;&#xA;    @PasswordHash nvarchar(500),&#xD;&#xA;    @TemporaryPasswordExpiresAtUtc datetime2(3),&#xD;&#xA;    @CorrelationId uniqueidentifier = NULL,&#xD;&#xA;    @ClientIpAddress nvarchar(45) = NULL,&#xD;&#xA;    @UserAgent nvarchar(512) = NULL,&#xD;&#xA;    @RequestPath nvarchar(500) = NULL&#xD;&#xA;AS" />
+			</Annotation>
+		</Element>
+		<Element Type="SqlDefaultConstraint" Name="[Security].[DfRolesCreatedAtUtc]">
+			<Property Name="DefaultExpressionScript">
+				<Value><![CDATA[(SYSUTCDATETIME())]]></Value>
+			</Property>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[Security].[Roles]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="ForColumn">
+				<Entry>
+					<References Name="[Security].[Roles].[CreatedAtUtc]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="58" />
+		</Element>
+		<Element Type="SqlDefaultConstraint" Name="[Security].[DfRolesIsActive]">
+			<Property Name="DefaultExpressionScript">
+				<Value><![CDATA[(1)]]></Value>
+			</Property>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[Security].[Roles]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="ForColumn">
+				<Entry>
+					<References Name="[Security].[Roles].[IsActive]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="59" />
+		</Element>
+		<Element Type="SqlDefaultConstraint" Name="[Security].[DfRolesIsSystemRole]">
+			<Property Name="DefaultExpressionScript">
+				<Value><![CDATA[(1)]]></Value>
+			</Property>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[Security].[Roles]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="ForColumn">
+				<Entry>
+					<References Name="[Security].[Roles].[IsSystemRole]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="60" />
+		</Element>
+		<Element Type="SqlDefaultConstraint" Name="[Security].[DfUsersCreatedAtUtc]">
+			<Property Name="DefaultExpressionScript">
+				<Value><![CDATA[(SYSUTCDATETIME())]]></Value>
+			</Property>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[Security].[Users]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="ForColumn">
+				<Entry>
+					<References Name="[Security].[Users].[CreatedAtUtc]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="61" />
+		</Element>
+		<Element Type="SqlDefaultConstraint" Name="[Security].[DfUsersFailedLoginAttempts]">
+			<Property Name="DefaultExpressionScript">
+				<Value><![CDATA[(0)]]></Value>
+			</Property>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[Security].[Users]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="ForColumn">
+				<Entry>
+					<References Name="[Security].[Users].[FailedLoginAttempts]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="62" />
+		</Element>
+		<Element Type="SqlDefaultConstraint" Name="[Security].[DfUsersIsActive]">
+			<Property Name="DefaultExpressionScript">
+				<Value><![CDATA[(1)]]></Value>
+			</Property>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[Security].[Users]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="ForColumn">
+				<Entry>
+					<References Name="[Security].[Users].[IsActive]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="63" />
+		</Element>
+		<Element Type="SqlDefaultConstraint" Name="[Security].[DfUsersIsEmailConfirmed]">
+			<Property Name="DefaultExpressionScript">
+				<Value><![CDATA[(0)]]></Value>
+			</Property>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[Security].[Users]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="ForColumn">
+				<Entry>
+					<References Name="[Security].[Users].[IsEmailConfirmed]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="64" />
+		</Element>
+		<Element Type="SqlDefaultConstraint" Name="[Security].[DfUsersRequiresPasswordChange]">
+			<Property Name="DefaultExpressionScript">
+				<Value><![CDATA[(1)]]></Value>
+			</Property>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[Security].[Users]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="ForColumn">
+				<Entry>
+					<References Name="[Security].[Users].[RequiresPasswordChange]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="65" />
+		</Element>
+		<Element Type="SqlForeignKeyConstraint" Name="[Security].[FkUsersRolesRoleId]">
+			<Relationship Name="Columns">
+				<Entry>
+					<References Name="[Security].[Users].[RoleId]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[Security].[Users]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="ForeignColumns">
+				<Entry>
+					<References Name="[Security].[Roles].[RoleId]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="ForeignTable">
+				<Entry>
+					<References Name="[Security].[Roles]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="66" />
+		</Element>
+		<Element Type="SqlForeignKeyConstraint" Name="[Security].[FkUsersUsersCreatedByUserId]">
+			<Relationship Name="Columns">
+				<Entry>
+					<References Name="[Security].[Users].[CreatedByUserId]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[Security].[Users]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="ForeignColumns">
+				<Entry>
+					<References Name="[Security].[Users].[UserId]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="ForeignTable">
+				<Entry>
+					<References Name="[Security].[Users]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="67" />
+		</Element>
+		<Element Type="SqlForeignKeyConstraint" Name="[Security].[FkUsersUsersUpdatedByUserId]">
+			<Relationship Name="Columns">
+				<Entry>
+					<References Name="[Security].[Users].[UpdatedByUserId]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[Security].[Users]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="ForeignColumns">
+				<Entry>
+					<References Name="[Security].[Users].[UserId]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="ForeignTable">
+				<Entry>
+					<References Name="[Security].[Users]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="68" />
+		</Element>
+		<Element Type="SqlProcedure" Name="[Security].[GetUserForAuthentication]">
+			<Property Name="BodyScript">
+				<Value><![CDATA[
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @NormalizedEmailAddress nvarchar(254);
+
+    SET @NormalizedEmailAddress =
+        LTRIM(RTRIM(@EmailAddress));
+
+    IF @NormalizedEmailAddress IS NULL
+       OR @NormalizedEmailAddress = N''
+    BEGIN
+        RETURN;
+    END;
+
+    SELECT
+        U.[UserId],
+        U.[EmailAddress],
+        U.[PasswordHash],
+        U.[IsEmailConfirmed],
+        U.[IsActive],
+        U.[RequiresPasswordChange],
+        U.[TemporaryPasswordExpiresAtUtc],
+        U.[PasswordChangedAtUtc],
+        U.[FailedLoginAttempts],
+        U.[LockoutEndAtUtc],
+        U.[LastLoginAtUtc],
+
+        R.[RoleId],
+        R.[RoleCode],
+        R.[DisplayName] AS [RoleDisplayName],
+        R.[IsActive] AS [IsRoleActive],
+
+        E.[EmployeeId],
+        E.[FirstName],
+        E.[LastName],
+        E.[JobTitle],
+        E.[ProfileImagePath],
+        E.[IsActive] AS [IsEmployeeActive],
+
+        D.[DepartmentId],
+        D.[DepartmentCode],
+        D.[Name] AS [DepartmentName]
+
+    FROM [Security].[Users] AS U
+
+    INNER JOIN [Security].[Roles] AS R
+        ON R.[RoleId] = U.[RoleId]
+
+    LEFT JOIN [HumanResources].[Employees] AS E
+        ON E.[UserId] = U.[UserId]
+
+    LEFT JOIN [HumanResources].[Departments] AS D
+        ON D.[DepartmentId] = E.[DepartmentId]
+
+    WHERE U.[EmailAddress] = @NormalizedEmailAddress;
+END;]]></Value>
+			</Property>
+			<Property Name="IsAnsiNullsOn" Value="True" />
+			<Relationship Name="BodyDependencies">
+				<Entry>
+					<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[GetUserForAuthentication].[@EmailAddress]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Roles]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Roles].[RoleId]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[RoleId]" />
+				</Entry>
+				<Entry>
+					<References Name="[HumanResources].[Employees]" />
+				</Entry>
+				<Entry>
+					<References Name="[HumanResources].[Employees].[UserId]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[UserId]" />
+				</Entry>
+				<Entry>
+					<References Name="[HumanResources].[Departments]" />
+				</Entry>
+				<Entry>
+					<References Name="[HumanResources].[Departments].[DepartmentId]" />
+				</Entry>
+				<Entry>
+					<References Name="[HumanResources].[Employees].[DepartmentId]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[UserId]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[EmailAddress]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[PasswordHash]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[IsEmailConfirmed]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[IsActive]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[RequiresPasswordChange]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[TemporaryPasswordExpiresAtUtc]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[PasswordChangedAtUtc]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[FailedLoginAttempts]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[LockoutEndAtUtc]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[LastLoginAtUtc]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Roles].[RoleId]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Roles].[RoleCode]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Roles].[DisplayName]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Roles].[IsActive]" />
+				</Entry>
+				<Entry>
+					<References Name="[HumanResources].[Employees].[EmployeeId]" />
+				</Entry>
+				<Entry>
+					<References Name="[HumanResources].[Employees].[FirstName]" />
+				</Entry>
+				<Entry>
+					<References Name="[HumanResources].[Employees].[LastName]" />
+				</Entry>
+				<Entry>
+					<References Name="[HumanResources].[Employees].[JobTitle]" />
+				</Entry>
+				<Entry>
+					<References Name="[HumanResources].[Employees].[ProfileImagePath]" />
+				</Entry>
+				<Entry>
+					<References Name="[HumanResources].[Employees].[IsActive]" />
+				</Entry>
+				<Entry>
+					<References Name="[HumanResources].[Departments].[DepartmentCode]" />
+				</Entry>
+				<Entry>
+					<References Name="[HumanResources].[Departments].[Name]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="Parameters">
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[Security].[GetUserForAuthentication].[@EmailAddress]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="254" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="Schema">
+				<Entry>
+					<References Name="[Security]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SysCommentsObjectAnnotation">
+				<Property Name="Length" Value="1489" />
+				<Property Name="StartLine" Value="1" />
+				<Property Name="StartColumn" Value="1" />
+				<Property Name="HeaderContents" Value="CREATE PROCEDURE [Security].[GetUserForAuthentication]&#xD;&#xA;    @EmailAddress nvarchar(254)&#xD;&#xA;AS" />
+			</Annotation>
+		</Element>
+		<Element Type="SqlPrimaryKeyConstraint" Name="[Security].[PkRoles]">
+			<Relationship Name="ColumnSpecifications">
+				<Entry>
+					<Element Type="SqlIndexedColumnSpecification">
+						<Relationship Name="Column">
+							<Entry>
+								<References Name="[Security].[Roles].[RoleId]" />
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[Security].[Roles]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="69" />
+		</Element>
+		<Element Type="SqlPrimaryKeyConstraint" Name="[Security].[PkUsers]">
+			<Relationship Name="ColumnSpecifications">
+				<Entry>
+					<Element Type="SqlIndexedColumnSpecification">
+						<Relationship Name="Column">
+							<Entry>
+								<References Name="[Security].[Users].[UserId]" />
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[Security].[Users]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="70" />
+		</Element>
+		<Element Type="SqlProcedure" Name="[Security].[RegisterFailedLogin]">
+			<Property Name="BodyScript">
+				<Value><![CDATA[
+BEGIN
+    SET NOCOUNT ON;
+    SET XACT_ABORT ON;
+
+    IF @MaximumFailedAttempts < 1
+       OR @MaximumFailedAttempts > 20
+    BEGIN
+        THROW 51010,
+            N'MaximumFailedAttempts must be between 1 and 20.',
+            1;
+    END;
+
+    IF @LockoutDurationMinutes < 1
+       OR @LockoutDurationMinutes > 1440
+    BEGIN
+        THROW 51011,
+            N'LockoutDurationMinutes must be between 1 and 1440.',
+            1;
+    END;
+
+    DECLARE @OccurredAtUtc datetime2(3) =
+        SYSUTCDATETIME();
+
+    DECLARE @ResolvedCorrelationId uniqueidentifier =
+        COALESCE(@CorrelationId, NEWID());
+
+    DECLARE @NormalizedEmailAddress nvarchar(254);
+
+    SET @NormalizedEmailAddress =
+        NULLIF(
+            LTRIM(RTRIM(@AttemptedEmailAddress)),
+            N''
+        );
+
+    IF @NormalizedEmailAddress IS NULL
+    BEGIN
+        THROW 51012,
+            N'AttemptedEmailAddress is required.',
+            1;
+    END;
+
+    DECLARE @RoleCode nvarchar(50);
+
+    DECLARE @CurrentFailedLoginAttempts smallint = 0;
+    DECLARE @CurrentLockoutEndAtUtc datetime2(3);
+
+    DECLARE @NewFailedLoginAttempts smallint = 0;
+    DECLARE @NewLockoutEndAtUtc datetime2(3);
+
+    DECLARE @ShouldUpdateUser bit = 0;
+
+    DECLARE @AdditionalDataJson nvarchar(max);
+
+    BEGIN TRY
+        BEGIN TRANSACTION;
+
+        IF @UserId IS NOT NULL
+        BEGIN
+            SELECT
+                @NormalizedEmailAddress = U.[EmailAddress],
+                @RoleCode = R.[RoleCode],
+                @CurrentFailedLoginAttempts =
+                    U.[FailedLoginAttempts],
+                @CurrentLockoutEndAtUtc =
+                    U.[LockoutEndAtUtc]
+            FROM [Security].[Users] AS U
+                WITH (UPDLOCK, HOLDLOCK)
+
+            INNER JOIN [Security].[Roles] AS R
+                ON R.[RoleId] = U.[RoleId]
+
+            WHERE U.[UserId] = @UserId;
+
+            IF @RoleCode IS NULL
+            BEGIN
+                THROW 51013,
+                    N'The user was not found.',
+                    1;
+            END;
+
+            /*
+                If the account is already locked, the lockout
+                time is not extended with every new attempt.
+            */
+
+            IF @CurrentLockoutEndAtUtc IS NOT NULL
+               AND @CurrentLockoutEndAtUtc > @OccurredAtUtc
+            BEGIN
+                SET @NewFailedLoginAttempts =
+                    @CurrentFailedLoginAttempts;
+
+                SET @NewLockoutEndAtUtc =
+                    @CurrentLockoutEndAtUtc;
+            END;
+            ELSE
+            BEGIN
+                DECLARE @BaseFailedLoginAttempts int;
+                DECLARE @CalculatedFailedLoginAttempts int;
+
+                SET @BaseFailedLoginAttempts =
+                    CASE
+                        WHEN @CurrentLockoutEndAtUtc IS NOT NULL
+                             AND @CurrentLockoutEndAtUtc
+                                 <= @OccurredAtUtc
+                            THEN 0
+                        ELSE @CurrentFailedLoginAttempts
+                    END;
+
+                SET @CalculatedFailedLoginAttempts =
+                    @BaseFailedLoginAttempts + 1;
+
+                IF @CalculatedFailedLoginAttempts > 32767
+                BEGIN
+                    SET @CalculatedFailedLoginAttempts = 32767;
+                END;
+
+                SET @NewFailedLoginAttempts =
+                    CONVERT(
+                        smallint,
+                        @CalculatedFailedLoginAttempts
+                    );
+
+                IF @NewFailedLoginAttempts
+                    >= @MaximumFailedAttempts
+                BEGIN
+                    SET @NewLockoutEndAtUtc =
+                        DATEADD(
+                            MINUTE,
+                            @LockoutDurationMinutes,
+                            @OccurredAtUtc
+                        );
+                END;
+                ELSE
+                BEGIN
+                    SET @NewLockoutEndAtUtc = NULL;
+                END;
+
+                SET @ShouldUpdateUser = 1;
+            END;
+
+            IF @ShouldUpdateUser = 1
+            BEGIN
+                UPDATE [Security].[Users]
+                SET
+                    [FailedLoginAttempts] =
+                        @NewFailedLoginAttempts,
+
+                    [LockoutEndAtUtc] =
+                        @NewLockoutEndAtUtc
+
+                WHERE [UserId] = @UserId;
+            END;
+        END;
+
+        SELECT
+            @AdditionalDataJson =
+            (
+                SELECT
+                    @NewFailedLoginAttempts
+                        AS [FailedLoginAttempts],
+
+                    @NewLockoutEndAtUtc
+                        AS [LockoutEndAtUtc]
+
+                FOR JSON PATH,
+                WITHOUT_ARRAY_WRAPPER
+            );
+
+        INSERT INTO [Audit].[AuditLogs]
+        (
+            [CorrelationId],
+            [ModuleName],
+            [ActionName],
+            [EntityName],
+            [EntityId],
+            [ActorType],
+            [ActorUserId],
+            [ActorEmailAddress],
+            [ActorRoleCode],
+            [IsSuccessful],
+            [EventDescription],
+            [ClientIpAddress],
+            [UserAgent],
+            [HttpMethod],
+            [RequestPath],
+            [AdditionalDataJson],
+            [OccurredAtUtc]
+        )
+        VALUES
+        (
+            @ResolvedCorrelationId,
+            N'Security',
+            N'LoginFailed',
+            CASE
+                WHEN @UserId IS NULL
+                    THEN NULL
+                ELSE N'Users'
+            END,
+            CASE
+                WHEN @UserId IS NULL
+                    THEN NULL
+                ELSE CONVERT(nvarchar(100), @UserId)
+            END,
+            N'Anonymous',
+            @UserId,
+            @NormalizedEmailAddress,
+            @RoleCode,
+            0,
+            N'Authentication attempt failed.',
+            @ClientIpAddress,
+            @UserAgent,
+            N'POST',
+            @RequestPath,
+            @AdditionalDataJson,
+            @OccurredAtUtc
+        );
+
+        COMMIT TRANSACTION;
+
+        SELECT
+            @UserId AS [UserId],
+
+            @NewFailedLoginAttempts
+                AS [FailedLoginAttempts],
+
+            @NewLockoutEndAtUtc
+                AS [LockoutEndAtUtc],
+
+            CONVERT
+            (
+                bit,
+                CASE
+                    WHEN @NewLockoutEndAtUtc IS NOT NULL
+                         AND @NewLockoutEndAtUtc
+                             > @OccurredAtUtc
+                        THEN 1
+                    ELSE 0
+                END
+            ) AS [IsLockedOut];
+    END TRY
+    BEGIN CATCH
+        IF XACT_STATE() <> 0
+        BEGIN
+            ROLLBACK TRANSACTION;
+        END;
+
+        THROW;
+    END CATCH;
+END;]]></Value>
+			</Property>
+			<Property Name="IsAnsiNullsOn" Value="True" />
+			<Relationship Name="BodyDependencies">
+				<Entry>
+					<References ExternalSource="BuiltIns" Name="[datetime2]" />
+				</Entry>
+				<Entry>
+					<References ExternalSource="BuiltIns" Name="[uniqueidentifier]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[RegisterFailedLogin].[@CorrelationId]" />
+				</Entry>
+				<Entry>
+					<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+				</Entry>
+				<Entry>
+					<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+				</Entry>
+				<Entry>
+					<References ExternalSource="BuiltIns" Name="[smallint]" />
+				</Entry>
+				<Entry>
+					<References ExternalSource="BuiltIns" Name="[datetime2]" />
+				</Entry>
+				<Entry>
+					<References ExternalSource="BuiltIns" Name="[smallint]" />
+				</Entry>
+				<Entry>
+					<References ExternalSource="BuiltIns" Name="[datetime2]" />
+				</Entry>
+				<Entry>
+					<References ExternalSource="BuiltIns" Name="[bit]" />
+				</Entry>
+				<Entry>
+					<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+				</Entry>
+				<Entry>
+					<References ExternalSource="BuiltIns" Name="[int]" />
+				</Entry>
+				<Entry>
+					<References ExternalSource="BuiltIns" Name="[int]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[RegisterFailedLogin].[@MaximumFailedAttempts]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[RegisterFailedLogin].[@LockoutDurationMinutes]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[RegisterFailedLogin].[@AttemptedEmailAddress]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[RegisterFailedLogin].[@UserId]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Roles]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Roles].[RoleId]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[RoleId]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[EmailAddress]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Roles].[RoleCode]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[FailedLoginAttempts]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[LockoutEndAtUtc]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[UserId]" />
+				</Entry>
+				<Entry>
+					<References ExternalSource="BuiltIns" Name="[smallint]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[FailedLoginAttempts]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[LockoutEndAtUtc]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[UserId]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[CorrelationId]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[ModuleName]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[ActionName]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[EntityName]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[EntityId]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[ActorType]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[ActorUserId]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[ActorEmailAddress]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[ActorRoleCode]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[IsSuccessful]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[EventDescription]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[ClientIpAddress]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[UserAgent]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[HttpMethod]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[RequestPath]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[AdditionalDataJson]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[OccurredAtUtc]" />
+				</Entry>
+				<Entry>
+					<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[RegisterFailedLogin].[@ClientIpAddress]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[RegisterFailedLogin].[@UserAgent]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[RegisterFailedLogin].[@RequestPath]" />
+				</Entry>
+				<Entry>
+					<References ExternalSource="BuiltIns" Name="[bit]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="Parameters">
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[Security].[RegisterFailedLogin].[@AttemptedEmailAddress]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="254" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[Security].[RegisterFailedLogin].[@UserId]">
+						<Property Name="DefaultExpressionScript">
+							<Value><![CDATA[NULL]]></Value>
+						</Property>
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[int]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[Security].[RegisterFailedLogin].[@MaximumFailedAttempts]">
+						<Property Name="DefaultExpressionScript">
+							<Value><![CDATA[5]]></Value>
+						</Property>
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[smallint]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[Security].[RegisterFailedLogin].[@LockoutDurationMinutes]">
+						<Property Name="DefaultExpressionScript">
+							<Value><![CDATA[15]]></Value>
+						</Property>
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[int]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[Security].[RegisterFailedLogin].[@CorrelationId]">
+						<Property Name="DefaultExpressionScript">
+							<Value><![CDATA[NULL]]></Value>
+						</Property>
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[uniqueidentifier]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[Security].[RegisterFailedLogin].[@ClientIpAddress]">
+						<Property Name="DefaultExpressionScript">
+							<Value><![CDATA[NULL]]></Value>
+						</Property>
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="45" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[Security].[RegisterFailedLogin].[@UserAgent]">
+						<Property Name="DefaultExpressionScript">
+							<Value><![CDATA[NULL]]></Value>
+						</Property>
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="512" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[Security].[RegisterFailedLogin].[@RequestPath]">
+						<Property Name="DefaultExpressionScript">
+							<Value><![CDATA[NULL]]></Value>
+						</Property>
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="500" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="Schema">
+				<Entry>
+					<References Name="[Security]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SysCommentsObjectAnnotation">
+				<Property Name="Length" Value="7362" />
+				<Property Name="StartLine" Value="1" />
+				<Property Name="StartColumn" Value="1" />
+				<Property Name="HeaderContents" Value="CREATE PROCEDURE [Security].[RegisterFailedLogin]&#xD;&#xA;    @AttemptedEmailAddress nvarchar(254),&#xD;&#xA;    @UserId int = NULL,&#xD;&#xA;    @MaximumFailedAttempts smallint = 5,&#xD;&#xA;    @LockoutDurationMinutes int = 15,&#xD;&#xA;    @CorrelationId uniqueidentifier = NULL,&#xD;&#xA;    @ClientIpAddress nvarchar(45) = NULL,&#xD;&#xA;    @UserAgent nvarchar(512) = NULL,&#xD;&#xA;    @RequestPath nvarchar(500) = NULL&#xD;&#xA;AS" />
+			</Annotation>
+		</Element>
+		<Element Type="SqlProcedure" Name="[Security].[RegisterSuccessfulLogin]">
+			<Property Name="BodyScript">
+				<Value><![CDATA[
+BEGIN
+    SET NOCOUNT ON;
+    SET XACT_ABORT ON;
+
+    DECLARE @OccurredAtUtc datetime2(3) =
+        SYSUTCDATETIME();
+
+    DECLARE @ResolvedCorrelationId uniqueidentifier =
+        COALESCE(@CorrelationId, NEWID());
+
+    DECLARE @EmailAddress nvarchar(254);
+    DECLARE @RoleCode nvarchar(50);
+    DECLARE @IsUserActive bit;
+    DECLARE @IsRoleActive bit;
+    DECLARE @LockoutEndAtUtc datetime2(3);
+
+    BEGIN TRY
+        BEGIN TRANSACTION;
+
+        SELECT
+            @EmailAddress = U.[EmailAddress],
+            @RoleCode = R.[RoleCode],
+            @IsUserActive = U.[IsActive],
+            @IsRoleActive = R.[IsActive],
+            @LockoutEndAtUtc = U.[LockoutEndAtUtc]
+        FROM [Security].[Users] AS U
+            WITH (UPDLOCK, HOLDLOCK)
+
+        INNER JOIN [Security].[Roles] AS R
+            ON R.[RoleId] = U.[RoleId]
+
+        WHERE U.[UserId] = @UserId;
+
+        IF @EmailAddress IS NULL
+        BEGIN
+            THROW 51001,
+                N'The user was not found.',
+                1;
+        END;
+
+        IF @IsUserActive = 0
+        BEGIN
+            THROW 51002,
+                N'The user account is inactive.',
+                1;
+        END;
+
+        IF @IsRoleActive = 0
+        BEGIN
+            THROW 51003,
+                N'The assigned role is inactive.',
+                1;
+        END;
+
+        IF @LockoutEndAtUtc IS NOT NULL
+           AND @LockoutEndAtUtc > @OccurredAtUtc
+        BEGIN
+            THROW 51004,
+                N'The user account is currently locked.',
+                1;
+        END;
+
+        UPDATE [Security].[Users]
+        SET
+            [FailedLoginAttempts] = 0,
+            [LockoutEndAtUtc] = NULL,
+            [LastLoginAtUtc] = @OccurredAtUtc
+        WHERE [UserId] = @UserId;
+
+        INSERT INTO [Audit].[AuditLogs]
+        (
+            [CorrelationId],
+            [ModuleName],
+            [ActionName],
+            [EntityName],
+            [EntityId],
+            [ActorType],
+            [ActorUserId],
+            [ActorEmailAddress],
+            [ActorRoleCode],
+            [IsSuccessful],
+            [EventDescription],
+            [ClientIpAddress],
+            [UserAgent],
+            [HttpMethod],
+            [RequestPath],
+            [OccurredAtUtc]
+        )
+        VALUES
+        (
+            @ResolvedCorrelationId,
+            N'Security',
+            N'LoginSucceeded',
+            N'Users',
+            CONVERT(nvarchar(100), @UserId),
+            N'User',
+            @UserId,
+            @EmailAddress,
+            @RoleCode,
+            1,
+            N'User authenticated successfully.',
+            @ClientIpAddress,
+            @UserAgent,
+            N'POST',
+            @RequestPath,
+            @OccurredAtUtc
+        );
+
+        COMMIT TRANSACTION;
+
+        SELECT
+            U.[UserId],
+            U.[LastLoginAtUtc],
+            U.[FailedLoginAttempts],
+            U.[LockoutEndAtUtc]
+        FROM [Security].[Users] AS U
+        WHERE U.[UserId] = @UserId;
+    END TRY
+    BEGIN CATCH
+        IF XACT_STATE() <> 0
+        BEGIN
+            ROLLBACK TRANSACTION;
+        END;
+
+        THROW;
+    END CATCH;
+END;]]></Value>
+			</Property>
+			<Property Name="IsAnsiNullsOn" Value="True" />
+			<Relationship Name="BodyDependencies">
+				<Entry>
+					<References ExternalSource="BuiltIns" Name="[datetime2]" />
+				</Entry>
+				<Entry>
+					<References ExternalSource="BuiltIns" Name="[uniqueidentifier]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[RegisterSuccessfulLogin].[@CorrelationId]" />
+				</Entry>
+				<Entry>
+					<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+				</Entry>
+				<Entry>
+					<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+				</Entry>
+				<Entry>
+					<References ExternalSource="BuiltIns" Name="[bit]" />
+				</Entry>
+				<Entry>
+					<References ExternalSource="BuiltIns" Name="[bit]" />
+				</Entry>
+				<Entry>
+					<References ExternalSource="BuiltIns" Name="[datetime2]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Roles]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Roles].[RoleId]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[RoleId]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[EmailAddress]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Roles].[RoleCode]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[IsActive]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Roles].[IsActive]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[LockoutEndAtUtc]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[UserId]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[RegisterSuccessfulLogin].[@UserId]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[FailedLoginAttempts]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[LockoutEndAtUtc]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[LastLoginAtUtc]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[UserId]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[CorrelationId]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[ModuleName]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[ActionName]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[EntityName]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[EntityId]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[ActorType]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[ActorUserId]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[ActorEmailAddress]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[ActorRoleCode]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[IsSuccessful]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[EventDescription]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[ClientIpAddress]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[UserAgent]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[HttpMethod]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[RequestPath]" />
+				</Entry>
+				<Entry>
+					<References Name="[Audit].[AuditLogs].[OccurredAtUtc]" />
+				</Entry>
+				<Entry>
+					<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[RegisterSuccessfulLogin].[@ClientIpAddress]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[RegisterSuccessfulLogin].[@UserAgent]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[RegisterSuccessfulLogin].[@RequestPath]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[UserId]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[LastLoginAtUtc]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[FailedLoginAttempts]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[LockoutEndAtUtc]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="Parameters">
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[Security].[RegisterSuccessfulLogin].[@UserId]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[int]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[Security].[RegisterSuccessfulLogin].[@CorrelationId]">
+						<Property Name="DefaultExpressionScript">
+							<Value><![CDATA[NULL]]></Value>
+						</Property>
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[uniqueidentifier]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[Security].[RegisterSuccessfulLogin].[@ClientIpAddress]">
+						<Property Name="DefaultExpressionScript">
+							<Value><![CDATA[NULL]]></Value>
+						</Property>
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="45" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[Security].[RegisterSuccessfulLogin].[@UserAgent]">
+						<Property Name="DefaultExpressionScript">
+							<Value><![CDATA[NULL]]></Value>
+						</Property>
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="512" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[Security].[RegisterSuccessfulLogin].[@RequestPath]">
+						<Property Name="DefaultExpressionScript">
+							<Value><![CDATA[NULL]]></Value>
+						</Property>
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="500" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="Schema">
+				<Entry>
+					<References Name="[Security]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SysCommentsObjectAnnotation">
+				<Property Name="Length" Value="3491" />
+				<Property Name="StartLine" Value="1" />
+				<Property Name="StartColumn" Value="1" />
+				<Property Name="HeaderContents" Value="CREATE PROCEDURE [Security].[RegisterSuccessfulLogin]&#xD;&#xA;    @UserId int,&#xD;&#xA;    @CorrelationId uniqueidentifier = NULL,&#xD;&#xA;    @ClientIpAddress nvarchar(45) = NULL,&#xD;&#xA;    @UserAgent nvarchar(512) = NULL,&#xD;&#xA;    @RequestPath nvarchar(500) = NULL&#xD;&#xA;AS" />
+			</Annotation>
+		</Element>
+		<Element Type="SqlTable" Name="[Security].[Roles]">
+			<Property Name="IsAnsiNullsOn" Value="True" />
+			<Relationship Name="Columns">
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[Security].[Roles].[RoleId]">
+						<Property Name="IsNullable" Value="False" />
+						<Property Name="IsIdentity" Value="True" />
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[int]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[Security].[Roles].[RoleCode]">
+						<Property Name="IsNullable" Value="False" />
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="50" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[Security].[Roles].[DisplayName]">
+						<Property Name="IsNullable" Value="False" />
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="100" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[Security].[Roles].[Description]">
+						<Property Name="IsNullable" Value="False" />
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="300" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[Security].[Roles].[IsSystemRole]">
+						<Property Name="IsNullable" Value="False" />
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[bit]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+						<AttachedAnnotation Disambiguator="60" />
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[Security].[Roles].[IsActive]">
+						<Property Name="IsNullable" Value="False" />
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[bit]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+						<AttachedAnnotation Disambiguator="59" />
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[Security].[Roles].[CreatedAtUtc]">
+						<Property Name="IsNullable" Value="False" />
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Scale" Value="3" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[datetime2]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+						<AttachedAnnotation Disambiguator="58" />
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[Security].[Roles].[UpdatedAtUtc]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Scale" Value="3" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[datetime2]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[Security].[Roles].[RowVersion]">
+						<Property Name="IsNullable" Value="False" />
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[rowversion]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="Schema">
+				<Entry>
+					<References Name="[Security]" />
+				</Entry>
+			</Relationship>
+			<AttachedAnnotation Disambiguator="69" />
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="71" />
+			<AttachedAnnotation Disambiguator="51" />
+			<AttachedAnnotation Disambiguator="50" />
+			<AttachedAnnotation Disambiguator="49" />
+		</Element>
+		<Element Type="SqlUniqueConstraint" Name="[Security].[UqRolesRoleCode]">
+			<Relationship Name="ColumnSpecifications">
+				<Entry>
+					<Element Type="SqlIndexedColumnSpecification">
+						<Relationship Name="Column">
+							<Entry>
+								<References Name="[Security].[Roles].[RoleCode]" />
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[Security].[Roles]" />
+				</Entry>
+			</Relationship>
+			<AttachedAnnotation Disambiguator="71" />
+		</Element>
+		<Element Type="SqlUniqueConstraint" Name="[Security].[UqUsersEmailAddress]">
+			<Relationship Name="ColumnSpecifications">
+				<Entry>
+					<Element Type="SqlIndexedColumnSpecification">
+						<Relationship Name="Column">
+							<Entry>
+								<References Name="[Security].[Users].[EmailAddress]" />
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[Security].[Users]" />
+				</Entry>
+			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="72" />
+		</Element>
+		<Element Type="SqlTable" Name="[Security].[Users]">
+			<Property Name="IsAnsiNullsOn" Value="True" />
+			<Relationship Name="Columns">
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[Security].[Users].[UserId]">
+						<Property Name="IsNullable" Value="False" />
+						<Property Name="IsIdentity" Value="True" />
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[int]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[Security].[Users].[RoleId]">
+						<Property Name="IsNullable" Value="False" />
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[int]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[Security].[Users].[EmailAddress]">
+						<Property Name="IsNullable" Value="False" />
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="254" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[Security].[Users].[PasswordHash]">
+						<Property Name="IsNullable" Value="False" />
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="500" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[Security].[Users].[IsEmailConfirmed]">
+						<Property Name="IsNullable" Value="False" />
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[bit]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+						<AttachedAnnotation Disambiguator="64" />
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[Security].[Users].[IsActive]">
+						<Property Name="IsNullable" Value="False" />
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[bit]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+						<AttachedAnnotation Disambiguator="63" />
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[Security].[Users].[RequiresPasswordChange]">
+						<Property Name="IsNullable" Value="False" />
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[bit]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+						<AttachedAnnotation Disambiguator="65" />
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[Security].[Users].[TemporaryPasswordExpiresAtUtc]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Scale" Value="3" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[datetime2]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[Security].[Users].[PasswordChangedAtUtc]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Scale" Value="3" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[datetime2]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[Security].[Users].[FailedLoginAttempts]">
+						<Property Name="IsNullable" Value="False" />
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[smallint]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+						<AttachedAnnotation Disambiguator="62" />
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[Security].[Users].[LockoutEndAtUtc]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Scale" Value="3" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[datetime2]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[Security].[Users].[LastLoginAtUtc]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Scale" Value="3" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[datetime2]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[Security].[Users].[CreatedAtUtc]">
+						<Property Name="IsNullable" Value="False" />
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Scale" Value="3" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[datetime2]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+						<AttachedAnnotation Disambiguator="61" />
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[Security].[Users].[CreatedByUserId]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[int]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[Security].[Users].[UpdatedAtUtc]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Scale" Value="3" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[datetime2]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[Security].[Users].[UpdatedByUserId]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[int]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[Security].[Users].[RowVersion]">
+						<Property Name="IsNullable" Value="False" />
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[rowversion]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="Schema">
+				<Entry>
+					<References Name="[Security]" />
+				</Entry>
+			</Relationship>
+			<AttachedAnnotation Disambiguator="70" />
+			<AttachedAnnotation Disambiguator="66" />
+			<AttachedAnnotation Disambiguator="67" />
+			<AttachedAnnotation Disambiguator="68" />
+			<AttachedAnnotation Disambiguator="72" />
+			<AttachedAnnotation Disambiguator="53" />
+			<AttachedAnnotation Disambiguator="54" />
+			<AttachedAnnotation Disambiguator="52" />
+			<AttachedAnnotation Disambiguator="56" />
+			<AttachedAnnotation Disambiguator="55" />
+			<AttachedAnnotation Disambiguator="57" />
+		</Element>
+		<Element Type="SqlIndex" Name="[Security].[Users].[IxUsersCreatedByUserId]">
+			<Property Name="FilterPredicate">
+				<Value><![CDATA[[CreatedByUserId] IS NOT NULL]]></Value>
+			</Property>
+			<Relationship Name="BodyDependencies">
+				<Entry>
+					<References Name="[Security].[Users].[CreatedByUserId]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="ColumnSpecifications">
+				<Entry>
+					<Element Type="SqlIndexedColumnSpecification">
+						<Relationship Name="Column">
+							<Entry>
+								<References Name="[Security].[Users].[CreatedByUserId]" />
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="IndexedObject">
+				<Entry>
+					<References Name="[Security].[Users]" />
+				</Entry>
+			</Relationship>
+		</Element>
+		<Element Type="SqlIndex" Name="[Security].[Users].[IxUsersRoleIdIsActive]">
+			<Relationship Name="ColumnSpecifications">
+				<Entry>
+					<Element Type="SqlIndexedColumnSpecification">
+						<Relationship Name="Column">
+							<Entry>
+								<References Name="[Security].[Users].[RoleId]" />
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlIndexedColumnSpecification">
+						<Relationship Name="Column">
+							<Entry>
+								<References Name="[Security].[Users].[IsActive]" />
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="IncludedColumns">
+				<Entry>
+					<References Name="[Security].[Users].[EmailAddress]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[IsEmailConfirmed]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[RequiresPasswordChange]" />
+				</Entry>
+				<Entry>
+					<References Name="[Security].[Users].[LastLoginAtUtc]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="IndexedObject">
+				<Entry>
+					<References Name="[Security].[Users]" />
+				</Entry>
+			</Relationship>
+		</Element>
+		<Element Type="SqlIndex" Name="[Security].[Users].[IxUsersUpdatedByUserId]">
+			<Property Name="FilterPredicate">
+				<Value><![CDATA[[UpdatedByUserId] IS NOT NULL]]></Value>
+			</Property>
+			<Relationship Name="BodyDependencies">
+				<Entry>
+					<References Name="[Security].[Users].[UpdatedByUserId]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="ColumnSpecifications">
+				<Entry>
+					<Element Type="SqlIndexedColumnSpecification">
+						<Relationship Name="Column">
+							<Entry>
+								<References Name="[Security].[Users].[UpdatedByUserId]" />
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="IndexedObject">
+				<Entry>
+					<References Name="[Security].[Users]" />
+				</Entry>
+			</Relationship>
+		</Element>
+	</Model>
+</DataSchemaModel>

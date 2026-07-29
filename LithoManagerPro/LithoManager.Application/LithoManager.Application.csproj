@@ -7,4 +7,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\LithoManager.Domain\LithoManager.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
