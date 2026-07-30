@@ -5,7 +5,7 @@ VisualStudioVersion = 17.14.36705.20
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LithoManager.Domain", "LithoManager.Domain\LithoManager.Domain.csproj", "{79D0F47D-A6CE-4B49-90A6-A2A3B9F6F36E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LithoManager.Infraestructure", "LithoManager.Infraestructure\LithoManager.Infraestructure.csproj", "{BFE79D02-67EE-4AAF-93DC-7306D8C86C9A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LithoManager.Infrastructure", "LithoManager.Infraestructure\LithoManager.Infrastructure.csproj", "{BFE79D02-67EE-4AAF-93DC-7306D8C86C9A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LithoManager.Application", "LithoManager.Application\LithoManager.Application.csproj", "{7C6E301A-572C-4387-B191-2A78555EE0CD}"
 EndProject

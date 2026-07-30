@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LithoManager.Application\LithoManager.Application.csproj" />
-    <ProjectReference Include="..\LithoManager.Infraestructure\LithoManager.Infraestructure.csproj" />
+    <ProjectReference Include="..\LithoManager.Infraestructure\LithoManager.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

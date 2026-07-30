@@ -45,4 +45,10 @@ public sealed class AuthenticationRepository
             .QuerySingleOrDefaultAsync<AuthenticationUserData>(
                 command);
     }
+
+    private const string RegisterSuccessfulLoginProcedure =
+    "Security.RegisterSuccessfulLogin";
+
+    private const string RegisterFailedLoginProcedure =
+        "Security.RegisterFailedLogin";
 }
