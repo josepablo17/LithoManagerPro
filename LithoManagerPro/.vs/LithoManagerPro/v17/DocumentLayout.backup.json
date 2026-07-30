@@ -3,48 +3,28 @@
   "WorkspaceRootPath": "C:\\Users\\josep\\OneDrive - ULACIT ED CR\\LithoManagerPro\\LithoManagerPro\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{72AC7670-1370-4F15-9D8F-A15C0F139942}|LithoManager.Api\\LithoManager.Api.csproj|c:\\users\\josep\\onedrive - ulacit ed cr\\lithomanagerpro\\lithomanagerpro\\lithomanager.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{72AC7670-1370-4F15-9D8F-A15C0F139942}|LithoManager.Api\\LithoManager.Api.csproj|solutionrelative:lithomanager.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{72AC7670-1370-4F15-9D8F-A15C0F139942}|LithoManager.Api\\LithoManager.Api.csproj|c:\\users\\josep\\onedrive - ulacit ed cr\\lithomanagerpro\\lithomanagerpro\\lithomanager.api\\extensions\\authenticationextensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{72AC7670-1370-4F15-9D8F-A15C0F139942}|LithoManager.Api\\LithoManager.Api.csproj|solutionrelative:lithomanager.api\\extensions\\authenticationextensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{72AC7670-1370-4F15-9D8F-A15C0F139942}|LithoManager.Api\\LithoManager.Api.csproj|c:\\users\\josep\\onedrive - ulacit ed cr\\lithomanagerpro\\lithomanagerpro\\lithomanager.api\\lithomanager.api.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{72AC7670-1370-4F15-9D8F-A15C0F139942}|LithoManager.Api\\LithoManager.Api.csproj|solutionrelative:lithomanager.api\\lithomanager.api.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+      "AbsoluteMoniker": "D:0:0:{72AC7670-1370-4F15-9D8F-A15C0F139942}|LithoManager.Api\\LithoManager.Api.csproj|c:\\users\\josep\\onedrive - ulacit ed cr\\lithomanagerpro\\lithomanagerpro\\lithomanager.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{72AC7670-1370-4F15-9D8F-A15C0F139942}|LithoManager.Api\\LithoManager.Api.csproj|solutionrelative:lithomanager.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{BFE79D02-67EE-4AAF-93DC-7306D8C86C9A}|LithoManager.Infraestructure\\LithoManager.Infraestructure.csproj|c:\\users\\josep\\onedrive - ulacit ed cr\\lithomanagerpro\\lithomanagerpro\\lithomanager.infraestructure\\dependencyinjection.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BFE79D02-67EE-4AAF-93DC-7306D8C86C9A}|LithoManager.Infraestructure\\LithoManager.Infraestructure.csproj|solutionrelative:lithomanager.infraestructure\\dependencyinjection.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BFE79D02-67EE-4AAF-93DC-7306D8C86C9A}|LithoManager.Infraestructure\\LithoManager.Infraestructure.csproj|c:\\users\\josep\\onedrive - ulacit ed cr\\lithomanagerpro\\lithomanagerpro\\lithomanager.infraestructure\\persistence\\repositories\\security\\authenticationrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BFE79D02-67EE-4AAF-93DC-7306D8C86C9A}|LithoManager.Infraestructure\\LithoManager.Infraestructure.csproj|solutionrelative:lithomanager.infraestructure\\persistence\\repositories\\security\\authenticationrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{7C6E301A-572C-4387-B191-2A78555EE0CD}|LithoManager.Application\\LithoManager.Application.csproj|c:\\users\\josep\\onedrive - ulacit ed cr\\lithomanagerpro\\lithomanagerpro\\lithomanager.application\\abstractions\\persistence\\iauthenticationrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7C6E301A-572C-4387-B191-2A78555EE0CD}|LithoManager.Application\\LithoManager.Application.csproj|solutionrelative:lithomanager.application\\abstractions\\persistence\\iauthenticationrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{7C6E301A-572C-4387-B191-2A78555EE0CD}|LithoManager.Application\\LithoManager.Application.csproj|c:\\users\\josep\\onedrive - ulacit ed cr\\lithomanagerpro\\lithomanagerpro\\lithomanager.application\\lithomanager.application.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{7C6E301A-572C-4387-B191-2A78555EE0CD}|LithoManager.Application\\LithoManager.Application.csproj|solutionrelative:lithomanager.application\\lithomanager.application.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{7C6E301A-572C-4387-B191-2A78555EE0CD}|LithoManager.Application\\LithoManager.Application.csproj|c:\\users\\josep\\onedrive - ulacit ed cr\\lithomanagerpro\\lithomanagerpro\\lithomanager.application\\features\\authentication\\login\\authenticationuserdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7C6E301A-572C-4387-B191-2A78555EE0CD}|LithoManager.Application\\LithoManager.Application.csproj|solutionrelative:lithomanager.application\\features\\authentication\\login\\authenticationuserdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{7C6E301A-572C-4387-B191-2A78555EE0CD}|LithoManager.Application\\LithoManager.Application.csproj|c:\\users\\josep\\onedrive - ulacit ed cr\\lithomanagerpro\\lithomanagerpro\\lithomanager.application\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7C6E301A-572C-4387-B191-2A78555EE0CD}|LithoManager.Application\\LithoManager.Application.csproj|solutionrelative:lithomanager.application\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{BFE79D02-67EE-4AAF-93DC-7306D8C86C9A}|LithoManager.Infraestructure\\LithoManager.Infraestructure.csproj|c:\\users\\josep\\onedrive - ulacit ed cr\\lithomanagerpro\\lithomanagerpro\\lithomanager.infraestructure\\persistence\\dapper\\sqlconnectionfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BFE79D02-67EE-4AAF-93DC-7306D8C86C9A}|LithoManager.Infraestructure\\LithoManager.Infraestructure.csproj|solutionrelative:lithomanager.infraestructure\\persistence\\dapper\\sqlconnectionfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{BFE79D02-67EE-4AAF-93DC-7306D8C86C9A}|LithoManager.Infraestructure\\LithoManager.Infraestructure.csproj|c:\\users\\josep\\onedrive - ulacit ed cr\\lithomanagerpro\\lithomanagerpro\\lithomanager.infraestructure\\persistence\\dapper\\isqlconnectionfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BFE79D02-67EE-4AAF-93DC-7306D8C86C9A}|LithoManager.Infraestructure\\LithoManager.Infraestructure.csproj|solutionrelative:lithomanager.infraestructure\\persistence\\dapper\\isqlconnectionfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{72AC7670-1370-4F15-9D8F-A15C0F139942}|LithoManager.Api\\LithoManager.Api.csproj|c:\\users\\josep\\onedrive - ulacit ed cr\\lithomanagerpro\\lithomanagerpro\\lithomanager.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{72AC7670-1370-4F15-9D8F-A15C0F139942}|LithoManager.Api\\LithoManager.Api.csproj|solutionrelative:lithomanager.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7C6E301A-572C-4387-B191-2A78555EE0CD}|LithoManager.Application\\LithoManager.Application.csproj|c:\\users\\josep\\onedrive - ulacit ed cr\\lithomanagerpro\\lithomanagerpro\\lithomanager.application\\abstractions\\security\\accesstokenuserdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7C6E301A-572C-4387-B191-2A78555EE0CD}|LithoManager.Application\\LithoManager.Application.csproj|solutionrelative:lithomanager.application\\abstractions\\security\\accesstokenuserdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7C6E301A-572C-4387-B191-2A78555EE0CD}|LithoManager.Application\\LithoManager.Application.csproj|c:\\users\\josep\\onedrive - ulacit ed cr\\lithomanagerpro\\lithomanagerpro\\lithomanager.application\\abstractions\\security\\itokenservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7C6E301A-572C-4387-B191-2A78555EE0CD}|LithoManager.Application\\LithoManager.Application.csproj|solutionrelative:lithomanager.application\\abstractions\\security\\itokenservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -54,97 +34,71 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "AuthenticationRepository.cs",
-              "DocumentMoniker": "C:\\Users\\josep\\OneDrive - ULACIT ED CR\\LithoManagerPro\\LithoManagerPro\\LithoManager.Infraestructure\\Persistence\\Repositories\\Security\\AuthenticationRepository.cs",
-              "RelativeDocumentMoniker": "LithoManager.Infraestructure\\Persistence\\Repositories\\Security\\AuthenticationRepository.cs",
-              "ToolTip": "C:\\Users\\josep\\OneDrive - ULACIT ED CR\\LithoManagerPro\\LithoManagerPro\\LithoManager.Infraestructure\\Persistence\\Repositories\\Security\\AuthenticationRepository.cs",
-              "RelativeToolTip": "LithoManager.Infraestructure\\Persistence\\Repositories\\Security\\AuthenticationRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAC8AAAABAAAAAAAAAA==",
+              "DocumentIndex": 0,
+              "Title": "AuthenticationExtensions.cs",
+              "DocumentMoniker": "C:\\Users\\josep\\OneDrive - ULACIT ED CR\\LithoManagerPro\\LithoManagerPro\\LithoManager.Api\\Extensions\\AuthenticationExtensions.cs",
+              "RelativeDocumentMoniker": "LithoManager.Api\\Extensions\\AuthenticationExtensions.cs",
+              "ToolTip": "C:\\Users\\josep\\OneDrive - ULACIT ED CR\\LithoManagerPro\\LithoManagerPro\\LithoManager.Api\\Extensions\\AuthenticationExtensions.cs",
+              "RelativeToolTip": "LithoManager.Api\\Extensions\\AuthenticationExtensions.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAuAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-29T04:41:53.367Z",
+              "WhenOpened": "2026-07-30T03:32:00.391Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\josep\\OneDrive - ULACIT ED CR\\LithoManagerPro\\LithoManagerPro\\LithoManager.Api\\appsettings.json",
+              "RelativeDocumentMoniker": "LithoManager.Api\\appsettings.json",
+              "ToolTip": "C:\\Users\\josep\\OneDrive - ULACIT ED CR\\LithoManagerPro\\LithoManagerPro\\LithoManager.Api\\appsettings.json",
+              "RelativeToolTip": "LithoManager.Api\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-07-30T02:54:02.09Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "IAuthenticationRepository.cs",
-              "DocumentMoniker": "C:\\Users\\josep\\OneDrive - ULACIT ED CR\\LithoManagerPro\\LithoManagerPro\\LithoManager.Application\\Abstractions\\Persistence\\IAuthenticationRepository.cs",
-              "RelativeDocumentMoniker": "LithoManager.Application\\Abstractions\\Persistence\\IAuthenticationRepository.cs",
-              "ToolTip": "C:\\Users\\josep\\OneDrive - ULACIT ED CR\\LithoManagerPro\\LithoManagerPro\\LithoManager.Application\\Abstractions\\Persistence\\IAuthenticationRepository.cs",
-              "RelativeToolTip": "LithoManager.Application\\Abstractions\\Persistence\\IAuthenticationRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAABAAAAAAAAAA==",
+              "Title": "AccessTokenUserData.cs",
+              "DocumentMoniker": "C:\\Users\\josep\\OneDrive - ULACIT ED CR\\LithoManagerPro\\LithoManagerPro\\LithoManager.Application\\Abstractions\\Security\\AccessTokenUserData.cs",
+              "RelativeDocumentMoniker": "LithoManager.Application\\Abstractions\\Security\\AccessTokenUserData.cs",
+              "ToolTip": "C:\\Users\\josep\\OneDrive - ULACIT ED CR\\LithoManagerPro\\LithoManagerPro\\LithoManager.Application\\Abstractions\\Security\\AccessTokenUserData.cs",
+              "RelativeToolTip": "LithoManager.Application\\Abstractions\\Security\\AccessTokenUserData.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-29T04:39:22.181Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "AuthenticationUserData.cs",
-              "DocumentMoniker": "C:\\Users\\josep\\OneDrive - ULACIT ED CR\\LithoManagerPro\\LithoManagerPro\\LithoManager.Application\\Features\\Authentication\\Login\\AuthenticationUserData.cs",
-              "RelativeDocumentMoniker": "LithoManager.Application\\Features\\Authentication\\Login\\AuthenticationUserData.cs",
-              "ToolTip": "C:\\Users\\josep\\OneDrive - ULACIT ED CR\\LithoManagerPro\\LithoManagerPro\\LithoManager.Application\\Features\\Authentication\\Login\\AuthenticationUserData.cs",
-              "RelativeToolTip": "LithoManager.Application\\Features\\Authentication\\Login\\AuthenticationUserData.cs",
-              "ViewState": "AgIAABEAAAAAAAAAAAAuwCcAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-29T04:34:24.231Z",
+              "WhenOpened": "2026-07-30T02:52:52.451Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 5,
-              "Title": "LithoManager.Application",
-              "DocumentMoniker": "C:\\Users\\josep\\OneDrive - ULACIT ED CR\\LithoManagerPro\\LithoManagerPro\\LithoManager.Application\\LithoManager.Application.csproj",
-              "RelativeDocumentMoniker": "LithoManager.Application\\LithoManager.Application.csproj",
-              "ToolTip": "C:\\Users\\josep\\OneDrive - ULACIT ED CR\\LithoManagerPro\\LithoManagerPro\\LithoManager.Application\\LithoManager.Application.csproj*",
-              "RelativeToolTip": "LithoManager.Application\\LithoManager.Application.csproj*",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2026-07-29T04:27:35.521Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\josep\\OneDrive - ULACIT ED CR\\LithoManagerPro\\LithoManagerPro\\LithoManager.Application\\Program.cs",
-              "RelativeDocumentMoniker": "LithoManager.Application\\Program.cs",
-              "ToolTip": "C:\\Users\\josep\\OneDrive - ULACIT ED CR\\LithoManagerPro\\LithoManagerPro\\LithoManager.Application\\Program.cs",
-              "RelativeToolTip": "LithoManager.Application\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Title": "ITokenService.cs",
+              "DocumentMoniker": "C:\\Users\\josep\\OneDrive - ULACIT ED CR\\LithoManagerPro\\LithoManagerPro\\LithoManager.Application\\Abstractions\\Security\\ITokenService.cs",
+              "RelativeDocumentMoniker": "LithoManager.Application\\Abstractions\\Security\\ITokenService.cs",
+              "ToolTip": "C:\\Users\\josep\\OneDrive - ULACIT ED CR\\LithoManagerPro\\LithoManagerPro\\LithoManager.Application\\Abstractions\\Security\\ITokenService.cs",
+              "RelativeToolTip": "LithoManager.Application\\Abstractions\\Security\\ITokenService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-29T04:27:36.706Z",
+              "WhenOpened": "2026-07-30T02:41:12.155Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "LithoManager.Api",
-              "DocumentMoniker": "C:\\Users\\josep\\OneDrive - ULACIT ED CR\\LithoManagerPro\\LithoManagerPro\\LithoManager.Api\\LithoManager.Api.csproj",
-              "RelativeDocumentMoniker": "LithoManager.Api\\LithoManager.Api.csproj",
-              "ToolTip": "C:\\Users\\josep\\OneDrive - ULACIT ED CR\\LithoManagerPro\\LithoManagerPro\\LithoManager.Api\\LithoManager.Api.csproj*",
-              "RelativeToolTip": "LithoManager.Api\\LithoManager.Api.csproj*",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2026-07-29T04:24:46.603Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\josep\\OneDrive - ULACIT ED CR\\LithoManagerPro\\LithoManagerPro\\LithoManager.Api\\Program.cs",
               "RelativeDocumentMoniker": "LithoManager.Api\\Program.cs",
               "ToolTip": "C:\\Users\\josep\\OneDrive - ULACIT ED CR\\LithoManagerPro\\LithoManagerPro\\LithoManager.Api\\Program.cs",
               "RelativeToolTip": "LithoManager.Api\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAAKAAAAAAAAAA==",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAABoAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-29T04:24:50.302Z",
+              "WhenOpened": "2026-07-30T01:40:46.36Z",
               "EditorCaption": ""
             },
             {
@@ -155,48 +109,9 @@
               "RelativeDocumentMoniker": "LithoManager.Infraestructure\\DependencyInjection.cs",
               "ToolTip": "C:\\Users\\josep\\OneDrive - ULACIT ED CR\\LithoManagerPro\\LithoManagerPro\\LithoManager.Infraestructure\\DependencyInjection.cs",
               "RelativeToolTip": "LithoManager.Infraestructure\\DependencyInjection.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACEAAAABAAAAAAAAAA==",
+              "ViewState": "AgIAABMAAAAAAAAAAAArwCwAAAAxAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-29T04:24:09.107Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "SqlConnectionFactory.cs",
-              "DocumentMoniker": "C:\\Users\\josep\\OneDrive - ULACIT ED CR\\LithoManagerPro\\LithoManagerPro\\LithoManager.Infraestructure\\Persistence\\Dapper\\SqlConnectionFactory.cs",
-              "RelativeDocumentMoniker": "LithoManager.Infraestructure\\Persistence\\Dapper\\SqlConnectionFactory.cs",
-              "ToolTip": "C:\\Users\\josep\\OneDrive - ULACIT ED CR\\LithoManagerPro\\LithoManagerPro\\LithoManager.Infraestructure\\Persistence\\Dapper\\SqlConnectionFactory.cs*",
-              "RelativeToolTip": "LithoManager.Infraestructure\\Persistence\\Dapper\\SqlConnectionFactory.cs*",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABkAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-29T04:22:49.103Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "ISqlConnectionFactory.cs",
-              "DocumentMoniker": "C:\\Users\\josep\\OneDrive - ULACIT ED CR\\LithoManagerPro\\LithoManagerPro\\LithoManager.Infraestructure\\Persistence\\Dapper\\ISqlConnectionFactory.cs",
-              "RelativeDocumentMoniker": "LithoManager.Infraestructure\\Persistence\\Dapper\\ISqlConnectionFactory.cs",
-              "ToolTip": "C:\\Users\\josep\\OneDrive - ULACIT ED CR\\LithoManagerPro\\LithoManagerPro\\LithoManager.Infraestructure\\Persistence\\Dapper\\ISqlConnectionFactory.cs*",
-              "RelativeToolTip": "LithoManager.Infraestructure\\Persistence\\Dapper\\ISqlConnectionFactory.cs*",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-29T04:22:29.622Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "appsettings.json",
-              "DocumentMoniker": "C:\\Users\\josep\\OneDrive - ULACIT ED CR\\LithoManagerPro\\LithoManagerPro\\LithoManager.Api\\appsettings.json",
-              "RelativeDocumentMoniker": "LithoManager.Api\\appsettings.json",
-              "ToolTip": "C:\\Users\\josep\\OneDrive - ULACIT ED CR\\LithoManagerPro\\LithoManagerPro\\LithoManager.Api\\appsettings.json",
-              "RelativeToolTip": "LithoManager.Api\\appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-07-29T04:21:03.169Z",
+              "WhenOpened": "2026-07-30T00:51:12.285Z",
               "EditorCaption": ""
             }
           ]

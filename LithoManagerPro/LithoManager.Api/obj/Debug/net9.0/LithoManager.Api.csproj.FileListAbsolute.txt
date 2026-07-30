@@ -87,3 +87,5 @@ C:\Users\josep\OneDrive - ULACIT ED CR\LithoManagerPro\LithoManagerPro\LithoMana
 C:\Users\josep\OneDrive - ULACIT ED CR\LithoManagerPro\LithoManagerPro\LithoManager.Api\bin\Debug\net9.0\LithoManager.Application.pdb
 C:\Users\josep\OneDrive - ULACIT ED CR\LithoManagerPro\LithoManagerPro\LithoManager.Api\bin\Debug\net9.0\LithoManager.Infraestructure.pdb
 C:\Users\josep\OneDrive - ULACIT ED CR\LithoManagerPro\LithoManagerPro\LithoManager.Api\bin\Debug\net9.0\LithoManager.Domain.pdb
+C:\Users\josep\OneDrive - ULACIT ED CR\LithoManagerPro\LithoManagerPro\LithoManager.Api\bin\Debug\net9.0\Microsoft.Extensions.Configuration.Binder.dll
+C:\Users\josep\OneDrive - ULACIT ED CR\LithoManagerPro\LithoManagerPro\LithoManager.Api\bin\Debug\net9.0\Microsoft.Extensions.Options.ConfigurationExtensions.dll
