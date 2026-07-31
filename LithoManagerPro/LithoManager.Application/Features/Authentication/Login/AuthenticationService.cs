@@ -144,8 +144,18 @@ public sealed class AuthenticationService
 
         if (user.RequiresPasswordChange)
         {
-            return LoginResult
-                .PasswordChangeRequired(loginUser);
+            PasswordChangeTokenResult
+                passwordChangeToken =
+                    _tokenService
+                        .GeneratePasswordChangeToken(
+                            new PasswordChangeTokenUserData(
+                                UserId: user.UserId,
+                                EmailAddress:
+                                    user.EmailAddress));
+
+            return LoginResult.PasswordChangeRequired(
+                loginUser,
+                passwordChangeToken);
         }
 
         AccessTokenResult accessToken =

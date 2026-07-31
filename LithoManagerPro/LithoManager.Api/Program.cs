@@ -1,12 +1,51 @@
 using LithoManager.Api.Extensions;
-using LithoManager.Infrastructure;
+using LithoManager.Application.Features.Authentication
+    .ChangeTemporaryPassword;
 using LithoManager.Application.Features.Authentication.Login;
+using LithoManager.Infrastructure;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-builder.Services.AddOpenApi();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc(
+        "v1",
+        new OpenApiInfo
+        {
+            Title = "LithoManager API",
+            Version = "v1",
+            Description =
+                "API para la administración de LithoManager."
+        });
+
+    options.AddSecurityDefinition(
+        "bearer",
+        new OpenApiSecurityScheme
+        {
+            Type = SecuritySchemeType.Http,
+            Scheme = "bearer",
+            BearerFormat = "JWT",
+            Description =
+                "Ingrese únicamente el JWT. " +
+                "Swagger agregará automáticamente " +
+                "el prefijo Bearer."
+        });
+
+    options.AddSecurityRequirement(
+        document =>
+            new OpenApiSecurityRequirement
+            {
+                [
+                    new OpenApiSecuritySchemeReference(
+                        "bearer",
+                        document)
+                ] = []
+            });
+});
 
 builder.Services.AddInfrastructure(
     builder.Configuration);
@@ -15,6 +54,10 @@ builder.Services.AddScoped<
     IAuthenticationService,
     AuthenticationService>();
 
+builder.Services.AddScoped<
+    IChangeTemporaryPasswordService,
+    ChangeTemporaryPasswordService>();
+
 builder.Services.AddJwtAuthentication(
     builder.Configuration);
 
@@ -22,7 +65,17 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint(
+            "/swagger/v1/swagger.json",
+            "LithoManager API v1");
+
+        options.DocumentTitle =
+            "LithoManager API";
+    });
 }
 
 app.UseHttpsRedirection();

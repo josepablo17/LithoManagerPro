@@ -62,6 +62,13 @@ public static class DependencyInjection
                 "must be between 1 and 1440.")
             .Validate(
                 options =>
+                    options.PasswordChangeTokenExpirationMinutes
+                         is > 0 and <= 60,
+                "Authentication:Jwt:" +
+                "PasswordChangeTokenExpirationMinutes " +
+                "must be between 1 and 60.")
+            .Validate(
+                options =>
                     HasValidSigningKey(
                         options.SigningKeyBase64),
                 "Authentication:Jwt:SigningKeyBase64 must be " +

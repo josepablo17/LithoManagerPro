@@ -1,13 +1,24 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+﻿using LithoManager.Api.Authorization;
 using LithoManager.Infrastructure.Security.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace LithoManager.Api.Extensions;
 
 public static class AuthenticationExtensions
 {
     private const string RoleClaimType = "role";
+
+    private const string TokenUseClaimType =
+    "token_use";
+
+    private const string AccessTokenUse =
+        "access";
+
+    private const string PasswordChangeTokenUse =
+        "password_change";
 
     public static IServiceCollection AddJwtAuthentication(
         this IServiceCollection services,
@@ -110,7 +121,33 @@ public static class AuthenticationExtensions
                     };
             });
 
-        services.AddAuthorization();
+        services.AddAuthorization(options =>
+        {
+            options.DefaultPolicy =
+                new AuthorizationPolicyBuilder(
+                    JwtBearerDefaults.AuthenticationScheme)
+                    .RequireAuthenticatedUser()
+                    .RequireClaim(
+                        TokenUseClaimType,
+                        AccessTokenUse)
+                    .Build();
+
+            options.AddPolicy(
+                AuthorizationPolicyNames
+                    .PasswordChangeOnly,
+                policy =>
+                {
+                    policy.AddAuthenticationSchemes(
+                        JwtBearerDefaults
+                            .AuthenticationScheme);
+
+                    policy.RequireAuthenticatedUser();
+
+                    policy.RequireClaim(
+                        TokenUseClaimType,
+                        PasswordChangeTokenUse);
+                });
+        });
 
         return services;
     }

@@ -8,6 +8,8 @@ public sealed record LoginResult(
     LoginUserData? User,
     string? AccessToken,
     DateTimeOffset? AccessTokenExpiresAtUtc,
+    string? PasswordChangeToken,
+    DateTimeOffset? PasswordChangeTokenExpiresAtUtc,
     bool RequiresPasswordChange,
     DateTime? LockoutEndAtUtc)
 {
@@ -23,15 +25,22 @@ public sealed record LoginResult(
             ErrorCode: LoginErrorCode.None,
             User: user,
             AccessToken: accessToken.AccessToken,
-            AccessTokenExpiresAtUtc: accessToken.ExpiresAtUtc,
+            AccessTokenExpiresAtUtc:
+                accessToken.ExpiresAtUtc,
+            PasswordChangeToken: null,
+            PasswordChangeTokenExpiresAtUtc: null,
             RequiresPasswordChange: false,
             LockoutEndAtUtc: null);
     }
 
     public static LoginResult PasswordChangeRequired(
-        LoginUserData user)
+        LoginUserData user,
+        PasswordChangeTokenResult passwordChangeToken)
     {
         ArgumentNullException.ThrowIfNull(user);
+
+        ArgumentNullException.ThrowIfNull(
+            passwordChangeToken);
 
         return new LoginResult(
             IsSuccessful: true,
@@ -39,6 +48,10 @@ public sealed record LoginResult(
             User: user,
             AccessToken: null,
             AccessTokenExpiresAtUtc: null,
+            PasswordChangeToken:
+                passwordChangeToken.Token,
+            PasswordChangeTokenExpiresAtUtc:
+                passwordChangeToken.ExpiresAtUtc,
             RequiresPasswordChange: true,
             LockoutEndAtUtc: null);
     }
@@ -60,6 +73,8 @@ public sealed record LoginResult(
             User: null,
             AccessToken: null,
             AccessTokenExpiresAtUtc: null,
+            PasswordChangeToken: null,
+            PasswordChangeTokenExpiresAtUtc: null,
             RequiresPasswordChange: false,
             LockoutEndAtUtc: lockoutEndAtUtc);
     }

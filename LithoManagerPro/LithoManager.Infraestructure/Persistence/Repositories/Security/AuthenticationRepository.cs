@@ -3,6 +3,8 @@ using Dapper;
 using LithoManager.Application.Abstractions.Persistence;
 using LithoManager.Application.Features.Authentication.Login;
 using LithoManager.Infrastructure.Persistence.Dapper;
+using LithoManager.Application.Features.Authentication
+    .ChangeTemporaryPassword;
 
 namespace LithoManager.Infrastructure.Persistence.Repositories.Security;
 
@@ -17,6 +19,9 @@ public sealed class AuthenticationRepository
 
     private const string RegisterFailedLoginProcedure =
         "Security.RegisterFailedLogin";
+
+    private const string ChangeTemporaryPasswordProcedure =
+    "Security.ChangeTemporaryPassword";
 
     private readonly ISqlConnectionFactory _connectionFactory;
 
@@ -131,6 +136,54 @@ public sealed class AuthenticationRepository
         return await connection
             .QuerySingleAsync<FailedLoginRegistrationData>(
                 command);
+    }
+
+    public async Task<TemporaryPasswordChangeData>
+    ChangeTemporaryPasswordAsync(
+        int userId,
+        string newPasswordHash,
+        AuthenticationRequestContext requestContext,
+        CancellationToken cancellationToken)
+    {
+        if (userId <= 0)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(userId),
+                "UserId must be greater than zero.");
+        }
+
+        ArgumentException.ThrowIfNullOrWhiteSpace(
+            newPasswordHash);
+
+        ArgumentNullException.ThrowIfNull(
+            requestContext);
+
+        var parameters = new
+        {
+            UserId = userId,
+            NewPasswordHash = newPasswordHash,
+            requestContext.CorrelationId,
+            requestContext.ClientIpAddress,
+            requestContext.UserAgent,
+            requestContext.RequestPath
+        };
+
+        var command = new CommandDefinition(
+            commandText:
+                ChangeTemporaryPasswordProcedure,
+            parameters: parameters,
+            commandType:
+                CommandType.StoredProcedure,
+            cancellationToken:
+                cancellationToken);
+
+        await using var connection =
+            _connectionFactory.CreateConnection();
+
+        return await connection
+            .QuerySingleAsync<
+                TemporaryPasswordChangeData>(
+                    command);
     }
 
 }

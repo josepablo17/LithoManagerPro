@@ -10,33 +10,55 @@ namespace LithoManager.Infrastructure.Security.Tokens;
 internal sealed class TokenService : ITokenService
 {
     private const string RoleClaimType = "role";
-    private const string EmployeeIdClaimType = "employee_id";
+
+    private const string EmployeeIdClaimType =
+        "employee_id";
+
+    private const string TokenUseClaimType =
+        "token_use";
+
+    private const string AccessTokenUse =
+        "access";
+
+    private const string PasswordChangeTokenUse =
+        "password_change";
 
     private readonly JwtOptions _jwtOptions;
     private readonly TimeProvider _timeProvider;
-    private readonly JwtSecurityTokenHandler _tokenHandler;
-    private readonly SigningCredentials _signingCredentials;
+
+    private readonly JwtSecurityTokenHandler
+        _tokenHandler;
+
+    private readonly SigningCredentials
+        _signingCredentials;
 
     public TokenService(
         IOptions<JwtOptions> jwtOptions,
         TimeProvider timeProvider)
     {
-        ArgumentNullException.ThrowIfNull(jwtOptions);
-        ArgumentNullException.ThrowIfNull(timeProvider);
+        ArgumentNullException.ThrowIfNull(
+            jwtOptions);
+
+        ArgumentNullException.ThrowIfNull(
+            timeProvider);
 
         _jwtOptions = jwtOptions.Value;
         _timeProvider = timeProvider;
-        _tokenHandler = new JwtSecurityTokenHandler();
+
+        _tokenHandler =
+            new JwtSecurityTokenHandler();
 
         byte[] signingKeyBytes =
-            Convert.FromBase64String(_jwtOptions.SigningKeyBase64);
+            Convert.FromBase64String(
+                _jwtOptions.SigningKeyBase64);
 
         SymmetricSecurityKey signingKey =
             new(signingKeyBytes);
 
-        _signingCredentials = new SigningCredentials(
-            signingKey,
-            SecurityAlgorithms.HmacSha256);
+        _signingCredentials =
+            new SigningCredentials(
+                signingKey,
+                SecurityAlgorithms.HmacSha256);
     }
 
     public AccessTokenResult GenerateAccessToken(
@@ -44,44 +66,23 @@ internal sealed class TokenService : ITokenService
     {
         ArgumentNullException.ThrowIfNull(user);
 
-        if (user.UserId <= 0)
-        {
-            throw new ArgumentOutOfRangeException(
-                nameof(user),
-                "UserId must be greater than zero.");
-        }
-
-        ArgumentException.ThrowIfNullOrWhiteSpace(
+        ValidateUserData(
+            user.UserId,
             user.EmailAddress);
 
         ArgumentException.ThrowIfNullOrWhiteSpace(
             user.RoleCode);
 
-        DateTimeOffset issuedAtUtc =
-            _timeProvider.GetUtcNow();
-
-        DateTimeOffset expiresAtUtc =
-            issuedAtUtc.AddMinutes(
-                _jwtOptions.AccessTokenExpirationMinutes);
-
         List<Claim> claims =
-        [
-            new Claim(
-                JwtRegisteredClaimNames.Sub,
-                user.UserId.ToString(CultureInfo.InvariantCulture)),
+            CreateBaseClaims(
+                user.UserId,
+                user.EmailAddress,
+                AccessTokenUse);
 
-            new Claim(
-                JwtRegisteredClaimNames.Email,
-                user.EmailAddress),
-
+        claims.Add(
             new Claim(
                 RoleClaimType,
-                user.RoleCode),
-
-            new Claim(
-                JwtRegisteredClaimNames.Jti,
-                Guid.NewGuid().ToString("N"))
-        ];
+                user.RoleCode));
 
         if (user.EmployeeId is int employeeId)
         {
@@ -89,7 +90,7 @@ internal sealed class TokenService : ITokenService
             {
                 throw new ArgumentOutOfRangeException(
                     nameof(user),
-                    "EmployeeId must be greater than zero when provided.");
+                    "EmployeeId must be greater than zero.");
             }
 
             claims.Add(
@@ -99,25 +100,131 @@ internal sealed class TokenService : ITokenService
                         CultureInfo.InvariantCulture)));
         }
 
-        SecurityTokenDescriptor tokenDescriptor = new()
-        {
-            Subject = new ClaimsIdentity(claims),
-            Issuer = _jwtOptions.Issuer,
-            Audience = _jwtOptions.Audience,
-            IssuedAt = issuedAtUtc.UtcDateTime,
-            NotBefore = issuedAtUtc.UtcDateTime,
-            Expires = expiresAtUtc.UtcDateTime,
-            SigningCredentials = _signingCredentials
-        };
-
-        SecurityToken securityToken =
-            _tokenHandler.CreateToken(tokenDescriptor);
-
-        string accessToken =
-            _tokenHandler.WriteToken(securityToken);
+        GeneratedToken generatedToken =
+            CreateToken(
+                claims,
+                _jwtOptions
+                    .AccessTokenExpirationMinutes);
 
         return new AccessTokenResult(
-            accessToken,
+            generatedToken.Token,
+            generatedToken.ExpiresAtUtc);
+    }
+
+    public PasswordChangeTokenResult
+        GeneratePasswordChangeToken(
+            PasswordChangeTokenUserData user)
+    {
+        ArgumentNullException.ThrowIfNull(user);
+
+        ValidateUserData(
+            user.UserId,
+            user.EmailAddress);
+
+        List<Claim> claims =
+            CreateBaseClaims(
+                user.UserId,
+                user.EmailAddress,
+                PasswordChangeTokenUse);
+
+        GeneratedToken generatedToken =
+            CreateToken(
+                claims,
+                _jwtOptions
+                    .PasswordChangeTokenExpirationMinutes);
+
+        return new PasswordChangeTokenResult(
+            generatedToken.Token,
+            generatedToken.ExpiresAtUtc);
+    }
+
+    private List<Claim> CreateBaseClaims(
+        int userId,
+        string emailAddress,
+        string tokenUse)
+    {
+        return
+        [
+            new Claim(
+                JwtRegisteredClaimNames.Sub,
+                userId.ToString(
+                    CultureInfo.InvariantCulture)),
+
+            new Claim(
+                JwtRegisteredClaimNames.Email,
+                emailAddress),
+
+            new Claim(
+                TokenUseClaimType,
+                tokenUse),
+
+            new Claim(
+                JwtRegisteredClaimNames.Jti,
+                Guid.NewGuid().ToString("N"))
+        ];
+    }
+
+    private GeneratedToken CreateToken(
+        IEnumerable<Claim> claims,
+        int expirationMinutes)
+    {
+        DateTimeOffset issuedAtUtc =
+            _timeProvider.GetUtcNow();
+
+        DateTimeOffset expiresAtUtc =
+            issuedAtUtc.AddMinutes(
+                expirationMinutes);
+
+        SecurityTokenDescriptor descriptor =
+            new()
+            {
+                Subject =
+                    new ClaimsIdentity(claims),
+
+                Issuer = _jwtOptions.Issuer,
+                Audience = _jwtOptions.Audience,
+
+                IssuedAt =
+                    issuedAtUtc.UtcDateTime,
+
+                NotBefore =
+                    issuedAtUtc.UtcDateTime,
+
+                Expires =
+                    expiresAtUtc.UtcDateTime,
+
+                SigningCredentials =
+                    _signingCredentials
+            };
+
+        SecurityToken securityToken =
+            _tokenHandler.CreateToken(descriptor);
+
+        string token =
+            _tokenHandler.WriteToken(
+                securityToken);
+
+        return new GeneratedToken(
+            token,
             expiresAtUtc);
     }
+
+    private static void ValidateUserData(
+        int userId,
+        string emailAddress)
+    {
+        if (userId <= 0)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(userId),
+                "UserId must be greater than zero.");
+        }
+
+        ArgumentException.ThrowIfNullOrWhiteSpace(
+            emailAddress);
+    }
+
+    private sealed record GeneratedToken(
+        string Token,
+        DateTimeOffset ExpiresAtUtc);
 }

@@ -4,4 +4,8 @@ public interface ITokenService
 {
     AccessTokenResult GenerateAccessToken(
         AccessTokenUserData user);
+
+    PasswordChangeTokenResult
+        GeneratePasswordChangeToken(
+            PasswordChangeTokenUserData user);
 }
