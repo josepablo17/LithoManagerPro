@@ -1,5 +1,6 @@
 using LithoManager.Api.Extensions;
 using LithoManager.Infrastructure;
+using LithoManager.Application.Features.Authentication.Login;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,10 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddInfrastructure(
     builder.Configuration);
+
+builder.Services.AddScoped<
+    IAuthenticationService,
+    AuthenticationService>();
 
 builder.Services.AddJwtAuthentication(
     builder.Configuration);

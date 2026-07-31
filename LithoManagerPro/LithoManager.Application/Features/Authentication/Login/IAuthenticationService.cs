@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace LithoManager.Application.Features.Authentication.Login;
 
-namespace LithoManager.Application.Features.Authentication.Login
+public interface IAuthenticationService
 {
-    internal class IAuthenticationService
-    {
-    }
+    Task<LoginResult> LoginAsync(
+        LoginCommand command,
+        CancellationToken cancellationToken);
 }

@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace LithoManager.Application.Features.Authentication.Login;
 
-namespace LithoManager.Application.Features.Authentication.Login
+public sealed class FailedLoginRegistrationData
 {
-    internal class FailedLoginRegistrationData
-    {
-    }
+    public int? UserId { get; init; }
+
+    public short FailedLoginAttempts { get; init; }
+
+    public DateTime? LockoutEndAtUtc { get; init; }
+
+    public bool IsLockedOut { get; init; }
 }

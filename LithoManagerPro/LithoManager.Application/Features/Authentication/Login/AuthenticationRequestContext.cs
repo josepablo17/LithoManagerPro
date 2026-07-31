@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace LithoManager.Application.Features.Authentication.Login;
 
-namespace LithoManager.Application.Features.Authentication.Login
-{
-    internal class AuthenticationRequestContext
-    {
-    }
-}
+public sealed record AuthenticationRequestContext(
+    Guid CorrelationId,
+    string? ClientIpAddress,
+    string? UserAgent,
+    string? RequestPath);

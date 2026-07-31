@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace LithoManager.Application.Features.Authentication.Login;
 
-namespace LithoManager.Application.Features.Authentication.Login
+public enum LoginErrorCode
 {
-    internal class LoginErrorCode
-    {
-    }
+    None = 0,
+    InvalidRequest = 1,
+    InvalidCredentials = 2,
+    AccountLocked = 3,
+    EmailNotConfirmed = 4,
+    AccountInactive = 5,
+    RoleInactive = 6,
+    EmployeeInactive = 7,
+    TemporaryPasswordExpired = 8
 }

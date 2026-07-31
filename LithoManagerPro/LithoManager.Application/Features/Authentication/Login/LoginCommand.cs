@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace LithoManager.Application.Features.Authentication.Login;
 
-namespace LithoManager.Application.Features.Authentication.Login
-{
-    internal class LoginCommand
-    {
-    }
-}
+public sealed record LoginCommand(
+    string EmailAddress,
+    string Password,
+    AuthenticationRequestContext RequestContext);

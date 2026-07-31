@@ -10,7 +10,13 @@ public sealed class AuthenticationRepository
     : IAuthenticationRepository
 {
     private const string GetUserForAuthenticationProcedure =
-        "Security.GetUserForAuthentication";
+    "Security.GetUserForAuthentication";
+
+    private const string RegisterSuccessfulLoginProcedure =
+        "Security.RegisterSuccessfulLogin";
+
+    private const string RegisterFailedLoginProcedure =
+        "Security.RegisterFailedLogin";
 
     private readonly ISqlConnectionFactory _connectionFactory;
 
@@ -46,9 +52,85 @@ public sealed class AuthenticationRepository
                 command);
     }
 
-    private const string RegisterSuccessfulLoginProcedure =
-    "Security.RegisterSuccessfulLogin";
+    public async Task<SuccessfulLoginRegistrationData>
+    RegisterSuccessfulLoginAsync(
+        int userId,
+        AuthenticationRequestContext requestContext,
+        CancellationToken cancellationToken)
+    {
+        if (userId <= 0)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(userId),
+                "UserId must be greater than zero.");
+        }
 
-    private const string RegisterFailedLoginProcedure =
-        "Security.RegisterFailedLogin";
+        ArgumentNullException.ThrowIfNull(requestContext);
+
+        var parameters = new
+        {
+            UserId = userId,
+            requestContext.CorrelationId,
+            requestContext.ClientIpAddress,
+            requestContext.UserAgent,
+            requestContext.RequestPath
+        };
+
+        var command = new CommandDefinition(
+            commandText: RegisterSuccessfulLoginProcedure,
+            parameters: parameters,
+            commandType: CommandType.StoredProcedure,
+            cancellationToken: cancellationToken);
+
+        await using var connection =
+            _connectionFactory.CreateConnection();
+
+        return await connection
+            .QuerySingleAsync<SuccessfulLoginRegistrationData>(
+                command);
+    }
+
+    public async Task<FailedLoginRegistrationData>
+    RegisterFailedLoginAsync(
+        string attemptedEmailAddress,
+        int? userId,
+        AuthenticationRequestContext requestContext,
+        CancellationToken cancellationToken)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(
+            attemptedEmailAddress);
+
+        if (userId is <= 0)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(userId),
+                "UserId must be greater than zero when provided.");
+        }
+
+        ArgumentNullException.ThrowIfNull(requestContext);
+
+        var parameters = new
+        {
+            AttemptedEmailAddress = attemptedEmailAddress.Trim(),
+            UserId = userId,
+            requestContext.CorrelationId,
+            requestContext.ClientIpAddress,
+            requestContext.UserAgent,
+            requestContext.RequestPath
+        };
+
+        var command = new CommandDefinition(
+            commandText: RegisterFailedLoginProcedure,
+            parameters: parameters,
+            commandType: CommandType.StoredProcedure,
+            cancellationToken: cancellationToken);
+
+        await using var connection =
+            _connectionFactory.CreateConnection();
+
+        return await connection
+            .QuerySingleAsync<FailedLoginRegistrationData>(
+                command);
+    }
+
 }
