@@ -83,6 +83,7 @@
     <Build Include="StoredProcedures\Security\RegisterFailedLogin.sql" />
     <Build Include="StoredProcedures\Security\CreateInitialSuperAdministrator.sql" />
     <Build Include="StoredProcedures\Security\ChangeTemporaryPassword.sql" />
+    <Build Include="StoredProcedures\Security\GetCurrentUserById.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\PostDeployment.sql" />

@@ -1,18 +1,24 @@
 ﻿using System.Data;
 using Dapper;
 using LithoManager.Application.Abstractions.Persistence;
-using LithoManager.Application.Features.Authentication.Login;
-using LithoManager.Infrastructure.Persistence.Dapper;
 using LithoManager.Application.Features.Authentication
     .ChangeTemporaryPassword;
+using LithoManager.Application.Features.Authentication
+    .GetCurrentUser;
+using LithoManager.Application.Features.Authentication.Login;
+using LithoManager.Infrastructure.Persistence.Dapper;
 
-namespace LithoManager.Infrastructure.Persistence.Repositories.Security;
+namespace LithoManager.Infrastructure.Persistence
+    .Repositories.Security;
 
 public sealed class AuthenticationRepository
     : IAuthenticationRepository
 {
     private const string GetUserForAuthenticationProcedure =
-    "Security.GetUserForAuthentication";
+        "Security.GetUserForAuthentication";
+
+    private const string GetCurrentUserByIdProcedure =
+        "Security.GetCurrentUserById";
 
     private const string RegisterSuccessfulLoginProcedure =
         "Security.RegisterSuccessfulLogin";
@@ -21,13 +27,16 @@ public sealed class AuthenticationRepository
         "Security.RegisterFailedLogin";
 
     private const string ChangeTemporaryPasswordProcedure =
-    "Security.ChangeTemporaryPassword";
+        "Security.ChangeTemporaryPassword";
 
     private readonly ISqlConnectionFactory _connectionFactory;
 
     public AuthenticationRepository(
         ISqlConnectionFactory connectionFactory)
     {
+        ArgumentNullException.ThrowIfNull(
+            connectionFactory);
+
         _connectionFactory = connectionFactory;
     }
 
@@ -36,7 +45,8 @@ public sealed class AuthenticationRepository
             string emailAddress,
             CancellationToken cancellationToken)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(emailAddress);
+        ArgumentException.ThrowIfNullOrWhiteSpace(
+            emailAddress);
 
         var parameters = new
         {
@@ -44,7 +54,8 @@ public sealed class AuthenticationRepository
         };
 
         var command = new CommandDefinition(
-            commandText: GetUserForAuthenticationProcedure,
+            commandText:
+                GetUserForAuthenticationProcedure,
             parameters: parameters,
             commandType: CommandType.StoredProcedure,
             cancellationToken: cancellationToken);
@@ -53,15 +64,15 @@ public sealed class AuthenticationRepository
             _connectionFactory.CreateConnection();
 
         return await connection
-            .QuerySingleOrDefaultAsync<AuthenticationUserData>(
-                command);
+            .QuerySingleOrDefaultAsync<
+                AuthenticationUserData>(
+                    command);
     }
 
-    public async Task<SuccessfulLoginRegistrationData>
-    RegisterSuccessfulLoginAsync(
-        int userId,
-        AuthenticationRequestContext requestContext,
-        CancellationToken cancellationToken)
+    public async Task<CurrentUserData?>
+        GetCurrentUserByIdAsync(
+            int userId,
+            CancellationToken cancellationToken)
     {
         if (userId <= 0)
         {
@@ -70,7 +81,44 @@ public sealed class AuthenticationRepository
                 "UserId must be greater than zero.");
         }
 
-        ArgumentNullException.ThrowIfNull(requestContext);
+        var parameters = new
+        {
+            UserId = userId
+        };
+
+        var command = new CommandDefinition(
+            commandText:
+                GetCurrentUserByIdProcedure,
+            parameters: parameters,
+            commandType:
+                CommandType.StoredProcedure,
+            cancellationToken:
+                cancellationToken);
+
+        await using var connection =
+            _connectionFactory.CreateConnection();
+
+        return await connection
+            .QuerySingleOrDefaultAsync<
+                CurrentUserData>(
+                    command);
+    }
+
+    public async Task<SuccessfulLoginRegistrationData>
+        RegisterSuccessfulLoginAsync(
+            int userId,
+            AuthenticationRequestContext requestContext,
+            CancellationToken cancellationToken)
+    {
+        if (userId <= 0)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(userId),
+                "UserId must be greater than zero.");
+        }
+
+        ArgumentNullException.ThrowIfNull(
+            requestContext);
 
         var parameters = new
         {
@@ -82,25 +130,29 @@ public sealed class AuthenticationRepository
         };
 
         var command = new CommandDefinition(
-            commandText: RegisterSuccessfulLoginProcedure,
+            commandText:
+                RegisterSuccessfulLoginProcedure,
             parameters: parameters,
-            commandType: CommandType.StoredProcedure,
-            cancellationToken: cancellationToken);
+            commandType:
+                CommandType.StoredProcedure,
+            cancellationToken:
+                cancellationToken);
 
         await using var connection =
             _connectionFactory.CreateConnection();
 
         return await connection
-            .QuerySingleAsync<SuccessfulLoginRegistrationData>(
-                command);
+            .QuerySingleAsync<
+                SuccessfulLoginRegistrationData>(
+                    command);
     }
 
     public async Task<FailedLoginRegistrationData>
-    RegisterFailedLoginAsync(
-        string attemptedEmailAddress,
-        int? userId,
-        AuthenticationRequestContext requestContext,
-        CancellationToken cancellationToken)
+        RegisterFailedLoginAsync(
+            string attemptedEmailAddress,
+            int? userId,
+            AuthenticationRequestContext requestContext,
+            CancellationToken cancellationToken)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(
             attemptedEmailAddress);
@@ -112,11 +164,13 @@ public sealed class AuthenticationRepository
                 "UserId must be greater than zero when provided.");
         }
 
-        ArgumentNullException.ThrowIfNull(requestContext);
+        ArgumentNullException.ThrowIfNull(
+            requestContext);
 
         var parameters = new
         {
-            AttemptedEmailAddress = attemptedEmailAddress.Trim(),
+            AttemptedEmailAddress =
+                attemptedEmailAddress.Trim(),
             UserId = userId,
             requestContext.CorrelationId,
             requestContext.ClientIpAddress,
@@ -125,25 +179,29 @@ public sealed class AuthenticationRepository
         };
 
         var command = new CommandDefinition(
-            commandText: RegisterFailedLoginProcedure,
+            commandText:
+                RegisterFailedLoginProcedure,
             parameters: parameters,
-            commandType: CommandType.StoredProcedure,
-            cancellationToken: cancellationToken);
+            commandType:
+                CommandType.StoredProcedure,
+            cancellationToken:
+                cancellationToken);
 
         await using var connection =
             _connectionFactory.CreateConnection();
 
         return await connection
-            .QuerySingleAsync<FailedLoginRegistrationData>(
-                command);
+            .QuerySingleAsync<
+                FailedLoginRegistrationData>(
+                    command);
     }
 
     public async Task<TemporaryPasswordChangeData>
-    ChangeTemporaryPasswordAsync(
-        int userId,
-        string newPasswordHash,
-        AuthenticationRequestContext requestContext,
-        CancellationToken cancellationToken)
+        ChangeTemporaryPasswordAsync(
+            int userId,
+            string newPasswordHash,
+            AuthenticationRequestContext requestContext,
+            CancellationToken cancellationToken)
     {
         if (userId <= 0)
         {
@@ -185,5 +243,4 @@ public sealed class AuthenticationRepository
                 TemporaryPasswordChangeData>(
                     command);
     }
-
 }

@@ -5,6 +5,8 @@ using LithoManager.Application.Features.Authentication.Login;
 using LithoManager.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.OpenApi;
+using LithoManager.Application.Features.Authentication
+    .GetCurrentUser;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -57,6 +59,10 @@ builder.Services.AddScoped<
 builder.Services.AddScoped<
     IChangeTemporaryPasswordService,
     ChangeTemporaryPasswordService>();
+
+builder.Services.AddScoped<
+    IGetCurrentUserService,
+    GetCurrentUserService>();
 
 builder.Services.AddJwtAuthentication(
     builder.Configuration);
