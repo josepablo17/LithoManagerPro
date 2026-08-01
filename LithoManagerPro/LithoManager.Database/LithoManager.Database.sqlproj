@@ -84,6 +84,7 @@
     <Build Include="StoredProcedures\Security\CreateInitialSuperAdministrator.sql" />
     <Build Include="StoredProcedures\Security\ChangeTemporaryPassword.sql" />
     <Build Include="StoredProcedures\Security\GetCurrentUserById.sql" />
+    <Build Include="StoredProcedures\Security\ChangePassword.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\PostDeployment.sql" />

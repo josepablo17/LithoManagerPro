@@ -13,6 +13,10 @@ Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "LithoManager.Database", "Li
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LithoManager.Api", "LithoManager.Api\LithoManager.Api.csproj", "{72AC7670-1370-4F15-9D8F-A15C0F139942}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LithoManager.UnitTests", "UnitTests\LithoManager.UnitTests.csproj", "{6885D064-36BE-4C21-8485-5CA5F39797AB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LithoManager.IntegrationTests", "IntegrationTests\LithoManager.IntegrationTests.csproj", "{8C97890D-3636-4406-AFE9-549B6EEC34B1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +45,14 @@ Global
 		{72AC7670-1370-4F15-9D8F-A15C0F139942}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{72AC7670-1370-4F15-9D8F-A15C0F139942}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{72AC7670-1370-4F15-9D8F-A15C0F139942}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6885D064-36BE-4C21-8485-5CA5F39797AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6885D064-36BE-4C21-8485-5CA5F39797AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6885D064-36BE-4C21-8485-5CA5F39797AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6885D064-36BE-4C21-8485-5CA5F39797AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C97890D-3636-4406-AFE9-549B6EEC34B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C97890D-3636-4406-AFE9-549B6EEC34B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C97890D-3636-4406-AFE9-549B6EEC34B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C97890D-3636-4406-AFE9-549B6EEC34B1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <UserSecretsId>3b4b2b34-9fd0-49ee-985e-641801cb91f7</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="6.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.18" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="10.0.10" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LithoManager.Api\LithoManager.Api.csproj" />
+    <ProjectReference Include="..\LithoManager.Application\LithoManager.Application.csproj" />
+    <ProjectReference Include="..\LithoManager.Infraestructure\LithoManager.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Database\Persistence\" />
+    <Folder Include="Infrastructure\Security\" />
+  </ItemGroup>
+
+</Project>
