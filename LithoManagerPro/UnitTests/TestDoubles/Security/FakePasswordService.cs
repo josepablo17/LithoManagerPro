@@ -11,11 +11,29 @@ public sealed class FakePasswordService
         set;
     } = "fake-password-hash";
 
+    /*
+     * Se mantiene para no romper las pruebas existentes.
+     * Se utiliza cuando no hay resultados en la cola.
+     */
     public bool VerifyPasswordResult
     {
         get;
         set;
     }
+
+    public Queue<bool>
+        VerifyPasswordResultsToReturn
+    {
+        get;
+    } = new();
+
+    public List<(
+        string PasswordHash,
+        string ProvidedPassword)>
+        VerificationCalls
+    {
+        get;
+    } = new();
 
     public int HashPasswordCallCount
     {
@@ -35,7 +53,8 @@ public sealed class FakePasswordService
         private set;
     }
 
-    public string? PasswordHashReceivedForVerification
+    public string?
+        PasswordHashReceivedForVerification
     {
         get;
         private set;
@@ -69,6 +88,19 @@ public sealed class FakePasswordService
 
         ProvidedPasswordReceived =
             providedPassword;
+
+        VerificationCalls.Add(
+            (
+                PasswordHash: passwordHash,
+                ProvidedPassword:
+                    providedPassword
+            ));
+
+        if (VerifyPasswordResultsToReturn.Count > 0)
+        {
+            return VerifyPasswordResultsToReturn
+                .Dequeue();
+        }
 
         return VerifyPasswordResult;
     }

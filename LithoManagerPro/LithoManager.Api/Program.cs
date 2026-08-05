@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.OpenApi;
 using LithoManager.Application.Features.Authentication
     .GetCurrentUser;
+using LithoManager.Application.Features.Authentication
+    .ChangePassword;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,6 +61,10 @@ builder.Services.AddScoped<
 builder.Services.AddScoped<
     IChangeTemporaryPasswordService,
     ChangeTemporaryPasswordService>();
+
+builder.Services.AddScoped<
+    IChangePasswordService,
+    ChangePasswordService>();
 
 builder.Services.AddScoped<
     IGetCurrentUserService,

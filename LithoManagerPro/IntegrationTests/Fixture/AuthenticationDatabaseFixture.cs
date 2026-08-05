@@ -21,6 +21,9 @@ public sealed class AuthenticationDatabaseFixture
     public const string TestPassword =
         "IntegrationTest1!";
 
+    public const string ChangedTestPassword =
+    "IntegrationChanged2!";
+
     private ServiceProvider
         _serviceProvider = null!;
 
@@ -135,6 +138,48 @@ public sealed class AuthenticationDatabaseFixture
                     "/integration-tests/reset-login-state"),
             cancellationToken:
                 CancellationToken.None);
+    }
+
+    public async Task ChangeTestPasswordDirectlyAsync(
+    string password,
+    string requestPath)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(
+            password);
+
+        ArgumentException.ThrowIfNullOrWhiteSpace(
+            requestPath);
+
+        /*
+         * Garantiza que el usuario no esté bloqueado
+         * antes de ejecutar Security.ChangePassword.
+         */
+        await ResetLoginStateAsync();
+
+        string passwordHash =
+            PasswordService.HashPassword(
+                password);
+
+        await Repository.ChangePasswordAsync(
+            userId:
+                SuperAdministratorUserId,
+            newPasswordHash:
+                passwordHash,
+            requestContext:
+                CreateRequestContext(
+                    requestPath),
+            cancellationToken:
+                CancellationToken.None);
+    }
+
+    public async Task RestoreTestPasswordAsync()
+    {
+        await ChangeTestPasswordDirectlyAsync(
+            password:
+                TestPassword,
+            requestPath:
+                "/integration-tests/" +
+                "restore-original-password");
     }
 
     public static AuthenticationRequestContext
@@ -374,5 +419,41 @@ public sealed class AuthenticationDatabaseFixture
             get;
             init;
         }
+    }
+
+    public async Task<AuditLogTestData?>
+    GetAuditLogByCorrelationIdAsync(
+        Guid correlationId)
+    {
+        if (correlationId == Guid.Empty)
+        {
+            throw new ArgumentException(
+                "CorrelationId cannot be empty.",
+                nameof(correlationId));
+        }
+
+        var parameters = new
+        {
+            CorrelationId = correlationId
+        };
+
+        CommandDefinition command =
+            new(
+                commandText:
+                    "Audit.GetAuditLogByCorrelationId",
+                parameters:
+                    parameters,
+                commandType:
+                    CommandType.StoredProcedure,
+                cancellationToken:
+                    CancellationToken.None);
+
+        await using DbConnection connection =
+            _connectionFactory.CreateConnection();
+
+        return await connection
+            .QuerySingleOrDefaultAsync<
+                AuditLogTestData>(
+                    command);
     }
 }

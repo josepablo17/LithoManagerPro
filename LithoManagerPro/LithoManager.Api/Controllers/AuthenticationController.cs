@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
+using LithoManager.Application.Features.Authentication
+    .ChangePassword;
 
 namespace LithoManager.Api.Controllers;
 
@@ -23,9 +25,14 @@ public sealed class AuthenticationController : ControllerBase
     private readonly IChangeTemporaryPasswordService
     _changeTemporaryPasswordService;
 
+    private readonly IChangePasswordService
+    _changePasswordService;
+
     public AuthenticationController(
-        IAuthenticationService authenticationService, IChangeTemporaryPasswordService
-        changeTemporaryPasswordService)
+        IAuthenticationService authenticationService,
+        IChangeTemporaryPasswordService
+            changeTemporaryPasswordService,
+        IChangePasswordService changePasswordService)
     {
         ArgumentNullException.ThrowIfNull(
             authenticationService);
@@ -33,11 +40,17 @@ public sealed class AuthenticationController : ControllerBase
         ArgumentNullException.ThrowIfNull(
             changeTemporaryPasswordService);
 
+        ArgumentNullException.ThrowIfNull(
+            changePasswordService);
+
         _authenticationService =
             authenticationService;
 
         _changeTemporaryPasswordService =
             changeTemporaryPasswordService;
+
+        _changePasswordService =
+            changePasswordService;
     }
 
     [AllowAnonymous]
@@ -229,6 +242,210 @@ public sealed class AuthenticationController : ControllerBase
         }
 
         return NoContent();
+    }
+
+
+    [Authorize]
+    [HttpPost("change-password")]
+    [Consumes("application/json")]
+    [ProducesResponseType(
+    StatusCodes.Status204NoContent)]
+    [ProducesResponseType(
+    typeof(ProblemDetails),
+    StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(
+    typeof(ProblemDetails),
+    StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(
+    typeof(ProblemDetails),
+    StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(
+    typeof(ProblemDetails),
+    StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> ChangePassword(
+    [FromBody] ChangePasswordRequest request,
+    CancellationToken cancellationToken)
+    {
+        Guid correlationId =
+            ResolveCorrelationId();
+
+        Response.Headers[CorrelationIdHeaderName] =
+            correlationId.ToString();
+
+        Response.Headers["Cache-Control"] =
+            "no-store";
+
+        Response.Headers["Pragma"] =
+            "no-cache";
+
+        if (!TryResolveUserId(
+                out int userId))
+        {
+            ProblemDetails problemDetails =
+                CreateProblemDetails(
+                    statusCode:
+                        StatusCodes.Status401Unauthorized,
+                    title:
+                        "Token inválido",
+                    detail:
+                        "No fue posible identificar al usuario.",
+                    errorCode:
+                        "invalid_token");
+
+            problemDetails.Extensions[
+                "correlationId"] =
+                    correlationId;
+
+            return Unauthorized(problemDetails);
+        }
+
+        AuthenticationRequestContext requestContext =
+            new(
+                CorrelationId:
+                    correlationId,
+                ClientIpAddress:
+                    LimitLength(
+                        HttpContext.Connection
+                            .RemoteIpAddress?
+                            .ToString(),
+                        maximumLength: 45),
+                UserAgent:
+                    LimitLength(
+                        Request.Headers["User-Agent"]
+                            .ToString(),
+                        maximumLength: 512),
+                RequestPath:
+                    LimitLength(
+                        Request.Path.Value,
+                        maximumLength: 500));
+
+        ChangePasswordCommand command =
+            new(
+                UserId:
+                    userId,
+                CurrentPassword:
+                    request.CurrentPassword,
+                NewPassword:
+                    request.NewPassword,
+                ConfirmNewPassword:
+                    request.ConfirmNewPassword,
+                RequestContext:
+                    requestContext);
+
+        ChangePasswordResult result =
+            await _changePasswordService.ChangeAsync(
+                command,
+                cancellationToken);
+
+        if (!result.IsSuccessful)
+        {
+            return CreateVoluntaryPasswordChangeFailure(
+                result,
+                correlationId);
+        }
+
+        return NoContent();
+    }
+
+
+    private ObjectResult
+    CreateVoluntaryPasswordChangeFailure(
+        ChangePasswordResult result,
+        Guid correlationId)
+    {
+        (
+            int statusCode,
+            string errorCode,
+            string title,
+            string detail
+        ) error = result.ErrorCode switch
+        {
+            ChangePasswordErrorCode.InvalidRequest =>
+            (
+                StatusCodes.Status400BadRequest,
+                "invalid_request",
+                "Solicitud inválida",
+                "Revise las contraseñas enviadas."
+            ),
+
+            ChangePasswordErrorCode
+                .PasswordsDoNotMatch =>
+            (
+                StatusCodes.Status400BadRequest,
+                "passwords_do_not_match",
+                "Las contraseñas no coinciden",
+                "La nueva contraseña y su " +
+                "confirmación deben ser iguales."
+            ),
+
+            ChangePasswordErrorCode.WeakPassword =>
+            (
+                StatusCodes.Status400BadRequest,
+                "weak_password",
+                "La contraseña no cumple los requisitos",
+                "Utilice al menos 12 caracteres, " +
+                "incluyendo mayúsculas, minúsculas, " +
+                "números y caracteres especiales."
+            ),
+
+            ChangePasswordErrorCode
+                .PasswordReuseNotAllowed =>
+            (
+                StatusCodes.Status400BadRequest,
+                "password_reuse_not_allowed",
+                "Contraseña no permitida",
+                "La nueva contraseña debe ser " +
+                "diferente de la contraseña actual."
+            ),
+
+            ChangePasswordErrorCode
+                .CurrentPasswordInvalid =>
+            (
+                StatusCodes.Status401Unauthorized,
+                "current_password_invalid",
+                "Contraseña actual incorrecta",
+                "La contraseña actual ingresada " +
+                "no es correcta."
+            ),
+
+            ChangePasswordErrorCode
+                .AccessNotAvailable =>
+            (
+                StatusCodes.Status403Forbidden,
+                "access_not_available",
+                "Acceso no disponible",
+                "La cuenta no está habilitada " +
+                "para cambiar la contraseña."
+            ),
+
+            _ =>
+            (
+                StatusCodes.Status500InternalServerError,
+                "password_change_error",
+                "Error al cambiar la contraseña",
+                "No fue posible completar el " +
+                "cambio de contraseña."
+            )
+        };
+
+        ProblemDetails problemDetails =
+            CreateProblemDetails(
+                statusCode:
+                    error.statusCode,
+                title:
+                    error.title,
+                detail:
+                    error.detail,
+                errorCode:
+                    error.errorCode);
+
+        problemDetails.Extensions[
+            "correlationId"] =
+                correlationId;
+
+        return StatusCode(
+            error.statusCode,
+            problemDetails);
     }
 
     private ObjectResult CreateFailureResponse(

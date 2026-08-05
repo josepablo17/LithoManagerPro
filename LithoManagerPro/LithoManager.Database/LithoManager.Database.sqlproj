@@ -85,6 +85,10 @@
     <Build Include="StoredProcedures\Security\ChangeTemporaryPassword.sql" />
     <Build Include="StoredProcedures\Security\GetCurrentUserById.sql" />
     <Build Include="StoredProcedures\Security\ChangePassword.sql" />
+    <Build Include="StoredProcedures\Security\GetUserForAuthenticationById.sql" />
+    <Build Include="StoredProcedures\Audit\GetAuditLogByCorrelationId.sql" />
+    <Build Include="Tables\Security\PasswordResetTokens.sql" />
+    <Build Include="StoredProcedures\Security\CreatePasswordResetToken.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\PostDeployment.sql" />

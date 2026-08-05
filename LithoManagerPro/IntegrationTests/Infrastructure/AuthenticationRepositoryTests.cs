@@ -4,6 +4,8 @@ using LithoManager.Application.Features.Authentication.Login;
 using LithoManager.IntegrationTests.Collections;
 using LithoManager.IntegrationTests.Fixtures;
 using Xunit;
+using LithoManager.Application.Features.Authentication
+    .ChangePassword;
 
 namespace LithoManager.IntegrationTests.Infrastructure
     .Persistence;
@@ -22,6 +24,174 @@ public sealed class AuthenticationRepositoryTests
             fixture);
 
         _fixture = fixture;
+    }
+
+    [Fact]
+    public async Task ChangePasswordAsync_WhenRequestIsValid_PersistsNewPassword()
+    {
+        // Arrange
+        await _fixture.RestoreTestPasswordAsync();
+
+        Guid correlationId =
+            Guid.NewGuid();
+
+        AuthenticationRequestContext requestContext =
+            new(
+                CorrelationId:
+                    correlationId,
+                ClientIpAddress:
+                    "127.0.0.1",
+                UserAgent:
+                    "LithoManager.IntegrationTests",
+                RequestPath:
+                    "/integration-tests/" +
+                    "repository-change-password");
+
+        string newPasswordHash =
+            _fixture.PasswordService.HashPassword(
+                AuthenticationDatabaseFixture
+                    .ChangedTestPassword);
+
+        DateTime startedAtUtc =
+            DateTime.UtcNow.AddSeconds(-2);
+
+        try
+        {
+            // Act
+            ChangePasswordData result =
+                await _fixture.Repository
+                    .ChangePasswordAsync(
+                        userId:
+                            _fixture
+                                .SuperAdministratorUserId,
+                        newPasswordHash:
+                            newPasswordHash,
+                        requestContext:
+                            requestContext,
+                        cancellationToken:
+                            CancellationToken.None);
+
+            DateTime completedAtUtc =
+                DateTime.UtcNow.AddSeconds(2);
+
+            // Assert: resultado del procedimiento
+            Assert.Equal(
+                _fixture.SuperAdministratorUserId,
+                result.UserId);
+
+            Assert.False(
+                result.RequiresPasswordChange);
+
+            Assert.InRange(
+                result.PasswordChangedAtUtc,
+                startedAtUtc,
+                completedAtUtc);
+
+            // Assert: persistencia real
+            AuthenticationUserData? updatedUser =
+                await _fixture.Repository
+                    .GetUserForAuthenticationByIdAsync(
+                        _fixture
+                            .SuperAdministratorUserId,
+                        CancellationToken.None);
+
+            Assert.NotNull(updatedUser);
+
+            Assert.Equal(
+                result.PasswordChangedAtUtc,
+                updatedUser.PasswordChangedAtUtc);
+
+            Assert.False(
+                updatedUser.RequiresPasswordChange);
+
+            Assert.Equal(
+                0,
+                updatedUser.FailedLoginAttempts);
+
+            Assert.Null(
+                updatedUser.LockoutEndAtUtc);
+
+            // La contraseña nueva funciona.
+            Assert.True(
+                _fixture.PasswordService
+                    .VerifyPassword(
+                        updatedUser.PasswordHash,
+                        AuthenticationDatabaseFixture
+                            .ChangedTestPassword));
+
+            // La contraseña anterior dejó de funcionar.
+            Assert.False(
+                _fixture.PasswordService
+                    .VerifyPassword(
+                        updatedUser.PasswordHash,
+                        AuthenticationDatabaseFixture
+                            .TestPassword));
+        }
+        finally
+        {
+            await _fixture.RestoreTestPasswordAsync();
+        }
+    }
+
+    [Fact]
+    public async Task GetUserForAuthenticationByIdAsync_WhenUserExists_ReturnsSecurityData()
+    {
+        // Arrange
+        await _fixture.RestoreTestPasswordAsync();
+
+        // Act
+        AuthenticationUserData? user =
+            await _fixture.Repository
+                .GetUserForAuthenticationByIdAsync(
+                    _fixture.SuperAdministratorUserId,
+                    CancellationToken.None);
+
+        // Assert
+        Assert.NotNull(user);
+
+        Assert.Equal(
+            _fixture.SuperAdministratorUserId,
+            user.UserId);
+
+        Assert.Equal(
+            AuthenticationDatabaseFixture
+                .TestEmailAddress,
+            user.EmailAddress);
+
+        Assert.True(
+            _fixture.PasswordService
+                .VerifyPassword(
+                    user.PasswordHash,
+                    AuthenticationDatabaseFixture
+                        .TestPassword));
+
+        Assert.True(user.IsEmailConfirmed);
+        Assert.True(user.IsActive);
+        Assert.True(user.IsRoleActive);
+
+        Assert.False(
+            user.RequiresPasswordChange);
+
+        Assert.Null(
+            user.LockoutEndAtUtc);
+
+        Assert.Equal(
+            "SuperAdministrator",
+            user.RoleCode);
+    }
+
+    [Fact]
+    public async Task GetUserForAuthenticationByIdAsync_WhenUserDoesNotExist_ReturnsNull()
+    {
+        // Act
+        AuthenticationUserData? user =
+            await _fixture.Repository
+                .GetUserForAuthenticationByIdAsync(
+                    userId: int.MaxValue,
+                    CancellationToken.None);
+
+        // Assert
+        Assert.Null(user);
     }
 
     [Fact]

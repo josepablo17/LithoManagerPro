@@ -4,6 +4,9 @@ using LithoManager.Application.Features.Authentication
 using LithoManager.Application.Features.Authentication
     .GetCurrentUser;
 using LithoManager.Application.Features.Authentication.Login;
+using LithoManager.Application.Features.Authentication
+    .ChangePassword;
+using LithoManager.Application.Features.Authentication.ForgotPassword;
 
 namespace LithoManager.UnitTests.TestDoubles.Persistence;
 
@@ -52,6 +55,54 @@ public sealed class FakeAuthenticationRepository
     {
         get;
         set;
+    }
+
+    public ChangePasswordData?
+    ChangePasswordToReturn
+    {
+        get;
+        set;
+    }
+
+    public int
+    GetUserForAuthenticationByIdCallCount
+    {
+        get;
+        private set;
+    }
+
+    public int?
+        RequestedAuthenticationUserId
+    {
+        get;
+        private set;
+    }
+
+    public int ChangePasswordCallCount
+    {
+        get;
+        private set;
+    }
+
+    public int?
+        RequestedVoluntaryPasswordChangeUserId
+    {
+        get;
+        private set;
+    }
+
+    public string?
+        RequestedVoluntaryNewPasswordHash
+    {
+        get;
+        private set;
+    }
+
+    public AuthenticationRequestContext?
+        RequestedVoluntaryPasswordChangeContext
+    {
+        get;
+        private set;
     }
 
     public int GetUserForAuthenticationCallCount
@@ -161,6 +212,22 @@ public sealed class FakeAuthenticationRepository
             AuthenticationUserToReturn);
     }
 
+    public Task<AuthenticationUserData?>
+    GetUserForAuthenticationByIdAsync(
+        int userId,
+        CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        GetUserForAuthenticationByIdCallCount++;
+
+        RequestedAuthenticationUserId =
+            userId;
+
+        return Task.FromResult(
+            AuthenticationUserToReturn);
+    }
+
     public Task<FailedLoginRegistrationData>
         RegisterFailedLoginAsync(
             string attemptedEmailAddress,
@@ -245,5 +312,99 @@ public sealed class FakeAuthenticationRepository
                 "was configured for this test.");
 
         return Task.FromResult(result);
+    }
+
+
+    public Task<ChangePasswordData>
+    ChangePasswordAsync(
+        int userId,
+        string newPasswordHash,
+        AuthenticationRequestContext requestContext,
+        CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        ChangePasswordCallCount++;
+
+        RequestedVoluntaryPasswordChangeUserId =
+            userId;
+
+        RequestedVoluntaryNewPasswordHash =
+            newPasswordHash;
+
+        RequestedVoluntaryPasswordChangeContext =
+            requestContext;
+
+        ChangePasswordData result =
+            ChangePasswordToReturn
+            ?? throw new InvalidOperationException(
+                "No voluntary password-change result " +
+                "was configured for this test.");
+
+        return Task.FromResult(result);
+    }
+
+    public CreatePasswordResetTokenData
+    CreatePasswordResetTokenResult
+    { get; set; } =
+        new();
+
+    public string? LastPasswordResetEmailAddress
+    {
+        get;
+        private set;
+    }
+
+    public byte[]? LastPasswordResetTokenHash
+    {
+        get;
+        private set;
+    }
+
+    public DateTime? LastPasswordResetExpiresAtUtc
+    {
+        get;
+        private set;
+    }
+
+    public AuthenticationRequestContext?
+        LastPasswordResetRequestContext
+    {
+        get;
+        private set;
+    }
+
+    public int CreatePasswordResetTokenCallCount
+    {
+        get;
+        private set;
+    }
+
+    public Task<CreatePasswordResetTokenData>
+    CreatePasswordResetTokenAsync(
+        string emailAddress,
+        byte[] tokenHash,
+        DateTime expiresAtUtc,
+        AuthenticationRequestContext requestContext,
+        CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        CreatePasswordResetTokenCallCount++;
+
+        LastPasswordResetEmailAddress =
+            emailAddress;
+
+        LastPasswordResetTokenHash =
+            (byte[])tokenHash.Clone();
+
+        LastPasswordResetExpiresAtUtc =
+            expiresAtUtc;
+
+        LastPasswordResetRequestContext =
+            requestContext;
+
+        return Task.FromResult(
+            CreatePasswordResetTokenResult);
     }
 }
