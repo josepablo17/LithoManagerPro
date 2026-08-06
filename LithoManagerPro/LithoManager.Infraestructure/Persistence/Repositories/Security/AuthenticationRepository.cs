@@ -40,6 +40,9 @@ public sealed class AuthenticationRepository
     private const string ChangePasswordProcedure =
     "Security.ChangePassword";
 
+    private const string CreatePasswordResetTokenProcedure =
+    "Security.CreatePasswordResetToken";
+
     private readonly ISqlConnectionFactory _connectionFactory;
 
     public AuthenticationRepository(
@@ -372,7 +375,7 @@ public sealed class AuthenticationRepository
 
         parameters.Add(
             "EmailAddress",
-            emailAddress,
+            emailAddress.Trim(),
             DbType.String,
             ParameterDirection.Input,
             size: 254);
@@ -419,7 +422,7 @@ public sealed class AuthenticationRepository
 
         var command = new CommandDefinition(
             commandText:
-                "[Security].[CreatePasswordResetToken]",
+                CreatePasswordResetTokenProcedure,
             parameters:
                 parameters,
             commandType:
@@ -427,7 +430,7 @@ public sealed class AuthenticationRepository
             cancellationToken:
                 cancellationToken);
 
-        using var connection =
+        await using var connection =
             _connectionFactory.CreateConnection();
 
         var result =

@@ -82,6 +82,10 @@ public static class DependencyInjection
             ITokenService,
             TokenService>();
 
+        services.AddSingleton<
+            IPasswordResetTokenService,
+            PasswordResetTokenService>();
+
         return services;
     }
 

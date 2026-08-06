@@ -151,7 +151,7 @@ BEGIN
             @CorrelationId,
             N'Security',
             N'PasswordResetRequested',
-            N'User',
+            N'Users',
             CASE
                 WHEN @UserId IS NULL
                     THEN NULL
