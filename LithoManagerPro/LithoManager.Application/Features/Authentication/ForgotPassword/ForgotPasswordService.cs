@@ -136,6 +136,9 @@ public sealed class ForgotPasswordService
                     expiresAtUtc:
                         tokenCreation
                             .ExpiresAtUtc!.Value,
+                    correlationId:
+                        command.RequestContext
+                            .CorrelationId,
                     cancellationToken:
                         cancellationToken);
         }

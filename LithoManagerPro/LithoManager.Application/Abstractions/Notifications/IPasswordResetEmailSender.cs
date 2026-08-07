@@ -1,4 +1,5 @@
-﻿namespace LithoManager.Application.Abstractions.Notifications;
+﻿namespace LithoManager.Application.Abstractions
+    .Notifications;
 
 public interface IPasswordResetEmailSender
 {
@@ -6,5 +7,6 @@ public interface IPasswordResetEmailSender
         string emailAddress,
         string token,
         DateTime expiresAtUtc,
+        Guid correlationId,
         CancellationToken cancellationToken);
 }

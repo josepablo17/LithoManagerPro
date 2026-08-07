@@ -6,6 +6,11 @@ using LithoManager.Infrastructure.Security;
 using LithoManager.Infrastructure.Security.Tokens;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Net.Mail;
+using LithoManager.Application.Abstractions
+    .Notifications;
+using LithoManager.Infrastructure.Notifications
+    .Email;
 
 namespace LithoManager.Infrastructure;
 
@@ -86,7 +91,109 @@ public static class DependencyInjection
             IPasswordResetTokenService,
             PasswordResetTokenService>();
 
+        services
+    .AddOptions<EmailOptions>()
+    .Bind(
+        configuration.GetRequiredSection(
+            EmailOptions.SectionName))
+    .Validate(
+        options =>
+            IsValidEmailOptions(
+                options),
+        "Notifications:Email contains " +
+        "invalid SMTP or reset URL settings.")
+    .ValidateOnStart();
+
+        services.AddSingleton<
+            IPasswordResetEmailSender,
+            PasswordResetEmailSender>();
+
         return services;
+    }
+
+
+    private static bool IsValidEmailOptions(
+    EmailOptions options)
+    {
+        if (!options.IsEnabled)
+        {
+            return true;
+        }
+
+        if (string.IsNullOrWhiteSpace(
+                options.Host))
+        {
+            return false;
+        }
+
+        if (options.Port is < 1 or > 65535)
+        {
+            return false;
+        }
+
+        if (!Enum.IsDefined(
+                options.SecurityMode))
+        {
+            return false;
+        }
+
+        if (string.IsNullOrWhiteSpace(
+                options.FromName))
+        {
+            return false;
+        }
+
+        if (!MailAddress.TryCreate(
+                options.FromAddress,
+                out _))
+        {
+            return false;
+        }
+
+        bool hasUserName =
+            !string.IsNullOrWhiteSpace(
+                options.UserName);
+
+        bool hasPassword =
+            !string.IsNullOrWhiteSpace(
+                options.Password);
+
+        if (hasUserName != hasPassword)
+        {
+            return false;
+        }
+
+        if (options.TimeoutMilliseconds
+            is < 1000 or > 120000)
+        {
+            return false;
+        }
+
+        return HasValidPasswordResetBaseUrl(
+            options.PasswordResetBaseUrl);
+    }
+
+    private static bool
+        HasValidPasswordResetBaseUrl(
+            string? passwordResetBaseUrl)
+    {
+        if (!Uri.TryCreate(
+                passwordResetBaseUrl,
+                UriKind.Absolute,
+                out Uri? uri))
+        {
+            return false;
+        }
+
+        if (uri.Scheme
+            == Uri.UriSchemeHttps)
+        {
+            return true;
+        }
+
+        return uri.Scheme
+                == Uri.UriSchemeHttp
+            && uri.IsLoopback;
     }
 
     private static bool HasValidSigningKey(

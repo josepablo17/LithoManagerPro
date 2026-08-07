@@ -25,6 +25,12 @@ public sealed class FakePasswordResetEmailSender
         private set;
     }
 
+    public Guid? LastCorrelationId
+    {
+        get;
+        private set;
+    }
+
     public string? LastToken
     {
         get;
@@ -41,6 +47,7 @@ public sealed class FakePasswordResetEmailSender
         string emailAddress,
         string token,
         DateTime expiresAtUtc,
+        Guid correlationId,
         CancellationToken cancellationToken)
     {
         cancellationToken
@@ -52,6 +59,13 @@ public sealed class FakePasswordResetEmailSender
         ArgumentException.ThrowIfNullOrWhiteSpace(
             token);
 
+        if (correlationId == Guid.Empty)
+        {
+            throw new ArgumentException(
+                "CorrelationId is required.",
+                nameof(correlationId));
+        }
+
         CallCount++;
 
         LastEmailAddress =
@@ -62,6 +76,9 @@ public sealed class FakePasswordResetEmailSender
 
         LastExpiresAtUtc =
             expiresAtUtc;
+
+        LastCorrelationId =
+            correlationId;
 
         return Task.FromResult(
             ResultToReturn);
