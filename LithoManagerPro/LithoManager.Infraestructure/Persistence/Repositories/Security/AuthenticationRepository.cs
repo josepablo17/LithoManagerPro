@@ -43,6 +43,11 @@ public sealed class AuthenticationRepository
     private const string CreatePasswordResetTokenProcedure =
     "Security.CreatePasswordResetToken";
 
+    private const string
+    RevokePasswordResetTokenAfterDeliveryFailureProcedure =
+        "Security." +
+        "RevokePasswordResetTokenAfterDeliveryFailure";
+
     private readonly ISqlConnectionFactory _connectionFactory;
 
     public AuthenticationRepository(
@@ -437,6 +442,82 @@ public sealed class AuthenticationRepository
             await connection
                 .QuerySingleAsync<CreatePasswordResetTokenData>(
                     command);
+
+        if (result.ExpiresAtUtc
+            is DateTime returnedExpiresAtUtc)
+        {
+            result.ExpiresAtUtc =
+                DateTime.SpecifyKind(
+                    returnedExpiresAtUtc,
+                    DateTimeKind.Utc);
+        }
+
+        return result;
+    }
+
+    public async Task<RevokePasswordResetTokenData>
+    RevokePasswordResetTokenAfterDeliveryFailureAsync(
+        int passwordResetTokenId,
+        AuthenticationRequestContext requestContext,
+        CancellationToken cancellationToken)
+    {
+        if (passwordResetTokenId <= 0)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(passwordResetTokenId),
+                "PasswordResetTokenId must be " +
+                "greater than zero.");
+        }
+
+        ArgumentNullException.ThrowIfNull(
+            requestContext);
+
+        if (requestContext.CorrelationId
+            == Guid.Empty)
+        {
+            throw new ArgumentException(
+                "CorrelationId is required.",
+                nameof(requestContext));
+        }
+
+        var parameters = new
+        {
+            PasswordResetTokenId =
+                passwordResetTokenId,
+
+            requestContext.CorrelationId,
+            requestContext.ClientIpAddress,
+            requestContext.UserAgent,
+            requestContext.RequestPath
+        };
+
+        var command = new CommandDefinition(
+            commandText:
+                RevokePasswordResetTokenAfterDeliveryFailureProcedure,
+            parameters:
+                parameters,
+            commandType:
+                CommandType.StoredProcedure,
+            cancellationToken:
+                cancellationToken);
+
+        await using var connection =
+            _connectionFactory.CreateConnection();
+
+        RevokePasswordResetTokenData result =
+            await connection
+                .QuerySingleAsync<
+                    RevokePasswordResetTokenData>(
+                        command);
+
+        if (result.RevokedAtUtc
+            is DateTime returnedRevokedAtUtc)
+        {
+            result.RevokedAtUtc =
+                DateTime.SpecifyKind(
+                    returnedRevokedAtUtc,
+                    DateTimeKind.Utc);
+        }
 
         return result;
     }

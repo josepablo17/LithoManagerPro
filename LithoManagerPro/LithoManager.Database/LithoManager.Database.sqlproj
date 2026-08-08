@@ -89,6 +89,7 @@
     <Build Include="StoredProcedures\Audit\GetAuditLogByCorrelationId.sql" />
     <Build Include="Tables\Security\PasswordResetTokens.sql" />
     <Build Include="StoredProcedures\Security\CreatePasswordResetToken.sql" />
+    <Build Include="StoredProcedures\Security\RevokePasswordResetTokenAfterDeliveryFailure.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\PostDeployment.sql" />

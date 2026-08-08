@@ -91,6 +91,7 @@ public sealed class PasswordResetEmailSender
         using SmtpClient smtpClient =
             new();
 
+
         smtpClient.Timeout =
             _options.TimeoutMilliseconds;
 

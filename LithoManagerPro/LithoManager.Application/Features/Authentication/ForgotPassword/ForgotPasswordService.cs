@@ -127,20 +127,40 @@ public sealed class ForgotPasswordService
 
         if (tokenCreation.WasCreated)
         {
-            await _passwordResetEmailSender
-                .TrySendAsync(
-                    emailAddress:
-                        tokenCreation.EmailAddress!,
-                    token:
-                        generatedToken.Token,
-                    expiresAtUtc:
-                        tokenCreation
-                            .ExpiresAtUtc!.Value,
-                    correlationId:
-                        command.RequestContext
-                            .CorrelationId,
-                    cancellationToken:
-                        cancellationToken);
+            bool emailWasSent =
+                await _passwordResetEmailSender
+                    .TrySendAsync(
+                        emailAddress:
+                            tokenCreation.EmailAddress!,
+                        token:
+                            generatedToken.Token,
+                        expiresAtUtc:
+                            tokenCreation
+                                .ExpiresAtUtc!.Value,
+                        correlationId:
+                            command.RequestContext
+                                .CorrelationId,
+                        cancellationToken:
+                            cancellationToken);
+
+            if (!emailWasSent)
+            {
+                RevokePasswordResetTokenData revocation =
+                    await _authenticationRepository
+                        .RevokePasswordResetTokenAfterDeliveryFailureAsync(
+                            passwordResetTokenId:
+                                tokenCreation
+                                    .PasswordResetTokenId!
+                                    .Value,
+                            requestContext:
+                                command.RequestContext,
+                            cancellationToken:
+                                cancellationToken);
+
+                ValidateRevocationResult(
+                    tokenCreation,
+                    revocation);
+            }
         }
 
         /*
@@ -246,6 +266,58 @@ public sealed class ForgotPasswordService
             throw new InvalidOperationException(
                 "The password reset expiration " +
                 "returned by the repository must use UTC.");
+        }
+    }
+
+    private static void ValidateRevocationResult(
+    CreatePasswordResetTokenData tokenCreation,
+    RevokePasswordResetTokenData revocation)
+    {
+        ArgumentNullException.ThrowIfNull(
+            tokenCreation);
+
+        ArgumentNullException.ThrowIfNull(
+            revocation);
+
+        if (revocation.PasswordResetTokenId
+            != tokenCreation.PasswordResetTokenId)
+        {
+            throw new InvalidOperationException(
+                "The password reset revocation " +
+                "returned an unexpected token identifier.");
+        }
+
+        if (revocation.UserId
+            != tokenCreation.UserId)
+        {
+            throw new InvalidOperationException(
+                "The password reset revocation " +
+                "returned an unexpected user identifier.");
+        }
+
+        if (!revocation.IsInactive)
+        {
+            throw new InvalidOperationException(
+                "The password reset token remained " +
+                "active after the email delivery failure.");
+        }
+
+        if (revocation.WasRevoked
+            && revocation.RevokedAtUtc is null)
+        {
+            throw new InvalidOperationException(
+                "The password reset revocation did " +
+                "not return its UTC timestamp.");
+        }
+
+        if (revocation.RevokedAtUtc
+                is DateTime revokedAtUtc
+            && revokedAtUtc.Kind
+                != DateTimeKind.Utc)
+        {
+            throw new InvalidOperationException(
+                "The password reset revocation " +
+                "timestamp must use UTC.");
         }
     }
 }

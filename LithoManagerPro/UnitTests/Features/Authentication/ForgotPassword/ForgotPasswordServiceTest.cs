@@ -119,6 +119,8 @@ public sealed class ForgotPasswordServiceTests
             emailSender);
     }
 
+
+
     [Fact]
     public async Task RequestAsync_WhenCorrelationIdIsEmpty_ReturnsInvalidRequest()
     {
@@ -269,6 +271,10 @@ public sealed class ForgotPasswordServiceTests
         Assert.Equal(
             requestContext.CorrelationId,
             emailSender.LastCorrelationId);
+        Assert.Equal(
+    0,
+    repository
+        .RevokePasswordResetTokenCallCount);
 
         // No se revoca porque el correo fue enviado.
         Assert.Equal(
@@ -334,6 +340,11 @@ public sealed class ForgotPasswordServiceTests
 
         Assert.Equal(
             0,
+                repository
+                    .RevokePasswordResetTokenCallCount);
+                
+        Assert.Equal(
+            0,
             repository
                 .RevokePasswordResetTokenCallCount);
     }
@@ -363,7 +374,8 @@ public sealed class ForgotPasswordServiceTests
                         UserId = 3,
                         RevokedAtUtc =
                             revokedAtUtc,
-                        WasRevoked = true
+                        WasRevoked = true,
+                        IsInactive = true
                     }
             };
 
@@ -432,7 +444,8 @@ public sealed class ForgotPasswordServiceTests
                         PasswordResetTokenId = 15,
                         UserId = 3,
                         RevokedAtUtc = null,
-                        WasRevoked = false
+                        WasRevoked = false,
+                        IsInactive = true
                     }
             };
 
@@ -690,5 +703,120 @@ public sealed class ForgotPasswordServiceTests
             0,
             repository
                 .RevokePasswordResetTokenCallCount);
+
+        Assert.Equal(
+    0,
+    repository
+        .RevokePasswordResetTokenCallCount);
     }
+
+    [Fact]
+    public async Task RequestAsync_WhenTokenIsAlreadyInactiveAfterDeliveryFailure_ReturnsGenericSuccess()
+    {
+        // Arrange
+        FakeAuthenticationRepository repository =
+            new()
+            {
+                CreatePasswordResetTokenResult =
+                    CreateSuccessfulTokenCreation(),
+
+                RevokePasswordResetTokenResult =
+                    new RevokePasswordResetTokenData
+                    {
+                        PasswordResetTokenId = 15,
+                        UserId = 3,
+                        RevokedAtUtc = null,
+                        WasRevoked = false,
+                        IsInactive = true
+                    }
+            };
+
+        FakePasswordResetTokenService tokenService =
+            CreateTokenService();
+
+        FakePasswordResetEmailSender emailSender =
+            new()
+            {
+                ResultToReturn = false
+            };
+
+        ForgotPasswordService service =
+            CreateService(
+                repository,
+                tokenService,
+                emailSender);
+
+        // Act
+        ForgotPasswordResult result =
+            await service.RequestAsync(
+                CreateValidCommand(),
+                CancellationToken.None);
+
+        // Assert
+        AssertSuccess(result);
+
+        Assert.Equal(
+            1,
+            emailSender.CallCount);
+
+        Assert.Equal(
+            1,
+            repository
+                .RevokePasswordResetTokenCallCount);
+    }
+
+    [Fact]
+    public async Task RequestAsync_WhenRevocationLeavesTokenActive_ThrowsInvalidOperationException()
+    {
+        // Arrange
+        FakeAuthenticationRepository repository =
+            new()
+            {
+                CreatePasswordResetTokenResult =
+                    CreateSuccessfulTokenCreation(),
+
+                RevokePasswordResetTokenResult =
+                    new RevokePasswordResetTokenData
+                    {
+                        PasswordResetTokenId = 15,
+                        UserId = 3,
+                        RevokedAtUtc = null,
+                        WasRevoked = false,
+                        IsInactive = false
+                    }
+            };
+
+        FakePasswordResetTokenService tokenService =
+            CreateTokenService();
+
+        FakePasswordResetEmailSender emailSender =
+            new()
+            {
+                ResultToReturn = false
+            };
+
+        ForgotPasswordService service =
+            CreateService(
+                repository,
+                tokenService,
+                emailSender);
+
+        // Act and assert
+        InvalidOperationException exception =
+            await Assert.ThrowsAsync<
+                InvalidOperationException>(
+                    () => service.RequestAsync(
+                        CreateValidCommand(),
+                        CancellationToken.None));
+
+        Assert.Contains(
+            "remained active",
+            exception.Message);
+
+        Assert.Equal(
+            1,
+            repository
+                .RevokePasswordResetTokenCallCount);
+    }
+
 }

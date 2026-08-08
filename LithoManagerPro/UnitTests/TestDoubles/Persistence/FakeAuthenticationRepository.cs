@@ -198,6 +198,44 @@ public sealed class FakeAuthenticationRepository
         private set;
     }
 
+    public RevokePasswordResetTokenData
+    RevokePasswordResetTokenResult
+    {
+        get;
+        set;
+    } = new()
+    {
+        PasswordResetTokenId = 1,
+        UserId = 1,
+        RevokedAtUtc =
+        DateTime.SpecifyKind(
+            DateTime.UtcNow,
+            DateTimeKind.Utc),
+        WasRevoked = true,
+        IsInactive = true
+    };
+
+    public int
+        RevokePasswordResetTokenCallCount
+    {
+        get;
+        private set;
+    }
+
+    public int?
+        LastRevokedPasswordResetTokenId
+    {
+        get;
+        private set;
+    }
+
+    public AuthenticationRequestContext?
+        LastPasswordResetRevocationContext
+    {
+        get;
+        private set;
+    }
+
     public Task<AuthenticationUserData?>
         GetUserForAuthenticationAsync(
             string emailAddress,
@@ -406,5 +444,26 @@ public sealed class FakeAuthenticationRepository
 
         return Task.FromResult(
             CreatePasswordResetTokenResult);
+    }
+
+    public Task<RevokePasswordResetTokenData>
+    RevokePasswordResetTokenAfterDeliveryFailureAsync(
+        int passwordResetTokenId,
+        AuthenticationRequestContext requestContext,
+        CancellationToken cancellationToken)
+    {
+        cancellationToken
+            .ThrowIfCancellationRequested();
+
+        RevokePasswordResetTokenCallCount++;
+
+        LastRevokedPasswordResetTokenId =
+            passwordResetTokenId;
+
+        LastPasswordResetRevocationContext =
+            requestContext;
+
+        return Task.FromResult(
+            RevokePasswordResetTokenResult);
     }
 }

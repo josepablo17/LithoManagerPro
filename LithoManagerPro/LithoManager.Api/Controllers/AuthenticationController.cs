@@ -9,6 +9,8 @@ using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using LithoManager.Application.Features.Authentication
     .ChangePassword;
+using LithoManager.Application.Features.Authentication
+    .ForgotPassword;
 
 namespace LithoManager.Api.Controllers;
 
@@ -28,11 +30,15 @@ public sealed class AuthenticationController : ControllerBase
     private readonly IChangePasswordService
     _changePasswordService;
 
+    private readonly IForgotPasswordService
+    _forgotPasswordService;
+
     public AuthenticationController(
         IAuthenticationService authenticationService,
         IChangeTemporaryPasswordService
             changeTemporaryPasswordService,
-        IChangePasswordService changePasswordService)
+        IChangePasswordService changePasswordService,
+        IForgotPasswordService forgotPasswordService)
     {
         ArgumentNullException.ThrowIfNull(
             authenticationService);
@@ -43,6 +49,9 @@ public sealed class AuthenticationController : ControllerBase
         ArgumentNullException.ThrowIfNull(
             changePasswordService);
 
+        ArgumentNullException.ThrowIfNull(
+            forgotPasswordService);
+
         _authenticationService =
             authenticationService;
 
@@ -51,6 +60,9 @@ public sealed class AuthenticationController : ControllerBase
 
         _changePasswordService =
             changePasswordService;
+
+        _forgotPasswordService =
+            forgotPasswordService;
     }
 
     [AllowAnonymous]
@@ -710,5 +722,140 @@ public sealed class AuthenticationController : ControllerBase
             errorCode;
 
         return problemDetails;
+    }
+
+    [AllowAnonymous]
+    [HttpPost("forgot-password")]
+    [Consumes("application/json")]
+    [Produces("application/json")]
+    [ProducesResponseType(
+    typeof(ForgotPasswordResponse),
+    StatusCodes.Status202Accepted)]
+    [ProducesResponseType(
+    typeof(ProblemDetails),
+    StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(
+    typeof(ProblemDetails),
+    StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<ForgotPasswordResponse>>
+    ForgotPassword(
+        [FromBody] ForgotPasswordRequest request,
+        CancellationToken cancellationToken)
+    {
+        Guid correlationId =
+            ResolveCorrelationId();
+
+        Response.Headers[
+            CorrelationIdHeaderName] =
+                correlationId.ToString();
+
+        Response.Headers["Cache-Control"] =
+            "no-store";
+
+        Response.Headers["Pragma"] =
+            "no-cache";
+
+        AuthenticationRequestContext requestContext =
+            new(
+                CorrelationId:
+                    correlationId,
+                ClientIpAddress:
+                    LimitLength(
+                        HttpContext.Connection
+                            .RemoteIpAddress?
+                            .ToString(),
+                        maximumLength: 45),
+                UserAgent:
+                    LimitLength(
+                        Request.Headers["User-Agent"]
+                            .ToString(),
+                        maximumLength: 512),
+                RequestPath:
+                    LimitLength(
+                        Request.Path.Value,
+                        maximumLength: 500));
+
+        ForgotPasswordCommand command =
+            new(
+                EmailAddress:
+                    request.EmailAddress,
+                RequestContext:
+                    requestContext);
+
+        ForgotPasswordResult result =
+            await _forgotPasswordService
+                .RequestAsync(
+                    command,
+                    cancellationToken);
+
+        if (!result.IsSuccessful)
+        {
+            return CreateForgotPasswordFailure(
+                result,
+                correlationId);
+        }
+
+        ForgotPasswordResponse response =
+            new(
+                Message:
+                    "Si existe una cuenta asociada " +
+                    "al correo indicado y está " +
+                    "habilitada para recuperar la " +
+                    "contraseña, se enviarán las " +
+                    "instrucciones correspondientes.",
+                CorrelationId:
+                    correlationId);
+
+        return Accepted(response);
+    }
+
+    private ObjectResult
+    CreateForgotPasswordFailure(
+        ForgotPasswordResult result,
+        Guid correlationId)
+    {
+        (
+            int statusCode,
+            string errorCode,
+            string title,
+            string detail
+        ) error = result.ErrorCode switch
+        {
+            ForgotPasswordErrorCode.InvalidRequest =>
+            (
+                StatusCodes.Status400BadRequest,
+                "invalid_request",
+                "Solicitud inválida",
+                "Revise el correo electrónico enviado."
+            ),
+
+            _ =>
+            (
+                StatusCodes.Status500InternalServerError,
+                "forgot_password_error",
+                "Error al procesar la solicitud",
+                "No fue posible procesar la " +
+                "solicitud de recuperación."
+            )
+        };
+
+        ProblemDetails problemDetails =
+            CreateProblemDetails(
+                statusCode:
+                    error.statusCode,
+                title:
+                    error.title,
+                detail:
+                    error.detail,
+                errorCode:
+                    error.errorCode);
+
+        problemDetails.Extensions[
+            "correlationId"] =
+                correlationId;
+
+        return StatusCode(
+            error.statusCode,
+            problemDetails);
     }
 }

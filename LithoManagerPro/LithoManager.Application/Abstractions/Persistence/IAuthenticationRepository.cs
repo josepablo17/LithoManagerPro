@@ -60,7 +60,11 @@ public interface IAuthenticationRepository
         CancellationToken cancellationToken);
 
 
-
+    Task<RevokePasswordResetTokenData>
+    RevokePasswordResetTokenAfterDeliveryFailureAsync(
+        int passwordResetTokenId,
+        AuthenticationRequestContext requestContext,
+        CancellationToken cancellationToken);
 
 
 
