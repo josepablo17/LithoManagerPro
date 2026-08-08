@@ -11,6 +11,8 @@ using LithoManager.Application.Features.Authentication
     .ChangePassword;
 using LithoManager.Application.Features.Authentication
     .ForgotPassword;
+using LithoManager.Application.Features.Authentication
+    .ResetPassword;
 
 namespace LithoManager.Api.Controllers;
 
@@ -33,12 +35,16 @@ public sealed class AuthenticationController : ControllerBase
     private readonly IForgotPasswordService
     _forgotPasswordService;
 
+    private readonly IResetPasswordService
+    _resetPasswordService;
+
     public AuthenticationController(
         IAuthenticationService authenticationService,
         IChangeTemporaryPasswordService
             changeTemporaryPasswordService,
         IChangePasswordService changePasswordService,
-        IForgotPasswordService forgotPasswordService)
+        IForgotPasswordService forgotPasswordService,
+        IResetPasswordService resetPasswordService)
     {
         ArgumentNullException.ThrowIfNull(
             authenticationService);
@@ -52,6 +58,9 @@ public sealed class AuthenticationController : ControllerBase
         ArgumentNullException.ThrowIfNull(
             forgotPasswordService);
 
+        ArgumentNullException.ThrowIfNull(
+            resetPasswordService);
+
         _authenticationService =
             authenticationService;
 
@@ -63,6 +72,9 @@ public sealed class AuthenticationController : ControllerBase
 
         _forgotPasswordService =
             forgotPasswordService;
+
+        _resetPasswordService =
+            resetPasswordService;
     }
 
     [AllowAnonymous]
@@ -836,6 +848,172 @@ public sealed class AuthenticationController : ControllerBase
                 "Error al procesar la solicitud",
                 "No fue posible procesar la " +
                 "solicitud de recuperación."
+            )
+        };
+
+        ProblemDetails problemDetails =
+            CreateProblemDetails(
+                statusCode:
+                    error.statusCode,
+                title:
+                    error.title,
+                detail:
+                    error.detail,
+                errorCode:
+                    error.errorCode);
+
+        problemDetails.Extensions[
+            "correlationId"] =
+                correlationId;
+
+        return StatusCode(
+            error.statusCode,
+            problemDetails);
+    }
+
+    [AllowAnonymous]
+    [HttpPost("reset-password")]
+    [Consumes("application/json")]
+    [ProducesResponseType(
+    StatusCodes.Status204NoContent)]
+    [ProducesResponseType(
+    typeof(ProblemDetails),
+    StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(
+    typeof(ProblemDetails),
+    StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult>
+ResetPassword(
+    [FromBody] ResetPasswordRequest request,
+    CancellationToken cancellationToken)
+    {
+        Guid correlationId =
+            ResolveCorrelationId();
+
+        Response.Headers[
+            CorrelationIdHeaderName] =
+                correlationId.ToString();
+
+        Response.Headers["Cache-Control"] =
+            "no-store";
+
+        Response.Headers["Pragma"] =
+            "no-cache";
+
+        AuthenticationRequestContext requestContext =
+            new(
+                CorrelationId:
+                    correlationId,
+                ClientIpAddress:
+                    LimitLength(
+                        HttpContext.Connection
+                            .RemoteIpAddress?
+                            .ToString(),
+                        maximumLength: 45),
+                UserAgent:
+                    LimitLength(
+                        Request.Headers["User-Agent"]
+                            .ToString(),
+                        maximumLength: 512),
+                RequestPath:
+                    LimitLength(
+                        Request.Path.Value,
+                        maximumLength: 500));
+
+        ResetPasswordCommand command =
+            new(
+                Token:
+                    request.Token,
+                NewPassword:
+                    request.NewPassword,
+                ConfirmNewPassword:
+                    request.ConfirmNewPassword,
+                RequestContext:
+                    requestContext);
+
+        ResetPasswordResult result =
+            await _resetPasswordService
+                .ResetAsync(
+                    command,
+                    cancellationToken);
+
+        if (!result.IsSuccessful)
+        {
+            return CreateResetPasswordFailure(
+                result,
+                correlationId);
+        }
+
+        return NoContent();
+    }
+
+    private ObjectResult
+CreateResetPasswordFailure(
+    ResetPasswordResult result,
+    Guid correlationId)
+    {
+        (
+            int statusCode,
+            string errorCode,
+            string title,
+            string detail
+        ) error = result.ErrorCode switch
+        {
+            ResetPasswordErrorCode.InvalidRequest =>
+            (
+                StatusCodes.Status400BadRequest,
+                "invalid_request",
+                "Solicitud inválida",
+                "Revise los datos enviados."
+            ),
+
+            ResetPasswordErrorCode
+                .PasswordsDoNotMatch =>
+            (
+                StatusCodes.Status400BadRequest,
+                "passwords_do_not_match",
+                "Las contraseñas no coinciden",
+                "La nueva contraseña y su " +
+                "confirmación deben ser iguales."
+            ),
+
+            ResetPasswordErrorCode.WeakPassword =>
+            (
+                StatusCodes.Status400BadRequest,
+                "weak_password",
+                "La contraseña no cumple los requisitos",
+                "Utilice al menos 12 caracteres, " +
+                "incluyendo mayúsculas, minúsculas, " +
+                "números y caracteres especiales."
+            ),
+
+            ResetPasswordErrorCode
+                .PasswordReuseNotAllowed =>
+            (
+                StatusCodes.Status400BadRequest,
+                "password_reuse_not_allowed",
+                "Contraseña no permitida",
+                "La nueva contraseña debe ser " +
+                "diferente de la contraseña actual."
+            ),
+
+            ResetPasswordErrorCode
+                .PasswordResetNotAvailable =>
+            (
+                StatusCodes.Status400BadRequest,
+                "password_reset_not_available",
+                "Recuperación no disponible",
+                "El enlace de recuperación no es " +
+                "válido o ya no está disponible."
+            ),
+
+            _ =>
+            (
+                StatusCodes.Status500InternalServerError,
+                "reset_password_error",
+                "Error al restablecer la contraseña",
+                "No fue posible completar el " +
+                "restablecimiento de contraseña."
             )
         };
 

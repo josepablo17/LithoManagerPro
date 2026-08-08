@@ -1,13 +1,14 @@
-﻿using System.Data;
-using System.Data.Common;
-using Dapper;
+﻿using Dapper;
 using LithoManager.Application.Abstractions.Persistence;
 using LithoManager.Application.Abstractions.Security;
+using LithoManager.Application.Features.Authentication.ForgotPassword;
 using LithoManager.Application.Features.Authentication.Login;
 using LithoManager.Infrastructure;
 using LithoManager.Infrastructure.Persistence.Dapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Data;
+using System.Data.Common;
 using Xunit;
 
 namespace LithoManager.IntegrationTests.Fixtures;
@@ -63,6 +64,13 @@ public sealed class AuthenticationDatabaseFixture
         private set;
     }
 
+    public IPasswordResetTokenService
+    PasswordResetTokenService
+    {
+        get;
+        private set;
+    } = null!;
+
     public async Task InitializeAsync()
     {
         IConfiguration configuration =
@@ -80,6 +88,8 @@ public sealed class AuthenticationDatabaseFixture
 
         ServiceCollection services =
             new();
+
+        services.AddLogging();
 
         services.AddInfrastructure(
             configuration);
@@ -114,6 +124,11 @@ public sealed class AuthenticationDatabaseFixture
             scopedServices.GetRequiredService<
                 ITokenService>();
 
+        PasswordResetTokenService =
+            scopedServices.GetRequiredService<
+                IPasswordResetTokenService>();
+
+
         TimeProvider =
             scopedServices.GetRequiredService<
                 TimeProvider>();
@@ -123,9 +138,15 @@ public sealed class AuthenticationDatabaseFixture
 
     public async Task DisposeAsync()
     {
-        _serviceScope.Dispose();
+        if (_serviceScope is not null)
+        {
+            _serviceScope.Dispose();
+        }
 
-        await _serviceProvider.DisposeAsync();
+        if (_serviceProvider is not null)
+        {
+            await _serviceProvider.DisposeAsync();
+        }
     }
 
     public async Task ResetLoginStateAsync()
@@ -223,7 +244,10 @@ public sealed class AuthenticationDatabaseFixture
                     [
                         "Authentication:Jwt:" +
                         "SigningKeyBase64"
-                    ] = CreateTestSigningKeyBase64()
+                    ] = CreateTestSigningKeyBase64(),
+
+                    ["Notifications:Email:IsEnabled"] =
+                        "false"
                 };
 
         return new ConfigurationBuilder()
@@ -455,5 +479,43 @@ public sealed class AuthenticationDatabaseFixture
             .QuerySingleOrDefaultAsync<
                 AuditLogTestData>(
                     command);
+    }
+
+    public async Task<GeneratedPasswordResetToken>
+CreatePasswordResetTokenAsync(
+    string requestPath)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(
+            requestPath);
+
+        GeneratedPasswordResetToken generatedToken =
+            PasswordResetTokenService.GenerateToken();
+
+        DateTime expiresAtUtc =
+            DateTime.UtcNow.AddMinutes(15);
+
+        CreatePasswordResetTokenData result =
+            await Repository
+                .CreatePasswordResetTokenAsync(
+                    emailAddress:
+                        TestEmailAddress,
+                    tokenHash:
+                        generatedToken.TokenHash,
+                    expiresAtUtc:
+                        expiresAtUtc,
+                    requestContext:
+                        CreateRequestContext(
+                            requestPath),
+                    cancellationToken:
+                        CancellationToken.None);
+
+        if (!result.WasCreated)
+        {
+            throw new InvalidOperationException(
+                "The integration-test password-reset " +
+                "token could not be created.");
+        }
+
+        return generatedToken;
     }
 }

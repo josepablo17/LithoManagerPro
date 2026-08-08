@@ -6,6 +6,8 @@ using LithoManager.Application.Features.Authentication.Login;
 using LithoManager.Application.Features.Authentication
     .ChangePassword;
 using LithoManager.Application.Features.Authentication.ForgotPassword;
+using LithoManager.Application.Features.Authentication
+    .ResetPassword;
 
 namespace LithoManager.Application.Abstractions.Persistence;
 
@@ -66,6 +68,18 @@ public interface IAuthenticationRepository
         AuthenticationRequestContext requestContext,
         CancellationToken cancellationToken);
 
+    Task<PasswordResetContextData?>
+GetPasswordResetContextByTokenHashAsync(
+    byte[] tokenHash,
+    CancellationToken cancellationToken);
+
+    Task<CompletePasswordResetData>
+    CompletePasswordResetAsync(
+        byte[] tokenHash,
+        string expectedPasswordHash,
+        string newPasswordHash,
+        AuthenticationRequestContext requestContext,
+        CancellationToken cancellationToken);
 
 
 }

@@ -1,15 +1,16 @@
 ﻿using LithoManager.Api.Contracts.Authentication;
+using LithoManager.Application.Abstractions.Security;
 using LithoManager.Application.Features.Authentication.Login;
 using LithoManager.IntegrationTests
     .Api.Infrastructure;
 using LithoManager.IntegrationTests.Collections;
 using LithoManager.IntegrationTests.Fixtures;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Testing;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using Xunit;
-using LithoManager.Application.Features.Authentication.Login;
 
 namespace LithoManager.IntegrationTests.Api
     .Authentication;
@@ -487,6 +488,38 @@ public sealed class AuthenticationEndpointsTests
         Assert.Null(body.DepartmentName);
     }
 
+    private async Task<HttpResponseMessage>
+SendResetPasswordAsync(
+    string token,
+    string newPassword,
+    Guid correlationId)
+    {
+        ResetPasswordRequest requestBody =
+            new()
+            {
+                Token = token,
+                NewPassword = newPassword,
+                ConfirmNewPassword =
+                    newPassword
+            };
+
+        using HttpRequestMessage request =
+            new(
+                HttpMethod.Post,
+                "/api/auth/reset-password");
+
+        request.Headers.Add(
+            "X-Correlation-ID",
+            correlationId.ToString());
+
+        request.Content =
+            JsonContent.Create(
+                requestBody);
+
+        return await _client.SendAsync(
+            request);
+    }
+
     private async Task<string>
         LoginAndGetAccessTokenAsync(
             string password =
@@ -524,5 +557,394 @@ public sealed class AuthenticationEndpointsTests
                 loginBody.AccessToken));
 
         return loginBody.AccessToken;
+    }
+
+    [Fact]
+    public async Task ResetPassword_WhenTokenAndPasswordAreValid_ChangesPasswordAndRegistersAudit()
+    {
+        // Arrange
+        await _databaseFixture
+            .RestoreTestPasswordAsync();
+
+        GeneratedPasswordResetToken resetToken =
+            await _databaseFixture
+                .CreatePasswordResetTokenAsync(
+                    "/integration-tests/" +
+                    "create-reset-token");
+
+        Guid correlationId =
+            Guid.NewGuid();
+
+        DateTime startedAtUtc =
+            DateTime.UtcNow.AddSeconds(-2);
+
+        try
+        {
+            // Act
+            HttpResponseMessage response =
+                await SendResetPasswordAsync(
+                    token:
+                        resetToken.Token,
+                    newPassword:
+                        AuthenticationDatabaseFixture
+                            .ChangedTestPassword,
+                    correlationId:
+                        correlationId);
+
+            DateTime completedAtUtc =
+                DateTime.UtcNow.AddSeconds(2);
+
+            // Assert: HTTP
+            Assert.Equal(
+                HttpStatusCode.NoContent,
+                response.StatusCode);
+
+            Assert.True(
+                response.Headers.TryGetValues(
+                    "X-Correlation-ID",
+                    out IEnumerable<string>?
+                        correlationValues));
+
+            Assert.Equal(
+                correlationId.ToString(),
+                Assert.Single(
+                    correlationValues));
+
+            Assert.True(
+                response.Headers.CacheControl?.NoStore);
+
+            Assert.True(
+                response.Headers.TryGetValues(
+                    "Pragma",
+                    out IEnumerable<string>?
+                        pragmaValues));
+
+            Assert.Contains(
+                pragmaValues,
+                value =>
+                    value.Contains(
+                        "no-cache",
+                        StringComparison
+                            .OrdinalIgnoreCase));
+
+            // La contraseña anterior ya no funciona.
+            LoginRequest oldPasswordLogin =
+                new()
+                {
+                    EmailAddress =
+                        AuthenticationDatabaseFixture
+                            .TestEmailAddress,
+
+                    Password =
+                        AuthenticationDatabaseFixture
+                            .TestPassword
+                };
+
+            HttpResponseMessage oldPasswordResponse =
+                await _client.PostAsJsonAsync(
+                    "/api/auth/login",
+                    oldPasswordLogin);
+
+            Assert.Equal(
+                HttpStatusCode.Unauthorized,
+                oldPasswordResponse.StatusCode);
+
+            // La nueva sí funciona.
+            string accessToken =
+                await LoginAndGetAccessTokenAsync(
+                    AuthenticationDatabaseFixture
+                        .ChangedTestPassword);
+
+            Assert.False(
+                string.IsNullOrWhiteSpace(
+                    accessToken));
+
+            // Assert: persistencia
+            AuthenticationUserData? user =
+                await _databaseFixture.Repository
+                    .GetUserForAuthenticationByIdAsync(
+                        _databaseFixture
+                            .SuperAdministratorUserId,
+                        CancellationToken.None);
+
+            Assert.NotNull(user);
+
+            Assert.True(
+                _databaseFixture.PasswordService
+                    .VerifyPassword(
+                        user.PasswordHash,
+                        AuthenticationDatabaseFixture
+                            .ChangedTestPassword));
+
+            Assert.False(
+                user.RequiresPasswordChange);
+
+            Assert.Null(
+                user.TemporaryPasswordExpiresAtUtc);
+
+            Assert.Equal(
+                0,
+                user.FailedLoginAttempts);
+
+            Assert.Null(
+                user.LockoutEndAtUtc);
+
+            // Assert: auditoría
+            AuditLogTestData? auditLog =
+                await _databaseFixture
+                    .GetAuditLogByCorrelationIdAsync(
+                        correlationId);
+
+            Assert.NotNull(auditLog);
+
+            Assert.Equal(
+                correlationId,
+                auditLog.CorrelationId);
+
+            Assert.Equal(
+                "Security",
+                auditLog.ModuleName);
+
+            Assert.Equal(
+                "PasswordResetCompleted",
+                auditLog.ActionName);
+
+            Assert.Equal(
+                "Users",
+                auditLog.EntityName);
+
+            Assert.Equal(
+                _databaseFixture
+                    .SuperAdministratorUserId
+                    .ToString(),
+                auditLog.EntityId);
+
+            Assert.Equal(
+                "Anonymous",
+                auditLog.ActorType);
+
+            Assert.Null(
+                auditLog.ActorUserId);
+
+            Assert.Equal(
+                AuthenticationDatabaseFixture
+                    .TestEmailAddress,
+                auditLog.ActorEmailAddress);
+
+            Assert.True(
+                auditLog.IsSuccessful);
+
+            Assert.Equal(
+                "POST",
+                auditLog.HttpMethod);
+
+            Assert.Equal(
+                "/api/auth/reset-password",
+                auditLog.RequestPath);
+
+            Assert.InRange(
+                auditLog.OccurredAtUtc,
+                startedAtUtc,
+                completedAtUtc);
+        }
+        finally
+        {
+            await _databaseFixture
+                .RestoreTestPasswordAsync();
+        }
+    }
+
+    [Fact]
+    public async Task ResetPassword_WhenTokenWasAlreadyUsed_ReturnsGenericUnavailableError()
+    {
+        // Arrange
+        await _databaseFixture
+            .RestoreTestPasswordAsync();
+
+        GeneratedPasswordResetToken resetToken =
+            await _databaseFixture
+                .CreatePasswordResetTokenAsync(
+                    "/integration-tests/" +
+                    "create-single-use-reset-token");
+
+        try
+        {
+            HttpResponseMessage firstResponse =
+                await SendResetPasswordAsync(
+                    resetToken.Token,
+                    AuthenticationDatabaseFixture
+                        .ChangedTestPassword,
+                    Guid.NewGuid());
+
+            Assert.Equal(
+                HttpStatusCode.NoContent,
+                firstResponse.StatusCode);
+
+            // Act: mismo token una segunda vez
+            HttpResponseMessage secondResponse =
+                await SendResetPasswordAsync(
+                    resetToken.Token,
+                    "AnotherIntegration3!",
+                    Guid.NewGuid());
+
+            // Assert
+            Assert.Equal(
+                HttpStatusCode.BadRequest,
+                secondResponse.StatusCode);
+
+            ProblemDetails? problem =
+                await secondResponse.Content
+                    .ReadFromJsonAsync<
+                        ProblemDetails>();
+
+            Assert.NotNull(problem);
+
+            Assert.True(
+                problem.Extensions.TryGetValue(
+                    "errorCode",
+                    out object? errorCode));
+
+            Assert.Equal(
+                "password_reset_not_available",
+                errorCode?.ToString());
+
+            // La segunda petición NO cambió otra vez
+            // la contraseña.
+            string accessToken =
+                await LoginAndGetAccessTokenAsync(
+                    AuthenticationDatabaseFixture
+                        .ChangedTestPassword);
+
+            Assert.False(
+                string.IsNullOrWhiteSpace(
+                    accessToken));
+        }
+        finally
+        {
+            await _databaseFixture
+                .RestoreTestPasswordAsync();
+        }
+    }
+
+    [Fact]
+    public async Task ResetPassword_WhenTokenDoesNotExist_ReturnsGenericUnavailableError()
+    {
+        // Arrange
+        GeneratedPasswordResetToken nonexistentToken =
+            _databaseFixture
+                .PasswordResetTokenService
+                .GenerateToken();
+
+        // El token se genera pero deliberadamente
+        // NO se guarda en Security.PasswordResetTokens.
+
+        // Act
+        HttpResponseMessage response =
+            await SendResetPasswordAsync(
+                nonexistentToken.Token,
+                AuthenticationDatabaseFixture
+                    .ChangedTestPassword,
+                Guid.NewGuid());
+
+        // Assert
+        Assert.Equal(
+            HttpStatusCode.BadRequest,
+            response.StatusCode);
+
+        ProblemDetails? problem =
+            await response.Content
+                .ReadFromJsonAsync<
+                    ProblemDetails>();
+
+        Assert.NotNull(problem);
+
+        Assert.True(
+            problem.Extensions.TryGetValue(
+                "errorCode",
+                out object? errorCode));
+
+        Assert.Equal(
+            "password_reset_not_available",
+            errorCode?.ToString());
+    }
+
+    [Fact]
+    public async Task ResetPassword_WhenNewPasswordMatchesCurrentPassword_DoesNotConsumeToken()
+    {
+        // Arrange
+        await _databaseFixture
+            .RestoreTestPasswordAsync();
+
+        GeneratedPasswordResetToken resetToken =
+            await _databaseFixture
+                .CreatePasswordResetTokenAsync(
+                    "/integration-tests/" +
+                    "create-password-reuse-token");
+
+        try
+        {
+            // Act 1: intenta reutilizar la actual
+            HttpResponseMessage reuseResponse =
+                await SendResetPasswordAsync(
+                    resetToken.Token,
+                    AuthenticationDatabaseFixture
+                        .TestPassword,
+                    Guid.NewGuid());
+
+            // Assert 1
+            Assert.Equal(
+                HttpStatusCode.BadRequest,
+                reuseResponse.StatusCode);
+
+            ProblemDetails? problem =
+                await reuseResponse.Content
+                    .ReadFromJsonAsync<
+                        ProblemDetails>();
+
+            Assert.NotNull(problem);
+
+            Assert.True(
+                problem.Extensions.TryGetValue(
+                    "errorCode",
+                    out object? errorCode));
+
+            Assert.Equal(
+                "password_reuse_not_allowed",
+                errorCode?.ToString());
+
+            /*
+             * Act 2:
+             * usamos EL MISMO TOKEN con una contraseña
+             * diferente.
+             *
+             * Si ahora funciona, demostramos que el
+             * intento anterior no consumió el token.
+             */
+            HttpResponseMessage validResponse =
+                await SendResetPasswordAsync(
+                    resetToken.Token,
+                    AuthenticationDatabaseFixture
+                        .ChangedTestPassword,
+                    Guid.NewGuid());
+
+            // Assert 2
+            Assert.Equal(
+                HttpStatusCode.NoContent,
+                validResponse.StatusCode);
+
+            string accessToken =
+                await LoginAndGetAccessTokenAsync(
+                    AuthenticationDatabaseFixture
+                        .ChangedTestPassword);
+
+            Assert.False(
+                string.IsNullOrWhiteSpace(
+                    accessToken));
+        }
+        finally
+        {
+            await _databaseFixture
+                .RestoreTestPasswordAsync();
+        }
     }
 }

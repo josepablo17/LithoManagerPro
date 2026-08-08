@@ -11,6 +11,8 @@ using LithoManager.Application.Features.Authentication
     .ChangePassword;
 using LithoManager.Application.Features.Authentication
     .ForgotPassword;
+using LithoManager.Application.Features.Authentication
+    .ResetPassword;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -71,6 +73,10 @@ builder.Services.AddScoped<
 builder.Services.AddScoped<
     IForgotPasswordService,
     ForgotPasswordService>();
+
+builder.Services.AddScoped<
+    IResetPasswordService,
+    ResetPasswordService>();
 
 builder.Services.AddScoped<
     IGetCurrentUserService,

@@ -7,6 +7,8 @@ using LithoManager.Application.Features.Authentication.Login;
 using LithoManager.Application.Features.Authentication
     .ChangePassword;
 using LithoManager.Application.Features.Authentication.ForgotPassword;
+using LithoManager.Application.Features.Authentication
+    .ResetPassword;
 
 namespace LithoManager.UnitTests.TestDoubles.Persistence;
 
@@ -231,6 +233,68 @@ public sealed class FakeAuthenticationRepository
 
     public AuthenticationRequestContext?
         LastPasswordResetRevocationContext
+    {
+        get;
+        private set;
+    }
+
+    public PasswordResetContextData?
+    PasswordResetContextToReturn
+    {
+        get;
+        set;
+    }
+
+    public CompletePasswordResetData?
+        CompletePasswordResetToReturn
+    {
+        get;
+        set;
+    }
+
+    public int
+        GetPasswordResetContextByTokenHashCallCount
+    {
+        get;
+        private set;
+    }
+
+    public byte[]?
+        LastPasswordResetContextTokenHash
+    {
+        get;
+        private set;
+    }
+
+    public int CompletePasswordResetCallCount
+    {
+        get;
+        private set;
+    }
+
+    public byte[]?
+        LastCompletedPasswordResetTokenHash
+    {
+        get;
+        private set;
+    }
+
+    public string?
+        LastExpectedPasswordHash
+    {
+        get;
+        private set;
+    }
+
+    public string?
+        LastCompletedNewPasswordHash
+    {
+        get;
+        private set;
+    }
+
+    public AuthenticationRequestContext?
+        LastCompletePasswordResetRequestContext
     {
         get;
         private set;
@@ -465,5 +529,56 @@ public sealed class FakeAuthenticationRepository
 
         return Task.FromResult(
             RevokePasswordResetTokenResult);
+    }
+
+    public Task<PasswordResetContextData?>
+GetPasswordResetContextByTokenHashAsync(
+    byte[] tokenHash,
+    CancellationToken cancellationToken)
+    {
+        cancellationToken
+            .ThrowIfCancellationRequested();
+
+        GetPasswordResetContextByTokenHashCallCount++;
+
+        LastPasswordResetContextTokenHash =
+            (byte[])tokenHash.Clone();
+
+        return Task.FromResult(
+            PasswordResetContextToReturn);
+    }
+
+    public Task<CompletePasswordResetData>
+    CompletePasswordResetAsync(
+        byte[] tokenHash,
+        string expectedPasswordHash,
+        string newPasswordHash,
+        AuthenticationRequestContext requestContext,
+        CancellationToken cancellationToken)
+    {
+        cancellationToken
+            .ThrowIfCancellationRequested();
+
+        CompletePasswordResetCallCount++;
+
+        LastCompletedPasswordResetTokenHash =
+            (byte[])tokenHash.Clone();
+
+        LastExpectedPasswordHash =
+            expectedPasswordHash;
+
+        LastCompletedNewPasswordHash =
+            newPasswordHash;
+
+        LastCompletePasswordResetRequestContext =
+            requestContext;
+
+        CompletePasswordResetData result =
+            CompletePasswordResetToReturn
+            ?? throw new InvalidOperationException(
+                "No password-reset completion result " +
+                "was configured for this test.");
+
+        return Task.FromResult(result);
     }
 }

@@ -10,6 +10,8 @@ using LithoManager.Infrastructure.Persistence.Dapper;
 using LithoManager.Application.Features.Authentication
     .ChangePassword;
 using LithoManager.Application.Features.Authentication.ForgotPassword;
+using LithoManager.Application.Features.Authentication
+    .ResetPassword;
 
 
 namespace LithoManager.Infrastructure.Persistence
@@ -47,6 +49,13 @@ public sealed class AuthenticationRepository
     RevokePasswordResetTokenAfterDeliveryFailureProcedure =
         "Security." +
         "RevokePasswordResetTokenAfterDeliveryFailure";
+
+    private const string
+    GetPasswordResetContextByTokenHashProcedure =
+        "Security.GetPasswordResetContextByTokenHash";
+
+    private const string CompletePasswordResetProcedure =
+        "Security.CompletePasswordReset";
 
     private readonly ISqlConnectionFactory _connectionFactory;
 
@@ -516,6 +525,198 @@ public sealed class AuthenticationRepository
             result.RevokedAtUtc =
                 DateTime.SpecifyKind(
                     returnedRevokedAtUtc,
+                    DateTimeKind.Utc);
+        }
+
+        return result;
+    }
+
+    public async Task<PasswordResetContextData?>
+GetPasswordResetContextByTokenHashAsync(
+    byte[] tokenHash,
+    CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(
+            tokenHash);
+
+        if (tokenHash.Length != 32)
+        {
+            throw new ArgumentException(
+                "The password reset token hash must " +
+                "contain exactly 32 bytes.",
+                nameof(tokenHash));
+        }
+
+        var parameters =
+            new DynamicParameters();
+
+        parameters.Add(
+            "TokenHash",
+            tokenHash,
+            DbType.Binary,
+            ParameterDirection.Input,
+            size: 32);
+
+        var command =
+            new CommandDefinition(
+                commandText:
+                    GetPasswordResetContextByTokenHashProcedure,
+                parameters:
+                    parameters,
+                commandType:
+                    CommandType.StoredProcedure,
+                cancellationToken:
+                    cancellationToken);
+
+        await using var connection =
+            _connectionFactory.CreateConnection();
+
+        PasswordResetContextData? result =
+            await connection
+                .QuerySingleOrDefaultAsync<
+                    PasswordResetContextData>(
+                        command);
+
+        if (result is not null)
+        {
+            result.ExpiresAtUtc =
+                DateTime.SpecifyKind(
+                    result.ExpiresAtUtc,
+                    DateTimeKind.Utc);
+        }
+
+        return result;
+    }
+
+    public async Task<CompletePasswordResetData>
+CompletePasswordResetAsync(
+    byte[] tokenHash,
+    string expectedPasswordHash,
+    string newPasswordHash,
+    AuthenticationRequestContext requestContext,
+    CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(
+            tokenHash);
+
+        if (tokenHash.Length != 32)
+        {
+            throw new ArgumentException(
+                "The password reset token hash must " +
+                "contain exactly 32 bytes.",
+                nameof(tokenHash));
+        }
+
+        ArgumentException.ThrowIfNullOrWhiteSpace(
+            expectedPasswordHash);
+
+        ArgumentException.ThrowIfNullOrWhiteSpace(
+            newPasswordHash);
+
+        if (expectedPasswordHash.Length > 500)
+        {
+            throw new ArgumentException(
+                "The expected password hash cannot " +
+                "exceed 500 characters.",
+                nameof(expectedPasswordHash));
+        }
+
+        if (newPasswordHash.Length > 500)
+        {
+            throw new ArgumentException(
+                "The new password hash cannot " +
+                "exceed 500 characters.",
+                nameof(newPasswordHash));
+        }
+
+        ArgumentNullException.ThrowIfNull(
+            requestContext);
+
+        if (requestContext.CorrelationId
+            == Guid.Empty)
+        {
+            throw new ArgumentException(
+                "CorrelationId is required.",
+                nameof(requestContext));
+        }
+
+        var parameters =
+            new DynamicParameters();
+
+        parameters.Add(
+            "TokenHash",
+            tokenHash,
+            DbType.Binary,
+            ParameterDirection.Input,
+            size: 32);
+
+        parameters.Add(
+            "ExpectedPasswordHash",
+            expectedPasswordHash,
+            DbType.String,
+            ParameterDirection.Input,
+            size: 500);
+
+        parameters.Add(
+            "NewPasswordHash",
+            newPasswordHash,
+            DbType.String,
+            ParameterDirection.Input,
+            size: 500);
+
+        parameters.Add(
+            "CorrelationId",
+            requestContext.CorrelationId,
+            DbType.Guid,
+            ParameterDirection.Input);
+
+        parameters.Add(
+            "ClientIpAddress",
+            requestContext.ClientIpAddress,
+            DbType.String,
+            ParameterDirection.Input,
+            size: 45);
+
+        parameters.Add(
+            "UserAgent",
+            requestContext.UserAgent,
+            DbType.String,
+            ParameterDirection.Input,
+            size: 512);
+
+        parameters.Add(
+            "RequestPath",
+            requestContext.RequestPath,
+            DbType.String,
+            ParameterDirection.Input,
+            size: 500);
+
+        var command =
+            new CommandDefinition(
+                commandText:
+                    CompletePasswordResetProcedure,
+                parameters:
+                    parameters,
+                commandType:
+                    CommandType.StoredProcedure,
+                cancellationToken:
+                    cancellationToken);
+
+        await using var connection =
+            _connectionFactory.CreateConnection();
+
+        CompletePasswordResetData result =
+            await connection
+                .QuerySingleAsync<
+                    CompletePasswordResetData>(
+                        command);
+
+        if (result.PasswordChangedAtUtc
+            is DateTime returnedPasswordChangedAtUtc)
+        {
+            result.PasswordChangedAtUtc =
+                DateTime.SpecifyKind(
+                    returnedPasswordChangedAtUtc,
                     DateTimeKind.Utc);
         }
 
