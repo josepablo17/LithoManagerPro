@@ -206,9 +206,9 @@ public static class AuthenticationExtensions
                 .GetRequiredService<
                     IAuthenticationRepository>();
 
-        AuthenticationUserData? user =
+        UserTokenValidationData? user =
             await repository
-                .GetUserForAuthenticationByIdAsync(
+                .GetUserTokenValidationByIdAsync(
                     userId,
                     context.HttpContext
                         .RequestAborted);
@@ -218,6 +218,17 @@ public static class AuthenticationExtensions
         {
             context.Fail(
                 "The token is no longer valid.");
+
+            return;
+        }
+
+        if (!user.IsUserActive
+            || !user.IsRoleActive
+            || (user.EmployeeId is not null
+                && user.IsEmployeeActive != true))
+        {
+            context.Fail(
+                "The token principal is not active.");
         }
     }
 }

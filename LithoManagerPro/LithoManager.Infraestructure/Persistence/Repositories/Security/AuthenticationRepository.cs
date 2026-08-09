@@ -27,6 +27,10 @@ public sealed class AuthenticationRepository
     GetUserForAuthenticationByIdProcedure =
         "Security.GetUserForAuthenticationById";
 
+    private const string
+    GetUserTokenValidationByIdProcedure =
+        "Security.GetUserTokenValidationById";
+
     private const string GetCurrentUserByIdProcedure =
         "Security.GetCurrentUserById";
 
@@ -129,6 +133,41 @@ public sealed class AuthenticationRepository
         return await connection
             .QuerySingleOrDefaultAsync<
                 AuthenticationUserData>(
+                    command);
+    }
+
+    public async Task<UserTokenValidationData?>
+    GetUserTokenValidationByIdAsync(
+        int userId,
+        CancellationToken cancellationToken)
+    {
+        if (userId <= 0)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(userId),
+                "UserId must be greater than zero.");
+        }
+
+        var parameters = new
+        {
+            UserId = userId
+        };
+
+        var command = new CommandDefinition(
+            commandText:
+                GetUserTokenValidationByIdProcedure,
+            parameters: parameters,
+            commandType:
+                CommandType.StoredProcedure,
+            cancellationToken:
+                cancellationToken);
+
+        await using var connection =
+            _connectionFactory.CreateConnection();
+
+        return await connection
+            .QuerySingleOrDefaultAsync<
+                UserTokenValidationData>(
                     command);
     }
 
