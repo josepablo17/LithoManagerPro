@@ -1,6 +1,7 @@
-﻿using LithoManager.Application.Features.Authentication
+using LithoManager.Application.Features.Authentication
     .ChangePassword;
 using LithoManager.Application.Features.Authentication.Login;
+using LithoManager.Application.Security;
 using LithoManager.IntegrationTests.Collections;
 using LithoManager.IntegrationTests.Fixtures;
 using Xunit;
@@ -298,6 +299,8 @@ public sealed class
                 _fixture.Repository,
             passwordService:
                 _fixture.PasswordService,
+            passwordPolicy:
+                new PasswordPolicy(),
             timeProvider:
                 _fixture.TimeProvider);
     }

@@ -1,10 +1,9 @@
-﻿using LithoManager.Api.Contracts.Authentication;
+using LithoManager.Api.Contracts.Authentication;
+using LithoManager.Api.Extensions;
 using LithoManager.Application.Features.Authentication
     .GetCurrentUser;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Globalization;
-using System.IdentityModel.Tokens.Jwt;
 
 namespace LithoManager.Api.Controllers;
 
@@ -13,9 +12,6 @@ namespace LithoManager.Api.Controllers;
 [Authorize]
 public sealed class CurrentUserController : ControllerBase
 {
-    private const string CorrelationIdHeaderName =
-        "X-Correlation-ID";
-
     private readonly IGetCurrentUserService
         _getCurrentUserService;
 
@@ -48,21 +44,13 @@ public sealed class CurrentUserController : ControllerBase
             CancellationToken cancellationToken)
     {
         Guid correlationId =
-            ResolveCorrelationId();
+            this.PrepareNoStoreResponse();
 
-        Response.Headers[CorrelationIdHeaderName] =
-            correlationId.ToString();
-
-        Response.Headers["Cache-Control"] =
-            "no-store";
-
-        Response.Headers["Pragma"] =
-            "no-cache";
-
-        if (!TryResolveUserId(out int userId))
+        if (!this.TryResolveAuthenticatedUserId(
+                out int userId))
         {
             ProblemDetails problemDetails =
-                CreateProblemDetails(
+                this.CreateProblemDetails(
                     statusCode:
                         StatusCodes.Status401Unauthorized,
                     title:
@@ -100,22 +88,6 @@ public sealed class CurrentUserController : ControllerBase
             MapCurrentUser(result.User);
 
         return Ok(response);
-    }
-
-    private bool TryResolveUserId(
-        out int userId)
-    {
-        string? userIdValue =
-            User.FindFirst(
-                JwtRegisteredClaimNames.Sub)?
-                .Value;
-
-        return int.TryParse(
-                userIdValue,
-                NumberStyles.None,
-                CultureInfo.InvariantCulture,
-                out userId)
-            && userId > 0;
     }
 
     private ObjectResult CreateFailureResponse(
@@ -172,7 +144,7 @@ public sealed class CurrentUserController : ControllerBase
         };
 
         ProblemDetails problemDetails =
-            CreateProblemDetails(
+            this.CreateProblemDetails(
                 statusCode: error.statusCode,
                 title: error.title,
                 detail: error.detail,
@@ -182,49 +154,6 @@ public sealed class CurrentUserController : ControllerBase
         return StatusCode(
             error.statusCode,
             problemDetails);
-    }
-
-    private ProblemDetails CreateProblemDetails(
-        int statusCode,
-        string title,
-        string detail,
-        string errorCode,
-        Guid correlationId)
-    {
-        ProblemDetails problemDetails =
-            new()
-            {
-                Status = statusCode,
-                Title = title,
-                Detail = detail,
-                Instance = Request.Path
-            };
-
-        problemDetails.Extensions["errorCode"] =
-            errorCode;
-
-        problemDetails.Extensions["correlationId"] =
-            correlationId;
-
-        return problemDetails;
-    }
-
-    private Guid ResolveCorrelationId()
-    {
-        string headerValue =
-            Request.Headers[
-                CorrelationIdHeaderName]
-                .ToString();
-
-        if (Guid.TryParse(
-                headerValue,
-                out Guid correlationId)
-            && correlationId != Guid.Empty)
-        {
-            return correlationId;
-        }
-
-        return Guid.NewGuid();
     }
 
     private static CurrentUserResponse MapCurrentUser(

@@ -7,9 +7,6 @@ namespace LithoManager.Application.Features.Authentication
 public sealed class ResetPasswordService
     : IResetPasswordService
 {
-    private const int MinimumPasswordLength = 12;
-    private const int MaximumPasswordLength = 128;
-
     /*
         The currently generated password-reset token
         is much shorter than this limit.
@@ -28,12 +25,16 @@ public sealed class ResetPasswordService
     private readonly IPasswordService
         _passwordService;
 
+    private readonly IPasswordPolicy
+        _passwordPolicy;
+
     private readonly IPasswordResetTokenService
         _passwordResetTokenService;
 
     public ResetPasswordService(
         IAuthenticationRepository authenticationRepository,
         IPasswordService passwordService,
+        IPasswordPolicy passwordPolicy,
         IPasswordResetTokenService passwordResetTokenService)
     {
         ArgumentNullException.ThrowIfNull(
@@ -43,6 +44,9 @@ public sealed class ResetPasswordService
             passwordService);
 
         ArgumentNullException.ThrowIfNull(
+            passwordPolicy);
+
+        ArgumentNullException.ThrowIfNull(
             passwordResetTokenService);
 
         _authenticationRepository =
@@ -50,6 +54,9 @@ public sealed class ResetPasswordService
 
         _passwordService =
             passwordService;
+
+        _passwordPolicy =
+            passwordPolicy;
 
         _passwordResetTokenService =
             passwordResetTokenService;
@@ -83,7 +90,7 @@ public sealed class ResetPasswordService
                     .PasswordsDoNotMatch);
         }
 
-        if (!IsStrongPassword(
+        if (!_passwordPolicy.IsStrongPassword(
                 command.NewPassword))
         {
             return ResetPasswordResult.Failure(
@@ -213,48 +220,6 @@ public sealed class ResetPasswordService
         }
 
         return true;
-    }
-
-    private static bool IsStrongPassword(
-        string password)
-    {
-        if (password.Length
-                < MinimumPasswordLength
-            || password.Length
-                > MaximumPasswordLength)
-        {
-            return false;
-        }
-
-        if (char.IsWhiteSpace(
-                password[0])
-            || char.IsWhiteSpace(
-                password[^1]))
-        {
-            return false;
-        }
-
-        bool hasUppercase =
-            password.Any(char.IsUpper);
-
-        bool hasLowercase =
-            password.Any(char.IsLower);
-
-        bool hasDigit =
-            password.Any(char.IsDigit);
-
-        bool hasSpecialCharacter =
-            password.Any(
-                character =>
-                    !char.IsLetterOrDigit(
-                        character)
-                    && !char.IsWhiteSpace(
-                        character));
-
-        return hasUppercase
-            && hasLowercase
-            && hasDigit
-            && hasSpecialCharacter;
     }
 
     private static void

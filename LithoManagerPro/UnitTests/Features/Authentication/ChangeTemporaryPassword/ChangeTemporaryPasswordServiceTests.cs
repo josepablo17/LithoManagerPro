@@ -1,6 +1,7 @@
-﻿using LithoManager.Application.Features.Authentication
+using LithoManager.Application.Features.Authentication
     .ChangeTemporaryPassword;
 using LithoManager.Application.Features.Authentication.Login;
+using LithoManager.Application.Security;
 using LithoManager.UnitTests.TestDoubles.Persistence;
 using LithoManager.UnitTests.TestDoubles.Security;
 using Xunit;
@@ -21,7 +22,7 @@ public sealed class ChangeTemporaryPasswordServiceTests
             new();
 
         ChangeTemporaryPasswordService service =
-            new(
+            CreateService(
                 repository,
                 passwordService);
 
@@ -52,7 +53,7 @@ public sealed class ChangeTemporaryPasswordServiceTests
             new();
 
         ChangeTemporaryPasswordService service =
-            new(
+            CreateService(
                 repository,
                 passwordService);
 
@@ -97,7 +98,7 @@ public sealed class ChangeTemporaryPasswordServiceTests
             new();
 
         ChangeTemporaryPasswordService service =
-            new(
+            CreateService(
                 repository,
                 passwordService);
 
@@ -151,7 +152,7 @@ public sealed class ChangeTemporaryPasswordServiceTests
             new();
 
         ChangeTemporaryPasswordService service =
-            new(
+            CreateService(
                 repository,
                 passwordService);
 
@@ -194,7 +195,7 @@ public sealed class ChangeTemporaryPasswordServiceTests
             new();
 
         ChangeTemporaryPasswordService service =
-            new(
+            CreateService(
                 repository,
                 passwordService);
 
@@ -245,7 +246,7 @@ public sealed class ChangeTemporaryPasswordServiceTests
             new();
 
         ChangeTemporaryPasswordService service =
-            new(
+            CreateService(
                 repository,
                 passwordService);
 
@@ -290,7 +291,7 @@ public sealed class ChangeTemporaryPasswordServiceTests
             new();
 
         ChangeTemporaryPasswordService service =
-            new(
+            CreateService(
                 repository,
                 passwordService);
 
@@ -357,7 +358,7 @@ public sealed class ChangeTemporaryPasswordServiceTests
             };
 
         ChangeTemporaryPasswordService service =
-            new(
+            CreateService(
                 repository,
                 passwordService);
 
@@ -435,7 +436,7 @@ public sealed class ChangeTemporaryPasswordServiceTests
             new();
 
         ChangeTemporaryPasswordService service =
-            new(
+            CreateService(
                 repository,
                 passwordService);
 
@@ -477,7 +478,7 @@ public sealed class ChangeTemporaryPasswordServiceTests
             new();
 
         ChangeTemporaryPasswordService service =
-            new(
+            CreateService(
                 repository,
                 passwordService);
 
@@ -517,6 +518,17 @@ public sealed class ChangeTemporaryPasswordServiceTests
             ConfirmNewPassword: "StrongPassword1!",
             RequestContext:
                 CreateValidRequestContext());
+    }
+
+    private static ChangeTemporaryPasswordService
+        CreateService(
+            FakeAuthenticationRepository repository,
+            FakePasswordService passwordService)
+    {
+        return new ChangeTemporaryPasswordService(
+            repository,
+            passwordService,
+            new PasswordPolicy());
     }
 
     private static void
