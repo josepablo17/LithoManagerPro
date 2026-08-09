@@ -2,7 +2,11 @@
 using LithoManager.Infrastructure.Security.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using LithoManager.Application.Abstractions.Persistence;
+using LithoManager.Application.Features.Authentication.Login;
+using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace LithoManager.Api.Extensions;
@@ -13,6 +17,9 @@ public static class AuthenticationExtensions
 
     private const string TokenUseClaimType =
     "token_use";
+
+    private const string TokenVersionClaimType =
+        "token_version";
 
     private const string AccessTokenUse =
         "access";
@@ -119,6 +126,13 @@ public static class AuthenticationExtensions
                         RoleClaimType =
                             RoleClaimType
                     };
+
+                options.Events =
+                    new JwtBearerEvents
+                    {
+                        OnTokenValidated =
+                            ValidateTokenVersionAsync
+                    };
             });
 
         services.AddAuthorization(options =>
@@ -150,5 +164,60 @@ public static class AuthenticationExtensions
         });
 
         return services;
+    }
+
+    private static async Task ValidateTokenVersionAsync(
+        TokenValidatedContext context)
+    {
+        string? userIdValue =
+            context.Principal?
+                .FindFirst(
+                    JwtRegisteredClaimNames.Sub)?
+                .Value;
+
+        string? tokenVersionValue =
+            context.Principal?
+                .FindFirst(
+                    TokenVersionClaimType)?
+                .Value;
+
+        if (!int.TryParse(
+                userIdValue,
+                NumberStyles.None,
+                CultureInfo.InvariantCulture,
+                out int userId)
+            || userId <= 0
+            || !int.TryParse(
+                tokenVersionValue,
+                NumberStyles.None,
+                CultureInfo.InvariantCulture,
+                out int tokenVersion)
+            || tokenVersion <= 0)
+        {
+            context.Fail(
+                "The token identity is not valid.");
+
+            return;
+        }
+
+        IAuthenticationRepository repository =
+            context.HttpContext
+                .RequestServices
+                .GetRequiredService<
+                    IAuthenticationRepository>();
+
+        AuthenticationUserData? user =
+            await repository
+                .GetUserForAuthenticationByIdAsync(
+                    userId,
+                    context.HttpContext
+                        .RequestAborted);
+
+        if (user is null
+            || user.TokenVersion != tokenVersion)
+        {
+            context.Fail(
+                "The token is no longer valid.");
+        }
     }
 }

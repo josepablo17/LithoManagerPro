@@ -2,4 +2,5 @@
 
 public sealed record PasswordChangeTokenUserData(
     int UserId,
-    string EmailAddress);
+    string EmailAddress,
+    int TokenVersion);

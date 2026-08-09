@@ -4,6 +4,9 @@
     [RoleId] int NOT NULL,
     [EmailAddress] nvarchar(254) NOT NULL,
     [PasswordHash] nvarchar(500) NOT NULL,
+    [TokenVersion] int NOT NULL
+        CONSTRAINT [DfUsersTokenVersion]
+        DEFAULT (1),
 
     [IsEmailConfirmed] bit NOT NULL
         CONSTRAINT [DfUsersIsEmailConfirmed]
@@ -65,6 +68,9 @@
 
     CONSTRAINT [CkUsersPasswordHashNotBlank]
         CHECK (LEN(LTRIM(RTRIM([PasswordHash]))) > 0),
+
+    CONSTRAINT [CkUsersTokenVersion]
+        CHECK ([TokenVersion] >= 1),
 
     CONSTRAINT [CkUsersFailedLoginAttempts]
         CHECK ([FailedLoginAttempts] >= 0),
