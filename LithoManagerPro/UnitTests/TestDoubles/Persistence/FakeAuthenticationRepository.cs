@@ -28,6 +28,13 @@ public sealed class FakeAuthenticationRepository
         set;
     }
 
+    public UserTokenValidationData?
+        UserTokenValidationToReturn
+    {
+        get;
+        set;
+    }
+
     public FailedLoginRegistrationData
         FailedLoginToReturn
     {
@@ -73,8 +80,22 @@ public sealed class FakeAuthenticationRepository
         private set;
     }
 
+    public int
+    GetUserTokenValidationByIdCallCount
+    {
+        get;
+        private set;
+    }
+
     public int?
         RequestedAuthenticationUserId
+    {
+        get;
+        private set;
+    }
+
+    public int?
+        RequestedTokenValidationUserId
     {
         get;
         private set;
@@ -328,6 +349,22 @@ public sealed class FakeAuthenticationRepository
 
         return Task.FromResult(
             AuthenticationUserToReturn);
+    }
+
+    public Task<UserTokenValidationData?>
+    GetUserTokenValidationByIdAsync(
+        int userId,
+        CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        GetUserTokenValidationByIdCallCount++;
+
+        RequestedTokenValidationUserId =
+            userId;
+
+        return Task.FromResult(
+            UserTokenValidationToReturn);
     }
 
     public Task<FailedLoginRegistrationData>

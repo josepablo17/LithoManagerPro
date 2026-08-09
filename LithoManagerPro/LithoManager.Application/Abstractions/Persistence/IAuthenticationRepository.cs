@@ -23,6 +23,11 @@ public interface IAuthenticationRepository
         int userId,
         CancellationToken cancellationToken);
 
+    Task<UserTokenValidationData?>
+    GetUserTokenValidationByIdAsync(
+        int userId,
+        CancellationToken cancellationToken);
+
     Task<CurrentUserData?> GetCurrentUserByIdAsync(
         int userId,
         CancellationToken cancellationToken);
