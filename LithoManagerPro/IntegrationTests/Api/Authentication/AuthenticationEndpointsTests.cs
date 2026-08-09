@@ -506,6 +506,83 @@ public sealed class AuthenticationEndpointsTests
         Assert.Null(body.DepartmentName);
     }
 
+    [Fact]
+    public async Task GetCurrentUser_WhenUserBecomesInactiveAfterTokenIsIssued_ReturnsUnauthorized()
+    {
+        await AssertCurrentUserIsUnauthorizedAfterTokenStateChangeAsync(
+            prepareTokenStateAsync:
+                () => _databaseFixture.SetTestUserActiveAsync(
+                    isActive: true),
+            changeTokenStateAsync:
+                () => _databaseFixture.SetTestUserActiveAsync(
+                    isActive: false),
+            restoreTokenStateAsync:
+                () => _databaseFixture.SetTestUserActiveAsync(
+                    isActive: true));
+    }
+
+    [Fact]
+    public async Task GetCurrentUser_WhenRoleBecomesInactiveAfterTokenIsIssued_ReturnsUnauthorized()
+    {
+        await AssertCurrentUserIsUnauthorizedAfterTokenStateChangeAsync(
+            prepareTokenStateAsync:
+                () => _databaseFixture.SetTestUserRoleActiveAsync(
+                    isActive: true),
+            changeTokenStateAsync:
+                () => _databaseFixture.SetTestUserRoleActiveAsync(
+                    isActive: false),
+            restoreTokenStateAsync:
+                () => _databaseFixture.SetTestUserRoleActiveAsync(
+                    isActive: true));
+    }
+
+    [Fact]
+    public async Task GetCurrentUser_WhenEmployeeBecomesInactiveAfterTokenIsIssued_ReturnsUnauthorized()
+    {
+        await AssertCurrentUserIsUnauthorizedAfterTokenStateChangeAsync(
+            prepareTokenStateAsync:
+                _databaseFixture.RemoveTestEmployeeAsync,
+            changeTokenStateAsync:
+                _databaseFixture.CreateInactiveTestEmployeeAsync,
+            restoreTokenStateAsync:
+                _databaseFixture.RemoveTestEmployeeAsync);
+    }
+
+    private async Task
+        AssertCurrentUserIsUnauthorizedAfterTokenStateChangeAsync(
+            Func<Task> prepareTokenStateAsync,
+            Func<Task> changeTokenStateAsync,
+            Func<Task> restoreTokenStateAsync)
+    {
+        await prepareTokenStateAsync();
+
+        await _databaseFixture
+            .ResetLoginStateAsync();
+
+        string accessToken =
+            await LoginAndGetAccessTokenAsync();
+
+        try
+        {
+            await changeTokenStateAsync();
+
+            HttpResponseMessage response =
+                await SendCurrentUserAsync(
+                    accessToken);
+
+            Assert.Equal(
+                HttpStatusCode.Unauthorized,
+                response.StatusCode);
+        }
+        finally
+        {
+            await restoreTokenStateAsync();
+
+            await _databaseFixture
+                .ResetLoginStateAsync();
+        }
+    }
+
     private async Task<HttpResponseMessage>
 SendResetPasswordAsync(
     string token,
@@ -533,6 +610,24 @@ SendResetPasswordAsync(
         request.Content =
             JsonContent.Create(
                 requestBody);
+
+        return await _client.SendAsync(
+            request);
+    }
+
+    private async Task<HttpResponseMessage>
+    SendCurrentUserAsync(
+        string accessToken)
+    {
+        using HttpRequestMessage request =
+            new(
+                HttpMethod.Get,
+                "/api/auth/me");
+
+        request.Headers.Authorization =
+            new AuthenticationHeaderValue(
+                scheme: "Bearer",
+                parameter: accessToken);
 
         return await _client.SendAsync(
             request);

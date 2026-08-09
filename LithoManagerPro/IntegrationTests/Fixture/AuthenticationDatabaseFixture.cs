@@ -161,6 +161,211 @@ public sealed class AuthenticationDatabaseFixture
                 CancellationToken.None);
     }
 
+    public async Task SetTestUserActiveAsync(
+        bool isActive)
+    {
+        var parameters = new
+        {
+            UserId =
+                SuperAdministratorUserId,
+            IsActive =
+                isActive
+        };
+
+        CommandDefinition command =
+            new(
+                commandText:
+                    """
+                    UPDATE Security.Users
+                    SET
+                        IsActive = @IsActive,
+                        UpdatedAtUtc = SYSUTCDATETIME(),
+                        UpdatedByUserId = @UserId
+                    WHERE UserId = @UserId;
+                    """,
+                parameters:
+                    parameters,
+                commandType:
+                    CommandType.Text,
+                cancellationToken:
+                    CancellationToken.None);
+
+        await using DbConnection connection =
+            _connectionFactory.CreateConnection();
+
+        await connection.ExecuteAsync(command);
+    }
+
+    public async Task SetTestUserRoleActiveAsync(
+        bool isActive)
+    {
+        var parameters = new
+        {
+            UserId =
+                SuperAdministratorUserId,
+            IsActive =
+                isActive
+        };
+
+        CommandDefinition command =
+            new(
+                commandText:
+                    """
+                    UPDATE R
+                    SET
+                        R.IsActive = @IsActive,
+                        R.UpdatedAtUtc = SYSUTCDATETIME()
+                    FROM Security.Roles AS R
+                    INNER JOIN Security.Users AS U
+                        ON U.RoleId = R.RoleId
+                    WHERE U.UserId = @UserId;
+                    """,
+                parameters:
+                    parameters,
+                commandType:
+                    CommandType.Text,
+                cancellationToken:
+                    CancellationToken.None);
+
+        await using DbConnection connection =
+            _connectionFactory.CreateConnection();
+
+        await connection.ExecuteAsync(command);
+    }
+
+    public async Task CreateInactiveTestEmployeeAsync()
+    {
+        const string departmentCode =
+            "INTEGRATION_TESTS";
+
+        const string departmentName =
+            "Integration Tests";
+
+        const string identificationNumber =
+            "INTEGRATION-ADMIN";
+
+        var parameters = new
+        {
+            UserId =
+                SuperAdministratorUserId,
+            DepartmentCode =
+                departmentCode,
+            DepartmentName =
+                departmentName,
+            IdentificationNumber =
+                identificationNumber
+        };
+
+        CommandDefinition command =
+            new(
+                commandText:
+                    """
+                    DELETE FROM HumanResources.Employees
+                    WHERE UserId = @UserId
+                       OR IdentificationNumber = @IdentificationNumber;
+
+                    DECLARE @DepartmentId int;
+
+                    SELECT
+                        @DepartmentId = D.DepartmentId
+                    FROM HumanResources.Departments AS D
+                    WHERE D.DepartmentCode = @DepartmentCode;
+
+                    IF @DepartmentId IS NULL
+                    BEGIN
+                        INSERT INTO HumanResources.Departments
+                        (
+                            DepartmentCode,
+                            Name,
+                            Description,
+                            IsActive,
+                            CreatedByUserId
+                        )
+                        VALUES
+                        (
+                            @DepartmentCode,
+                            @DepartmentName,
+                            N'Department used by integration tests.',
+                            1,
+                            @UserId
+                        );
+
+                        SET @DepartmentId = CONVERT(
+                            int,
+                            SCOPE_IDENTITY());
+                    END;
+
+                    INSERT INTO HumanResources.Employees
+                    (
+                        UserId,
+                        DepartmentId,
+                        IdentificationNumber,
+                        FirstName,
+                        LastName,
+                        HireDate,
+                        JobTitle,
+                        BaseSalary,
+                        IsActive,
+                        CreatedByUserId
+                    )
+                    VALUES
+                    (
+                        @UserId,
+                        @DepartmentId,
+                        @IdentificationNumber,
+                        N'Integration',
+                        N'Administrator',
+                        CONVERT(date, SYSUTCDATETIME()),
+                        N'Integration Test User',
+                        0,
+                        0,
+                        @UserId
+                    );
+                    """,
+                parameters:
+                    parameters,
+                commandType:
+                    CommandType.Text,
+                cancellationToken:
+                    CancellationToken.None);
+
+        await using DbConnection connection =
+            _connectionFactory.CreateConnection();
+
+        await connection.ExecuteAsync(command);
+    }
+
+    public async Task RemoveTestEmployeeAsync()
+    {
+        var parameters = new
+        {
+            UserId =
+                SuperAdministratorUserId,
+            IdentificationNumber =
+                "INTEGRATION-ADMIN"
+        };
+
+        CommandDefinition command =
+            new(
+                commandText:
+                    """
+                    DELETE FROM HumanResources.Employees
+                    WHERE UserId = @UserId
+                       OR IdentificationNumber = @IdentificationNumber;
+                    """,
+                parameters:
+                    parameters,
+                commandType:
+                    CommandType.Text,
+                cancellationToken:
+                    CancellationToken.None);
+
+        await using DbConnection connection =
+            _connectionFactory.CreateConnection();
+
+        await connection.ExecuteAsync(command);
+    }
+
     public async Task ChangeTestPasswordDirectlyAsync(
     string password,
     string requestPath)

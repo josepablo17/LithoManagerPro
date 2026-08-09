@@ -195,6 +195,64 @@ public sealed class AuthenticationRepositoryTests
     }
 
     [Fact]
+    public async Task GetUserTokenValidationByIdAsync_WhenUserExists_ReturnsTokenValidationData()
+    {
+        // Arrange
+        await _fixture.SetTestUserActiveAsync(
+            isActive: true);
+
+        await _fixture.SetTestUserRoleActiveAsync(
+            isActive: true);
+
+        await _fixture.RemoveTestEmployeeAsync();
+
+        await _fixture.ResetLoginStateAsync();
+
+        // Act
+        UserTokenValidationData? user =
+            await _fixture.Repository
+                .GetUserTokenValidationByIdAsync(
+                    _fixture.SuperAdministratorUserId,
+                    CancellationToken.None);
+
+        // Assert
+        Assert.NotNull(user);
+
+        Assert.Equal(
+            _fixture.SuperAdministratorUserId,
+            user.UserId);
+
+        Assert.True(
+            user.TokenVersion > 0);
+
+        Assert.True(
+            user.IsUserActive);
+
+        Assert.True(
+            user.IsRoleActive);
+
+        Assert.Null(
+            user.EmployeeId);
+
+        Assert.Null(
+            user.IsEmployeeActive);
+    }
+
+    [Fact]
+    public async Task GetUserTokenValidationByIdAsync_WhenUserDoesNotExist_ReturnsNull()
+    {
+        // Act
+        UserTokenValidationData? user =
+            await _fixture.Repository
+                .GetUserTokenValidationByIdAsync(
+                    userId: int.MaxValue,
+                    CancellationToken.None);
+
+        // Assert
+        Assert.Null(user);
+    }
+
+    [Fact]
     public async Task GetCurrentUserByIdAsync_WhenUserExists_ReturnsMappedUser()
     {
         // Act
