@@ -1,7 +1,8 @@
-﻿using LithoManager.Application.Features.Authentication
+using LithoManager.Application.Features.Authentication
     .Login;
 using LithoManager.Application.Features.Authentication
     .ResetPassword;
+using LithoManager.Application.Security;
 using LithoManager.UnitTests.TestDoubles.Persistence;
 using LithoManager.UnitTests.TestDoubles.Security;
 
@@ -888,6 +889,7 @@ public sealed class ResetPasswordServiceTests
         return new ResetPasswordService(
             repository,
             passwordService,
+            new PasswordPolicy(),
             tokenService);
     }
 

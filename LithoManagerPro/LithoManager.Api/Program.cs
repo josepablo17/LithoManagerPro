@@ -1,18 +1,7 @@
 using LithoManager.Api.Extensions;
-using LithoManager.Application.Features.Authentication
-    .ChangeTemporaryPassword;
-using LithoManager.Application.Features.Authentication.Login;
 using LithoManager.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.OpenApi;
-using LithoManager.Application.Features.Authentication
-    .GetCurrentUser;
-using LithoManager.Application.Features.Authentication
-    .ChangePassword;
-using LithoManager.Application.Features.Authentication
-    .ForgotPassword;
-using LithoManager.Application.Features.Authentication
-    .ResetPassword;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,7 +16,7 @@ builder.Services.AddSwaggerGen(options =>
             Title = "LithoManager API",
             Version = "v1",
             Description =
-                "API para la administración de LithoManager."
+                "API para la administraciÃ³n de LithoManager."
         });
 
     options.AddSecurityDefinition(
@@ -38,8 +27,8 @@ builder.Services.AddSwaggerGen(options =>
             Scheme = "bearer",
             BearerFormat = "JWT",
             Description =
-                "Ingrese únicamente el JWT. " +
-                "Swagger agregará automáticamente " +
+                "Ingrese Ãºnicamente el JWT. " +
+                "Swagger agregarÃ¡ automÃ¡ticamente " +
                 "el prefijo Bearer."
         });
 
@@ -58,29 +47,7 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddInfrastructure(
     builder.Configuration);
 
-builder.Services.AddScoped<
-    IAuthenticationService,
-    AuthenticationService>();
-
-builder.Services.AddScoped<
-    IChangeTemporaryPasswordService,
-    ChangeTemporaryPasswordService>();
-
-builder.Services.AddScoped<
-    IChangePasswordService,
-    ChangePasswordService>();
-
-builder.Services.AddScoped<
-    IForgotPasswordService,
-    ForgotPasswordService>();
-
-builder.Services.AddScoped<
-    IResetPasswordService,
-    ResetPasswordService>();
-
-builder.Services.AddScoped<
-    IGetCurrentUserService,
-    GetCurrentUserService>();
+builder.Services.AddApplicationServices();
 
 builder.Services.AddJwtAuthentication(
     builder.Configuration);

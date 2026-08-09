@@ -1,6 +1,7 @@
-﻿using LithoManager.Application.Features.Authentication
+using LithoManager.Application.Features.Authentication
     .ChangePassword;
 using LithoManager.Application.Features.Authentication.Login;
+using LithoManager.Application.Security;
 using LithoManager.UnitTests.TestDoubles.Persistence;
 using LithoManager.UnitTests.TestDoubles.Security;
 using LithoManager.UnitTests.TestDoubles.Time;
@@ -886,6 +887,7 @@ public sealed class ChangePasswordServiceTests
         return new ChangePasswordService(
             repository,
             passwordService,
+            new PasswordPolicy(),
             new FixedTimeProvider(UtcNow));
     }
 

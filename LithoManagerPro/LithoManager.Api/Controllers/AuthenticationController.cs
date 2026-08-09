@@ -1,12 +1,12 @@
-﻿using LithoManager.Api.Authorization;
+using LithoManager.Api.Authorization;
 using LithoManager.Api.Contracts.Authentication;
+using LithoManager.Api.Extensions;
 using LithoManager.Application.Features.Authentication
     .ChangeTemporaryPassword;
 using LithoManager.Application.Features.Authentication.Login;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
-using System.IdentityModel.Tokens.Jwt;
 using LithoManager.Application.Features.Authentication
     .ChangePassword;
 using LithoManager.Application.Features.Authentication
@@ -20,9 +20,6 @@ namespace LithoManager.Api.Controllers;
 [Route("api/auth")]
 public sealed class AuthenticationController : ControllerBase
 {
-    private const string CorrelationIdHeaderName =
-        "X-Correlation-ID";
-
     private readonly IAuthenticationService
         _authenticationService;
 
@@ -101,32 +98,11 @@ public sealed class AuthenticationController : ControllerBase
         CancellationToken cancellationToken)
     {
         Guid correlationId =
-            ResolveCorrelationId();
-
-        Response.Headers[CorrelationIdHeaderName] =
-            correlationId.ToString();
-
-        Response.Headers["Cache-Control"] =
-            "no-store";
-
-        Response.Headers["Pragma"] =
-            "no-cache";
+            this.PrepareNoStoreResponse();
 
         AuthenticationRequestContext requestContext =
-            new(
-                CorrelationId: correlationId,
-                ClientIpAddress: LimitLength(
-                    HttpContext.Connection
-                        .RemoteIpAddress?
-                        .ToString(),
-                    maximumLength: 45),
-                UserAgent: LimitLength(
-                    Request.Headers["User-Agent"]
-                        .ToString(),
-                    maximumLength: 512),
-                RequestPath: LimitLength(
-                    Request.Path.Value,
-                    maximumLength: 500));
+            this.CreateAuthenticationRequestContext(
+                correlationId);
 
         LoginCommand command =
             new(
@@ -193,11 +169,14 @@ public sealed class AuthenticationController : ControllerBase
         ChangeTemporaryPasswordRequest request,
         CancellationToken cancellationToken)
     {
-        if (!TryResolveUserId(
+        Guid correlationId =
+            this.PrepareNoStoreResponse();
+
+        if (!this.TryResolveAuthenticatedUserId(
                 out int userId))
         {
             return Unauthorized(
-                CreateProblemDetails(
+                this.CreateProblemDetails(
                     statusCode:
                         StatusCodes
                             .Status401Unauthorized,
@@ -206,41 +185,14 @@ public sealed class AuthenticationController : ControllerBase
                     detail:
                         "No fue posible identificar al usuario.",
                     errorCode:
-                        "invalid_token"));
+                        "invalid_token",
+                    correlationId:
+                        correlationId));
         }
 
-        Guid correlationId =
-            ResolveCorrelationId();
-
-        Response.Headers[
-            CorrelationIdHeaderName] =
-                correlationId.ToString();
-
-        Response.Headers["Cache-Control"] =
-            "no-store";
-
-        Response.Headers["Pragma"] =
-            "no-cache";
-
         AuthenticationRequestContext requestContext =
-            new(
-                CorrelationId:
-                    correlationId,
-                ClientIpAddress:
-                    LimitLength(
-                        HttpContext.Connection
-                            .RemoteIpAddress?
-                            .ToString(),
-                        maximumLength: 45),
-                UserAgent:
-                    LimitLength(
-                        Request.Headers["User-Agent"]
-                            .ToString(),
-                        maximumLength: 512),
-                RequestPath:
-                    LimitLength(
-                        Request.Path.Value,
-                        maximumLength: 500));
+            this.CreateAuthenticationRequestContext(
+                correlationId);
 
         ChangeTemporaryPasswordCommand command =
             new(
@@ -291,22 +243,13 @@ public sealed class AuthenticationController : ControllerBase
     CancellationToken cancellationToken)
     {
         Guid correlationId =
-            ResolveCorrelationId();
+            this.PrepareNoStoreResponse();
 
-        Response.Headers[CorrelationIdHeaderName] =
-            correlationId.ToString();
-
-        Response.Headers["Cache-Control"] =
-            "no-store";
-
-        Response.Headers["Pragma"] =
-            "no-cache";
-
-        if (!TryResolveUserId(
+        if (!this.TryResolveAuthenticatedUserId(
                 out int userId))
         {
             ProblemDetails problemDetails =
-                CreateProblemDetails(
+                this.CreateProblemDetails(
                     statusCode:
                         StatusCodes.Status401Unauthorized,
                     title:
@@ -314,34 +257,16 @@ public sealed class AuthenticationController : ControllerBase
                     detail:
                         "No fue posible identificar al usuario.",
                     errorCode:
-                        "invalid_token");
-
-            problemDetails.Extensions[
-                "correlationId"] =
-                    correlationId;
+                        "invalid_token",
+                    correlationId:
+                        correlationId);
 
             return Unauthorized(problemDetails);
         }
 
         AuthenticationRequestContext requestContext =
-            new(
-                CorrelationId:
-                    correlationId,
-                ClientIpAddress:
-                    LimitLength(
-                        HttpContext.Connection
-                            .RemoteIpAddress?
-                            .ToString(),
-                        maximumLength: 45),
-                UserAgent:
-                    LimitLength(
-                        Request.Headers["User-Agent"]
-                            .ToString(),
-                        maximumLength: 512),
-                RequestPath:
-                    LimitLength(
-                        Request.Path.Value,
-                        maximumLength: 500));
+            this.CreateAuthenticationRequestContext(
+                correlationId);
 
         ChangePasswordCommand command =
             new(
@@ -453,7 +378,7 @@ public sealed class AuthenticationController : ControllerBase
         };
 
         ProblemDetails problemDetails =
-            CreateProblemDetails(
+            this.CreateProblemDetails(
                 statusCode:
                     error.statusCode,
                 title:
@@ -461,11 +386,9 @@ public sealed class AuthenticationController : ControllerBase
                 detail:
                     error.detail,
                 errorCode:
-                    error.errorCode);
-
-        problemDetails.Extensions[
-            "correlationId"] =
-                correlationId;
+                    error.errorCode,
+                correlationId:
+                    correlationId);
 
         return StatusCode(
             error.statusCode,
@@ -543,19 +466,17 @@ public sealed class AuthenticationController : ControllerBase
         };
 
         ProblemDetails problemDetails =
-            new()
-            {
-                Status = error.statusCode,
-                Title = error.title,
-                Detail = error.detail,
-                Instance = Request.Path
-            };
-
-        problemDetails.Extensions["errorCode"] =
-            error.errorCode;
-
-        problemDetails.Extensions["correlationId"] =
-            correlationId;
+            this.CreateProblemDetails(
+                statusCode:
+                    error.statusCode,
+                title:
+                    error.title,
+                detail:
+                    error.detail,
+                errorCode:
+                    error.errorCode,
+                correlationId:
+                    correlationId);
 
         if (result.LockoutEndAtUtc
             is DateTime lockoutEndAtUtc)
@@ -578,43 +499,6 @@ public sealed class AuthenticationController : ControllerBase
         return StatusCode(
             error.statusCode,
             problemDetails);
-    }
-
-    private Guid ResolveCorrelationId()
-    {
-        string headerValue =
-            Request.Headers[
-                CorrelationIdHeaderName]
-                .ToString();
-
-        if (Guid.TryParse(
-                headerValue,
-                out Guid correlationId)
-            && correlationId != Guid.Empty)
-        {
-            return correlationId;
-        }
-
-        return Guid.NewGuid();
-    }
-
-    private static string? LimitLength(
-        string? value,
-        int maximumLength)
-    {
-        if (string.IsNullOrWhiteSpace(value))
-        {
-            return null;
-        }
-
-        string normalizedValue =
-            value.Trim();
-
-        return normalizedValue.Length
-            <= maximumLength
-                ? normalizedValue
-                : normalizedValue[
-                    ..maximumLength];
     }
 
     private static LoginUserResponse MapUser(
@@ -642,22 +526,6 @@ public sealed class AuthenticationController : ControllerBase
                 user.DepartmentCode,
             DepartmentName:
                 user.DepartmentName);
-    }
-
-    private bool TryResolveUserId(
-    out int userId)
-    {
-        string? userIdValue =
-            User.FindFirst(
-                JwtRegisteredClaimNames.Sub)?
-                .Value;
-
-        return int.TryParse(
-                userIdValue,
-                NumberStyles.None,
-                CultureInfo.InvariantCulture,
-                out userId)
-            && userId > 0;
     }
 
     private ObjectResult
@@ -700,40 +568,21 @@ public sealed class AuthenticationController : ControllerBase
         };
 
         ProblemDetails problemDetails =
-            CreateProblemDetails(
-                error.statusCode,
-                error.title,
-                error.detail,
-                error.errorCode);
-
-        problemDetails.Extensions[
-            "correlationId"] =
-                correlationId;
+            this.CreateProblemDetails(
+                statusCode:
+                    error.statusCode,
+                title:
+                    error.title,
+                detail:
+                    error.detail,
+                errorCode:
+                    error.errorCode,
+                correlationId:
+                    correlationId);
 
         return StatusCode(
             error.statusCode,
             problemDetails);
-    }
-
-    private ProblemDetails CreateProblemDetails(
-        int statusCode,
-        string title,
-        string detail,
-        string errorCode)
-    {
-        ProblemDetails problemDetails =
-            new()
-            {
-                Status = statusCode,
-                Title = title,
-                Detail = detail,
-                Instance = Request.Path
-            };
-
-        problemDetails.Extensions["errorCode"] =
-            errorCode;
-
-        return problemDetails;
     }
 
     [AllowAnonymous]
@@ -755,37 +604,11 @@ public sealed class AuthenticationController : ControllerBase
         CancellationToken cancellationToken)
     {
         Guid correlationId =
-            ResolveCorrelationId();
-
-        Response.Headers[
-            CorrelationIdHeaderName] =
-                correlationId.ToString();
-
-        Response.Headers["Cache-Control"] =
-            "no-store";
-
-        Response.Headers["Pragma"] =
-            "no-cache";
+            this.PrepareNoStoreResponse();
 
         AuthenticationRequestContext requestContext =
-            new(
-                CorrelationId:
-                    correlationId,
-                ClientIpAddress:
-                    LimitLength(
-                        HttpContext.Connection
-                            .RemoteIpAddress?
-                            .ToString(),
-                        maximumLength: 45),
-                UserAgent:
-                    LimitLength(
-                        Request.Headers["User-Agent"]
-                            .ToString(),
-                        maximumLength: 512),
-                RequestPath:
-                    LimitLength(
-                        Request.Path.Value,
-                        maximumLength: 500));
+            this.CreateAuthenticationRequestContext(
+                correlationId);
 
         ForgotPasswordCommand command =
             new(
@@ -852,7 +675,7 @@ public sealed class AuthenticationController : ControllerBase
         };
 
         ProblemDetails problemDetails =
-            CreateProblemDetails(
+            this.CreateProblemDetails(
                 statusCode:
                     error.statusCode,
                 title:
@@ -860,11 +683,9 @@ public sealed class AuthenticationController : ControllerBase
                 detail:
                     error.detail,
                 errorCode:
-                    error.errorCode);
-
-        problemDetails.Extensions[
-            "correlationId"] =
-                correlationId;
+                    error.errorCode,
+                correlationId:
+                    correlationId);
 
         return StatusCode(
             error.statusCode,
@@ -888,37 +709,11 @@ ResetPassword(
     CancellationToken cancellationToken)
     {
         Guid correlationId =
-            ResolveCorrelationId();
-
-        Response.Headers[
-            CorrelationIdHeaderName] =
-                correlationId.ToString();
-
-        Response.Headers["Cache-Control"] =
-            "no-store";
-
-        Response.Headers["Pragma"] =
-            "no-cache";
+            this.PrepareNoStoreResponse();
 
         AuthenticationRequestContext requestContext =
-            new(
-                CorrelationId:
-                    correlationId,
-                ClientIpAddress:
-                    LimitLength(
-                        HttpContext.Connection
-                            .RemoteIpAddress?
-                            .ToString(),
-                        maximumLength: 45),
-                UserAgent:
-                    LimitLength(
-                        Request.Headers["User-Agent"]
-                            .ToString(),
-                        maximumLength: 512),
-                RequestPath:
-                    LimitLength(
-                        Request.Path.Value,
-                        maximumLength: 500));
+            this.CreateAuthenticationRequestContext(
+                correlationId);
 
         ResetPasswordCommand command =
             new(
@@ -1018,7 +813,7 @@ CreateResetPasswordFailure(
         };
 
         ProblemDetails problemDetails =
-            CreateProblemDetails(
+            this.CreateProblemDetails(
                 statusCode:
                     error.statusCode,
                 title:
@@ -1026,11 +821,9 @@ CreateResetPasswordFailure(
                 detail:
                     error.detail,
                 errorCode:
-                    error.errorCode);
-
-        problemDetails.Extensions[
-            "correlationId"] =
-                correlationId;
+                    error.errorCode,
+                correlationId:
+                    correlationId);
 
         return StatusCode(
             error.statusCode,

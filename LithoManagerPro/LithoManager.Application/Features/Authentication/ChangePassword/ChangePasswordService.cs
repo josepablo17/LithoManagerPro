@@ -8,8 +8,6 @@ namespace LithoManager.Application.Features.Authentication
 public sealed class ChangePasswordService
     : IChangePasswordService
 {
-    private const int MinimumPasswordLength = 12;
-    private const int MaximumPasswordLength = 128;
     private const int MaximumCurrentPasswordLength = 1024;
 
     private readonly IAuthenticationRepository
@@ -18,12 +16,16 @@ public sealed class ChangePasswordService
     private readonly IPasswordService
         _passwordService;
 
+    private readonly IPasswordPolicy
+        _passwordPolicy;
+
     private readonly TimeProvider
         _timeProvider;
 
     public ChangePasswordService(
         IAuthenticationRepository authenticationRepository,
         IPasswordService passwordService,
+        IPasswordPolicy passwordPolicy,
         TimeProvider timeProvider)
     {
         ArgumentNullException.ThrowIfNull(
@@ -33,6 +35,9 @@ public sealed class ChangePasswordService
             passwordService);
 
         ArgumentNullException.ThrowIfNull(
+            passwordPolicy);
+
+        ArgumentNullException.ThrowIfNull(
             timeProvider);
 
         _authenticationRepository =
@@ -40,6 +45,9 @@ public sealed class ChangePasswordService
 
         _passwordService =
             passwordService;
+
+        _passwordPolicy =
+            passwordPolicy;
 
         _timeProvider =
             timeProvider;
@@ -70,7 +78,7 @@ public sealed class ChangePasswordService
                     .PasswordsDoNotMatch);
         }
 
-        if (!IsStrongPassword(
+        if (!_passwordPolicy.IsStrongPassword(
                 command.NewPassword))
         {
             return ChangePasswordResult.Failure(
@@ -239,45 +247,4 @@ public sealed class ChangePasswordService
         return true;
     }
 
-    private static bool IsStrongPassword(
-        string password)
-    {
-        if (password.Length
-                < MinimumPasswordLength
-            || password.Length
-                > MaximumPasswordLength)
-        {
-            return false;
-        }
-
-        if (char.IsWhiteSpace(
-                password[0])
-            || char.IsWhiteSpace(
-                password[^1]))
-        {
-            return false;
-        }
-
-        bool hasUppercase =
-            password.Any(char.IsUpper);
-
-        bool hasLowercase =
-            password.Any(char.IsLower);
-
-        bool hasDigit =
-            password.Any(char.IsDigit);
-
-        bool hasSpecialCharacter =
-            password.Any(
-                character =>
-                    !char.IsLetterOrDigit(
-                        character)
-                    && !char.IsWhiteSpace(
-                        character));
-
-        return hasUppercase
-            && hasLowercase
-            && hasDigit
-            && hasSpecialCharacter;
-    }
 }
