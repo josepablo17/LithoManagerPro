@@ -67,6 +67,7 @@
     <Folder Include="Seeds\Security" />
     <Folder Include="StoredProcedures\Security" />
     <Folder Include="StoredProcedures\Audit" />
+    <Folder Include="StoredProcedures\HumanResources" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\Audit\AuditLogs.sql" />
@@ -93,6 +94,11 @@
     <Build Include="StoredProcedures\Security\RevokePasswordResetTokenAfterDeliveryFailure.sql" />
     <Build Include="StoredProcedures\Security\GetPasswordResetContextByTokenHash.sql" />
     <Build Include="StoredProcedures\Security\CompletePasswordReset.sql" />
+    <Build Include="StoredProcedures\HumanResources\CreateDepartment.sql" />
+    <Build Include="StoredProcedures\HumanResources\GetDepartmentById.sql" />
+    <Build Include="StoredProcedures\HumanResources\GetDepartments.sql" />
+    <Build Include="StoredProcedures\HumanResources\UpdateDepartment.sql" />
+    <Build Include="StoredProcedures\HumanResources\SetDepartmentStatus.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\PostDeployment.sql" />

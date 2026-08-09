@@ -11,6 +11,16 @@ using LithoManager.Application.Features.Authentication
     .Login;
 using LithoManager.Application.Features.Authentication
     .ResetPassword;
+using LithoManager.Application.Features
+    .HumanResources.Departments.CreateDepartment;
+using LithoManager.Application.Features
+    .HumanResources.Departments.GetDepartmentById;
+using LithoManager.Application.Features
+    .HumanResources.Departments.GetDepartments;
+using LithoManager.Application.Features
+    .HumanResources.Departments.SetDepartmentStatus;
+using LithoManager.Application.Features
+    .HumanResources.Departments.UpdateDepartment;
 using LithoManager.Application.Security;
 
 namespace LithoManager.Api.Extensions;
@@ -49,6 +59,26 @@ public static class ApplicationServiceCollectionExtensions
         services.AddScoped<
             IGetCurrentUserService,
             GetCurrentUserService>();
+
+        services.AddScoped<
+            ICreateDepartmentService,
+            CreateDepartmentService>();
+
+        services.AddScoped<
+            IGetDepartmentByIdService,
+            GetDepartmentByIdService>();
+
+        services.AddScoped<
+            IGetDepartmentsService,
+            GetDepartmentsService>();
+
+        services.AddScoped<
+            IUpdateDepartmentService,
+            UpdateDepartmentService>();
+
+        services.AddScoped<
+            ISetDepartmentStatusService,
+            SetDepartmentStatusService>();
 
         return services;
     }
