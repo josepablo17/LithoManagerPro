@@ -1,4 +1,4 @@
-﻿using LithoManager.Api.Authorization;
+using LithoManager.Api.Authorization;
 using LithoManager.Infrastructure.Security.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -160,6 +160,26 @@ public static class AuthenticationExtensions
                     policy.RequireClaim(
                         TokenUseClaimType,
                         PasswordChangeTokenUse);
+                });
+
+            options.AddPolicy(
+                AuthorizationPolicyNames
+                    .HumanResourcesDepartments,
+                policy =>
+                {
+                    policy.AddAuthenticationSchemes(
+                        JwtBearerDefaults
+                            .AuthenticationScheme);
+
+                    policy.RequireAuthenticatedUser();
+
+                    policy.RequireClaim(
+                        TokenUseClaimType,
+                        AccessTokenUse);
+
+                    policy.RequireRole(
+                        "SuperAdministrator",
+                        "HumanResourcesAdministrator");
                 });
         });
 
