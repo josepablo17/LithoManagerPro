@@ -117,6 +117,21 @@ public sealed class
             claim =>
                 claim.Type == "token_use"
                 && claim.Value == "access");
+
+        string tokenVersion =
+            Assert.Single(
+                jwt.Claims,
+                claim =>
+                    claim.Type == "token_version")
+                .Value;
+
+        Assert.True(
+            int.TryParse(
+                tokenVersion,
+                out int parsedTokenVersion));
+
+        Assert.True(
+            parsedTokenVersion > 0);
     }
 
     [Fact]

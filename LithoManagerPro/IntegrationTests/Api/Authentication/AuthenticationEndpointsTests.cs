@@ -183,6 +183,24 @@ public sealed class AuthenticationEndpointsTests
                 string.IsNullOrWhiteSpace(
                     newAccessToken));
 
+            using HttpRequestMessage staleTokenRequest =
+                new(
+                    HttpMethod.Get,
+                    "/api/auth/me");
+
+            staleTokenRequest.Headers.Authorization =
+                new AuthenticationHeaderValue(
+                    scheme: "Bearer",
+                    parameter: accessToken);
+
+            HttpResponseMessage staleTokenResponse =
+                await _client.SendAsync(
+                    staleTokenRequest);
+
+            Assert.Equal(
+                HttpStatusCode.Unauthorized,
+                staleTokenResponse.StatusCode);
+
             // Assert: persistencia
             AuthenticationUserData? updatedUser =
                 await _databaseFixture.Repository

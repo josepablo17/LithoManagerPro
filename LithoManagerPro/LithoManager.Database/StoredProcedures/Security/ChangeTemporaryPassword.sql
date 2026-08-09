@@ -113,6 +113,7 @@ BEGIN
             [RequiresPasswordChange] = 0,
             [TemporaryPasswordExpiresAtUtc] = NULL,
             [PasswordChangedAtUtc] = @OccurredAtUtc,
+            [TokenVersion] = [TokenVersion] + 1,
             [FailedLoginAttempts] = 0,
             [LockoutEndAtUtc] = NULL,
             [UpdatedAtUtc] = @OccurredAtUtc,
@@ -163,7 +164,8 @@ BEGIN
         SELECT
             U.[UserId],
             U.[PasswordChangedAtUtc],
-            U.[RequiresPasswordChange]
+            U.[RequiresPasswordChange],
+            U.[TokenVersion]
         FROM [Security].[Users] AS U
         WHERE U.[UserId] = @UserId;
     END TRY

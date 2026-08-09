@@ -8,6 +8,8 @@ public sealed class AuthenticationUserData
 
     public string PasswordHash { get; init; } = string.Empty;
 
+    public int TokenVersion { get; init; }
+
     public bool IsEmailConfirmed { get; init; }
 
     public bool IsActive { get; init; }

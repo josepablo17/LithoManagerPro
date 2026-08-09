@@ -151,7 +151,9 @@ public sealed class AuthenticationService
                             new PasswordChangeTokenUserData(
                                 UserId: user.UserId,
                                 EmailAddress:
-                                    user.EmailAddress));
+                                    user.EmailAddress,
+                                TokenVersion:
+                                    user.TokenVersion));
 
             return LoginResult.PasswordChangeRequired(
                 loginUser,
@@ -164,6 +166,8 @@ public sealed class AuthenticationService
                     UserId: user.UserId,
                     EmailAddress:
                         user.EmailAddress,
+                    TokenVersion:
+                        user.TokenVersion,
                     RoleCode:
                         user.RoleCode,
                     EmployeeId:

@@ -17,6 +17,9 @@ internal sealed class TokenService : ITokenService
     private const string TokenUseClaimType =
         "token_use";
 
+    private const string TokenVersionClaimType =
+        "token_version";
+
     private const string AccessTokenUse =
         "access";
 
@@ -68,7 +71,8 @@ internal sealed class TokenService : ITokenService
 
         ValidateUserData(
             user.UserId,
-            user.EmailAddress);
+            user.EmailAddress,
+            user.TokenVersion);
 
         ArgumentException.ThrowIfNullOrWhiteSpace(
             user.RoleCode);
@@ -77,6 +81,7 @@ internal sealed class TokenService : ITokenService
             CreateBaseClaims(
                 user.UserId,
                 user.EmailAddress,
+                user.TokenVersion,
                 AccessTokenUse);
 
         claims.Add(
@@ -119,12 +124,14 @@ internal sealed class TokenService : ITokenService
 
         ValidateUserData(
             user.UserId,
-            user.EmailAddress);
+            user.EmailAddress,
+            user.TokenVersion);
 
         List<Claim> claims =
             CreateBaseClaims(
                 user.UserId,
                 user.EmailAddress,
+                user.TokenVersion,
                 PasswordChangeTokenUse);
 
         GeneratedToken generatedToken =
@@ -141,6 +148,7 @@ internal sealed class TokenService : ITokenService
     private List<Claim> CreateBaseClaims(
         int userId,
         string emailAddress,
+        int tokenVersion,
         string tokenUse)
     {
         return
@@ -153,6 +161,11 @@ internal sealed class TokenService : ITokenService
             new Claim(
                 JwtRegisteredClaimNames.Email,
                 emailAddress),
+
+            new Claim(
+                TokenVersionClaimType,
+                tokenVersion.ToString(
+                    CultureInfo.InvariantCulture)),
 
             new Claim(
                 TokenUseClaimType,
@@ -211,7 +224,8 @@ internal sealed class TokenService : ITokenService
 
     private static void ValidateUserData(
         int userId,
-        string emailAddress)
+        string emailAddress,
+        int tokenVersion)
     {
         if (userId <= 0)
         {
@@ -222,6 +236,13 @@ internal sealed class TokenService : ITokenService
 
         ArgumentException.ThrowIfNullOrWhiteSpace(
             emailAddress);
+
+        if (tokenVersion <= 0)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(tokenVersion),
+                "TokenVersion must be greater than zero.");
+        }
     }
 
     private sealed record GeneratedToken(

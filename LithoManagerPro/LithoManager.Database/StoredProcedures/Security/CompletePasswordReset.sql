@@ -26,6 +26,7 @@ BEGIN
     DECLARE @EmailAddress nvarchar(254) = NULL;
     DECLARE @RoleCode nvarchar(50) = NULL;
     DECLARE @CurrentPasswordHash nvarchar(500) = NULL;
+    DECLARE @TokenVersion int = NULL;
 
     DECLARE @IsEmailConfirmed bit = NULL;
     DECLARE @IsUserActive bit = NULL;
@@ -227,6 +228,9 @@ BEGIN
                     [PasswordChangedAtUtc] =
                         @OccurredAtUtc,
 
+                    [TokenVersion] =
+                        [TokenVersion] + 1,
+
                     [FailedLoginAttempts] =
                         0,
 
@@ -248,6 +252,13 @@ BEGIN
                         N'The password reset user update returned an unexpected row count.',
                         1;
                 END;
+
+                SELECT
+                    @TokenVersion =
+                        U.[TokenVersion]
+                FROM [Security].[Users] AS U
+                WHERE
+                    U.[UserId] = @UserId;
 
                 /*
                     Consume the exact token.
@@ -384,6 +395,13 @@ BEGIN
                     WHEN @WasCompleted = 1
                         THEN CONVERT(bit, 0)
                     ELSE CAST(NULL AS bit)
+                END,
+
+            [TokenVersion] =
+                CASE
+                    WHEN @WasCompleted = 1
+                        THEN @TokenVersion
+                    ELSE CAST(NULL AS int)
                 END,
 
             [WasCompleted] =

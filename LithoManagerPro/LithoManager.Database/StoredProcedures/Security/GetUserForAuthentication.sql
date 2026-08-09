@@ -19,6 +19,7 @@ BEGIN
         U.[UserId],
         U.[EmailAddress],
         U.[PasswordHash],
+        U.[TokenVersion],
         U.[IsEmailConfirmed],
         U.[IsActive],
         U.[RequiresPasswordChange],

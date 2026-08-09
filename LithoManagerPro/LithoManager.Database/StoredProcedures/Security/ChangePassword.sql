@@ -143,6 +143,9 @@ BEGIN
             [PasswordChangedAtUtc] =
                 @OccurredAtUtc,
 
+            [TokenVersion] =
+                [TokenVersion] + 1,
+
             [FailedLoginAttempts] =
                 0,
 
@@ -204,7 +207,8 @@ BEGIN
         SELECT
             U.[UserId],
             U.[PasswordChangedAtUtc],
-            U.[RequiresPasswordChange]
+            U.[RequiresPasswordChange],
+            U.[TokenVersion]
 
         FROM [Security].[Users] AS U
 

@@ -907,6 +907,7 @@ public sealed class ChangePasswordServiceTests
                 "administrator@lithomanager.test",
             PasswordHash =
                 StoredPasswordHash,
+            TokenVersion = 1,
             IsEmailConfirmed =
                 isEmailConfirmed,
             IsActive =

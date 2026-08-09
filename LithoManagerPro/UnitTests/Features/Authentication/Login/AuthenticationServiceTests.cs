@@ -576,6 +576,12 @@ public sealed class AuthenticationServiceTests
             tokenService
                 .PasswordChangeTokenUserReceived
                 .EmailAddress);
+
+        Assert.Equal(
+            user.TokenVersion,
+            tokenService
+                .PasswordChangeTokenUserReceived
+                .TokenVersion);
     }
 
     [Fact]
@@ -685,6 +691,11 @@ public sealed class AuthenticationServiceTests
                 .EmailAddress);
 
         Assert.Equal(
+            user.TokenVersion,
+            tokenService.AccessTokenUserReceived
+                .TokenVersion);
+
+        Assert.Equal(
             user.RoleCode,
             tokenService.AccessTokenUserReceived
                 .RoleCode);
@@ -740,6 +751,7 @@ public sealed class AuthenticationServiceTests
                 "admin@lithomanager.com",
             PasswordHash =
                 "stored-password-hash",
+            TokenVersion = 1,
 
             IsEmailConfirmed = true,
             IsActive = true,
@@ -783,6 +795,7 @@ public sealed class AuthenticationServiceTests
                 "employee@lithomanager.com",
             PasswordHash =
                 "stored-password-hash",
+            TokenVersion = 1,
 
             IsEmailConfirmed = true,
             IsActive = true,
@@ -832,6 +845,7 @@ public sealed class AuthenticationServiceTests
             UserId = source.UserId,
             EmailAddress = source.EmailAddress,
             PasswordHash = source.PasswordHash,
+            TokenVersion = source.TokenVersion,
 
             IsEmailConfirmed =
                 isEmailConfirmed
