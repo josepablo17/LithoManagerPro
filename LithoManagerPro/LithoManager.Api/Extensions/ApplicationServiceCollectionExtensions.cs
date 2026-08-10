@@ -21,6 +21,16 @@ using LithoManager.Application.Features
     .HumanResources.Departments.SetDepartmentStatus;
 using LithoManager.Application.Features
     .HumanResources.Departments.UpdateDepartment;
+using LithoManager.Application.Features
+    .HumanResources.Employees.CreateEmployee;
+using LithoManager.Application.Features
+    .HumanResources.Employees.GetEmployeeById;
+using LithoManager.Application.Features
+    .HumanResources.Employees.GetEmployees;
+using LithoManager.Application.Features
+    .HumanResources.Employees.SetEmployeeStatus;
+using LithoManager.Application.Features
+    .HumanResources.Employees.UpdateEmployee;
 using LithoManager.Application.Security;
 
 namespace LithoManager.Api.Extensions;
@@ -79,6 +89,26 @@ public static class ApplicationServiceCollectionExtensions
         services.AddScoped<
             ISetDepartmentStatusService,
             SetDepartmentStatusService>();
+
+        services.AddScoped<
+            ICreateEmployeeService,
+            CreateEmployeeService>();
+
+        services.AddScoped<
+            IGetEmployeeByIdService,
+            GetEmployeeByIdService>();
+
+        services.AddScoped<
+            IGetEmployeesService,
+            GetEmployeesService>();
+
+        services.AddScoped<
+            IUpdateEmployeeService,
+            UpdateEmployeeService>();
+
+        services.AddScoped<
+            ISetEmployeeStatusService,
+            SetEmployeeStatusService>();
 
         return services;
     }

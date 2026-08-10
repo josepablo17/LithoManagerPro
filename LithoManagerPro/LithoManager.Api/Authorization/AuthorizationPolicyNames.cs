@@ -7,4 +7,7 @@ public static class AuthorizationPolicyNames
 
     public const string HumanResourcesDepartments =
         "HumanResourcesDepartments";
+
+    public const string HumanResourcesEmployees =
+        "HumanResourcesEmployees";
 }
