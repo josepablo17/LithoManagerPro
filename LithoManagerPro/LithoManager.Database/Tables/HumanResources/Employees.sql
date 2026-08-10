@@ -1,7 +1,7 @@
 ﻿CREATE TABLE [HumanResources].[Employees]
 (
     [EmployeeId] int IDENTITY(1,1) NOT NULL,
-    [UserId] int NOT NULL,
+    [UserId] int NULL,
     [DepartmentId] int NOT NULL,
     [IdentificationNumber] nvarchar(30) NOT NULL,
     [FirstName] nvarchar(100) NOT NULL,
@@ -45,9 +45,6 @@
     CONSTRAINT [FkEmployeesUsersUpdatedByUserId]
         FOREIGN KEY ([UpdatedByUserId])
         REFERENCES [Security].[Users] ([UserId]),
-
-    CONSTRAINT [UqEmployeesUserId]
-        UNIQUE ([UserId]),
 
     CONSTRAINT [UqEmployeesIdentificationNumber]
         UNIQUE ([IdentificationNumber]),
@@ -100,6 +97,14 @@
             OR [TerminationDate] >= [HireDate]
         )
 );
+GO
+
+CREATE UNIQUE NONCLUSTERED INDEX [UxEmployeesUserId]
+    ON [HumanResources].[Employees]
+    (
+        [UserId]
+    )
+    WHERE [UserId] IS NOT NULL;
 GO
 
 CREATE NONCLUSTERED INDEX [IxEmployeesDepartmentIdIsActive]

@@ -1,6 +1,8 @@
-﻿using LithoManager.Application.Abstractions.Persistence;
+using LithoManager.Application.Abstractions.Persistence;
 using LithoManager.Application.Abstractions.Security;
 using LithoManager.Infrastructure.Persistence.Dapper;
+using LithoManager.Infrastructure.Persistence.Repositories
+    .HumanResources;
 using LithoManager.Infrastructure.Persistence.Repositories.Security;
 using LithoManager.Infrastructure.Security;
 using LithoManager.Infrastructure.Security.Tokens;
@@ -39,6 +41,14 @@ public static class DependencyInjection
         services.AddScoped<
             IAuthenticationRepository,
             AuthenticationRepository>();
+
+        services.AddScoped<
+            IDepartmentRepository,
+            DepartmentRepository>();
+
+        services.AddScoped<
+            IEmployeeRepository,
+            EmployeeRepository>();
 
         services.AddSingleton<
             IPasswordService,

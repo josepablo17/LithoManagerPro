@@ -3,6 +3,10 @@ using LithoManager.Application.Abstractions.Persistence;
 using LithoManager.Application.Abstractions.Security;
 using LithoManager.Application.Features.Authentication.ForgotPassword;
 using LithoManager.Application.Features.Authentication.Login;
+using LithoManager.Application.Features
+    .HumanResources.Departments;
+using LithoManager.Application.Features
+    .HumanResources.Employees;
 using LithoManager.Infrastructure;
 using LithoManager.Infrastructure.Persistence.Dapper;
 using Microsoft.Extensions.Configuration;
@@ -71,6 +75,18 @@ public sealed class AuthenticationDatabaseFixture
         private set;
     } = null!;
 
+    public IDepartmentRepository DepartmentRepository
+    {
+        get;
+        private set;
+    } = null!;
+
+    public IEmployeeRepository EmployeeRepository
+    {
+        get;
+        private set;
+    } = null!;
+
     public async Task InitializeAsync()
     {
         IConfiguration configuration =
@@ -128,6 +144,13 @@ public sealed class AuthenticationDatabaseFixture
             scopedServices.GetRequiredService<
                 IPasswordResetTokenService>();
 
+        DepartmentRepository =
+            scopedServices.GetRequiredService<
+                IDepartmentRepository>();
+
+        EmployeeRepository =
+            scopedServices.GetRequiredService<
+                IEmployeeRepository>();
 
         TimeProvider =
             scopedServices.GetRequiredService<
@@ -352,6 +375,121 @@ public sealed class AuthenticationDatabaseFixture
                     DELETE FROM HumanResources.Employees
                     WHERE UserId = @UserId
                        OR IdentificationNumber = @IdentificationNumber;
+                    """,
+                parameters:
+                    parameters,
+                commandType:
+                    CommandType.Text,
+                cancellationToken:
+                    CancellationToken.None);
+
+        await using DbConnection connection =
+            _connectionFactory.CreateConnection();
+
+        await connection.ExecuteAsync(command);
+    }
+
+    public async Task RemoveDepartmentTestDataAsync(
+        string departmentCode,
+        string? identificationNumber = null)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(
+            departmentCode);
+
+        var parameters = new
+        {
+            DepartmentCode = departmentCode,
+            IdentificationNumber =
+                identificationNumber
+        };
+
+        CommandDefinition command =
+            new(
+                commandText:
+                    """
+                    DELETE E
+                    FROM HumanResources.Employees AS E
+                    INNER JOIN HumanResources.Departments AS D
+                        ON D.DepartmentId = E.DepartmentId
+                    WHERE D.DepartmentCode = @DepartmentCode;
+
+                    DELETE FROM HumanResources.Employees
+                    WHERE IdentificationNumber = @IdentificationNumber;
+
+                    DELETE FROM HumanResources.Departments
+                    WHERE DepartmentCode = @DepartmentCode;
+                    """,
+                parameters:
+                    parameters,
+                commandType:
+                    CommandType.Text,
+                cancellationToken:
+                    CancellationToken.None);
+
+        await using DbConnection connection =
+            _connectionFactory.CreateConnection();
+
+        await connection.ExecuteAsync(command);
+    }
+
+    public async Task CreateActiveEmployeeForDepartmentAsync(
+        int departmentId,
+        string identificationNumber)
+    {
+        if (departmentId <= 0)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(departmentId),
+                "DepartmentId must be greater than zero.");
+        }
+
+        ArgumentException.ThrowIfNullOrWhiteSpace(
+            identificationNumber);
+
+        var parameters = new
+        {
+            UserId =
+                SuperAdministratorUserId,
+            DepartmentId =
+                departmentId,
+            IdentificationNumber =
+                identificationNumber
+        };
+
+        CommandDefinition command =
+            new(
+                commandText:
+                    """
+                    DELETE FROM HumanResources.Employees
+                    WHERE UserId = @UserId
+                       OR IdentificationNumber = @IdentificationNumber;
+
+                    INSERT INTO HumanResources.Employees
+                    (
+                        UserId,
+                        DepartmentId,
+                        IdentificationNumber,
+                        FirstName,
+                        LastName,
+                        HireDate,
+                        JobTitle,
+                        BaseSalary,
+                        IsActive,
+                        CreatedByUserId
+                    )
+                    VALUES
+                    (
+                        @UserId,
+                        @DepartmentId,
+                        @IdentificationNumber,
+                        N'Integration',
+                        N'Administrator',
+                        CONVERT(date, SYSUTCDATETIME()),
+                        N'Integration Test User',
+                        0,
+                        1,
+                        @UserId
+                    );
                     """,
                 parameters:
                     parameters,
