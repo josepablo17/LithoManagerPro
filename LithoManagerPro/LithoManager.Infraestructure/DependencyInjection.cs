@@ -46,6 +46,10 @@ public static class DependencyInjection
             IDepartmentRepository,
             DepartmentRepository>();
 
+        services.AddScoped<
+            IEmployeeRepository,
+            EmployeeRepository>();
+
         services.AddSingleton<
             IPasswordService,
             PasswordService>();

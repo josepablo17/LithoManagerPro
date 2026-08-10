@@ -5,6 +5,8 @@ using LithoManager.Application.Features.Authentication.ForgotPassword;
 using LithoManager.Application.Features.Authentication.Login;
 using LithoManager.Application.Features
     .HumanResources.Departments;
+using LithoManager.Application.Features
+    .HumanResources.Employees;
 using LithoManager.Infrastructure;
 using LithoManager.Infrastructure.Persistence.Dapper;
 using Microsoft.Extensions.Configuration;
@@ -79,6 +81,12 @@ public sealed class AuthenticationDatabaseFixture
         private set;
     } = null!;
 
+    public IEmployeeRepository EmployeeRepository
+    {
+        get;
+        private set;
+    } = null!;
+
     public async Task InitializeAsync()
     {
         IConfiguration configuration =
@@ -139,6 +147,10 @@ public sealed class AuthenticationDatabaseFixture
         DepartmentRepository =
             scopedServices.GetRequiredService<
                 IDepartmentRepository>();
+
+        EmployeeRepository =
+            scopedServices.GetRequiredService<
+                IEmployeeRepository>();
 
         TimeProvider =
             scopedServices.GetRequiredService<
