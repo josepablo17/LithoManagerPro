@@ -73,6 +73,7 @@
     <Build Include="Tables\Audit\AuditLogs.sql" />
     <Build Include="Tables\Security\Roles.sql" />
     <Build Include="Tables\Security\Users.sql" />
+    <Build Include="Tables\Security\RefreshTokens.sql" />
     <Build Include="Tables\HumanResources\Departments.sql" />
     <Build Include="Tables\HumanResources\Employees.sql" />
     <Build Include="Schemas\Audit.sql" />
@@ -94,6 +95,11 @@
     <Build Include="StoredProcedures\Security\RevokePasswordResetTokenAfterDeliveryFailure.sql" />
     <Build Include="StoredProcedures\Security\GetPasswordResetContextByTokenHash.sql" />
     <Build Include="StoredProcedures\Security\CompletePasswordReset.sql" />
+    <Build Include="StoredProcedures\Security\CreateRefreshToken.sql" />
+    <Build Include="StoredProcedures\Security\GetRefreshTokenContextByTokenHash.sql" />
+    <Build Include="StoredProcedures\Security\RotateRefreshToken.sql" />
+    <Build Include="StoredProcedures\Security\RevokeRefreshToken.sql" />
+    <Build Include="StoredProcedures\Security\RevokeUserRefreshTokens.sql" />
     <Build Include="StoredProcedures\HumanResources\CreateDepartment.sql" />
     <Build Include="StoredProcedures\HumanResources\GetDepartmentById.sql" />
     <Build Include="StoredProcedures\HumanResources\GetDepartments.sql" />

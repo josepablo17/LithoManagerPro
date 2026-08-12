@@ -15,9 +15,6 @@ public sealed class ForgotPasswordService
     private const int MaximumEmailAddressLength =
         254;
 
-    private const int TokenExpirationMinutes =
-        15;
-
     private readonly IAuthenticationRepository
         _authenticationRepository;
 
@@ -26,6 +23,9 @@ public sealed class ForgotPasswordService
 
     private readonly IPasswordResetEmailSender
         _passwordResetEmailSender;
+
+    private readonly AuthenticationSecurityOptions
+        _securityOptions;
 
     private readonly TimeProvider
         _timeProvider;
@@ -37,6 +37,7 @@ public sealed class ForgotPasswordService
             passwordResetTokenService,
         IPasswordResetEmailSender
             passwordResetEmailSender,
+        AuthenticationSecurityOptions securityOptions,
         TimeProvider timeProvider)
     {
         ArgumentNullException.ThrowIfNull(
@@ -49,6 +50,9 @@ public sealed class ForgotPasswordService
             passwordResetEmailSender);
 
         ArgumentNullException.ThrowIfNull(
+            securityOptions);
+
+        ArgumentNullException.ThrowIfNull(
             timeProvider);
 
         _authenticationRepository =
@@ -59,6 +63,9 @@ public sealed class ForgotPasswordService
 
         _passwordResetEmailSender =
             passwordResetEmailSender;
+
+        _securityOptions =
+            securityOptions;
 
         _timeProvider =
             timeProvider;
@@ -104,7 +111,8 @@ public sealed class ForgotPasswordService
             _timeProvider
                 .GetUtcNow()
                 .AddMinutes(
-                    TokenExpirationMinutes)
+                    _securityOptions
+                        .PasswordResetTokenExpirationMinutes)
                 .UtcDateTime;
 
         CreatePasswordResetTokenData

@@ -1,0 +1,22 @@
+body {
+  font-family: var(--font-family);
+  font-size: 14px;
+  color: var(--color-text-primary);
+  background: var(--color-background);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+:focus-visible {
+  outline: 3px solid rgba(20, 92, 78, 0.28);
+  outline-offset: 2px;
+}
+
+::selection {
+  color: var(--color-surface);
+  background: var(--color-primary);
+}

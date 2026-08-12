@@ -101,6 +101,10 @@ public static class DependencyInjection
             IPasswordResetTokenService,
             PasswordResetTokenService>();
 
+        services.AddSingleton<
+            IRefreshTokenService,
+            RefreshTokenService>();
+
         services
     .AddOptions<EmailOptions>()
     .Bind(

@@ -8,6 +8,8 @@ using LithoManager.Application.Features.Authentication
 using LithoManager.Application.Features.Authentication.ForgotPassword;
 using LithoManager.Application.Features.Authentication
     .ResetPassword;
+using LithoManager.Application.Features.Authentication
+    .RefreshTokens;
 
 namespace LithoManager.Application.Abstractions.Persistence;
 
@@ -42,6 +44,8 @@ public interface IAuthenticationRepository
         RegisterFailedLoginAsync(
             string attemptedEmailAddress,
             int? userId,
+            short maximumFailedLoginAttempts,
+            int lockoutDurationMinutes,
             AuthenticationRequestContext requestContext,
             CancellationToken cancellationToken);
 
@@ -86,6 +90,39 @@ GetPasswordResetContextByTokenHashAsync(
         AuthenticationRequestContext requestContext,
         CancellationToken cancellationToken);
 
+    Task<CreateRefreshTokenData> CreateRefreshTokenAsync(
+        int userId,
+        byte[] tokenHash,
+        Guid tokenFamilyId,
+        DateTime expiresAtUtc,
+        AuthenticationRequestContext requestContext,
+        CancellationToken cancellationToken);
+
+    Task<RefreshTokenContextData?>
+    GetRefreshTokenContextByTokenHashAsync(
+        byte[] tokenHash,
+        CancellationToken cancellationToken);
+
+    Task<RotateRefreshTokenData> RotateRefreshTokenAsync(
+        byte[] currentTokenHash,
+        byte[] newTokenHash,
+        DateTime expiresAtUtc,
+        AuthenticationRequestContext requestContext,
+        CancellationToken cancellationToken);
+
+    Task<RevokeRefreshTokenData> RevokeRefreshTokenAsync(
+        byte[] tokenHash,
+        string revokedReason,
+        AuthenticationRequestContext requestContext,
+        CancellationToken cancellationToken);
+
+    Task<RevokeUserRefreshTokensData>
+    RevokeUserRefreshTokensAsync(
+        int userId,
+        string revokedReason,
+        int? actorUserId,
+        AuthenticationRequestContext requestContext,
+        CancellationToken cancellationToken);
 
 }
 

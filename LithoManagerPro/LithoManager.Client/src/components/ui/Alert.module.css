@@ -1,0 +1,30 @@
+.info,
+.success,
+.warning,
+.error {
+  padding: var(--spacing-md) var(--spacing-lg);
+  border: 1px solid transparent;
+  border-radius: var(--radius-lg);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.info {
+  color: var(--color-info);
+  background: var(--color-info-soft);
+}
+
+.success {
+  color: var(--color-success);
+  background: var(--color-success-soft);
+}
+
+.warning {
+  color: var(--color-warning);
+  background: var(--color-warning-soft);
+}
+
+.error {
+  color: var(--color-danger);
+  background: var(--color-danger-soft);
+}

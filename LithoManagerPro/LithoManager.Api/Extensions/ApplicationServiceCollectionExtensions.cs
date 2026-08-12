@@ -1,4 +1,5 @@
 using LithoManager.Application.Abstractions.Security;
+using LithoManager.Application.Features.Authentication;
 using LithoManager.Application.Features.Authentication
     .ChangePassword;
 using LithoManager.Application.Features.Authentication
@@ -9,6 +10,9 @@ using LithoManager.Application.Features.Authentication
     .GetCurrentUser;
 using LithoManager.Application.Features.Authentication
     .Login;
+using LithoManager.Application.Features.Authentication.Logout;
+using LithoManager.Application.Features.Authentication
+    .RefreshSession;
 using LithoManager.Application.Features.Authentication
     .ResetPassword;
 using LithoManager.Application.Features
@@ -32,15 +36,73 @@ using LithoManager.Application.Features
 using LithoManager.Application.Features
     .HumanResources.Employees.UpdateEmployee;
 using LithoManager.Application.Security;
+using Microsoft.Extensions.Configuration;
 
 namespace LithoManager.Api.Extensions;
 
 public static class ApplicationServiceCollectionExtensions
 {
     public static IServiceCollection AddApplicationServices(
-        this IServiceCollection services)
+        this IServiceCollection services,
+        IConfiguration configuration)
     {
         ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(configuration);
+
+        AuthenticationSessionOptions sessionOptions =
+            configuration
+                .GetSection(
+                    AuthenticationSessionOptions.SectionName)
+                .Get<AuthenticationSessionOptions>()
+            ?? new AuthenticationSessionOptions();
+
+        if (sessionOptions.RefreshTokenExpirationDays
+            is < 1 or > 30)
+        {
+            throw new InvalidOperationException(
+                "Authentication:Session:" +
+                "RefreshTokenExpirationDays must be " +
+                "between 1 and 30.");
+        }
+
+        services.AddSingleton(sessionOptions);
+
+        AuthenticationSecurityOptions securityOptions =
+            configuration
+                .GetSection(
+                    AuthenticationSecurityOptions.SectionName)
+                .Get<AuthenticationSecurityOptions>()
+            ?? new AuthenticationSecurityOptions();
+
+        if (securityOptions
+                .PasswordResetTokenExpirationMinutes
+            is < 1 or > 1440)
+        {
+            throw new InvalidOperationException(
+                "Authentication:Security:" +
+                "PasswordResetTokenExpirationMinutes " +
+                "must be between 1 and 1440.");
+        }
+
+        if (securityOptions.MaximumFailedLoginAttempts
+            is < 1 or > 20)
+        {
+            throw new InvalidOperationException(
+                "Authentication:Security:" +
+                "MaximumFailedLoginAttempts must be " +
+                "between 1 and 20.");
+        }
+
+        if (securityOptions.LockoutDurationMinutes
+            is < 1 or > 1440)
+        {
+            throw new InvalidOperationException(
+                "Authentication:Security:" +
+                "LockoutDurationMinutes must be " +
+                "between 1 and 1440.");
+        }
+
+        services.AddSingleton(securityOptions);
 
         services.AddSingleton<
             IPasswordPolicy,
@@ -49,6 +111,14 @@ public static class ApplicationServiceCollectionExtensions
         services.AddScoped<
             IAuthenticationService,
             AuthenticationService>();
+
+        services.AddScoped<
+            IRefreshSessionService,
+            RefreshSessionService>();
+
+        services.AddScoped<
+            ILogoutService,
+            LogoutService>();
 
         services.AddScoped<
             IChangeTemporaryPasswordService,

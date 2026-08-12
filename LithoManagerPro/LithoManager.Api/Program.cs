@@ -3,9 +3,37 @@ using LithoManager.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.OpenApi;
 
+const string FrontendCorsPolicy =
+    "FrontendCorsPolicy";
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+
+string[] allowedFrontendOrigins =
+    builder.Configuration
+        .GetSection("Cors:AllowedOrigins")
+        .Get<string[]>()
+    ?? [];
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(
+        FrontendCorsPolicy,
+        policy =>
+        {
+            if (allowedFrontendOrigins.Length == 0)
+            {
+                return;
+            }
+
+            policy
+                .WithOrigins(allowedFrontendOrigins)
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials();
+        });
+});
 
 builder.Services.AddSwaggerGen(options =>
 {
@@ -47,7 +75,8 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddInfrastructure(
     builder.Configuration);
 
-builder.Services.AddApplicationServices();
+builder.Services.AddApplicationServices(
+    builder.Configuration);
 
 builder.Services.AddJwtAuthentication(
     builder.Configuration);
@@ -70,6 +99,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors(FrontendCorsPolicy);
 
 app.UseAuthentication();
 app.UseAuthorization();

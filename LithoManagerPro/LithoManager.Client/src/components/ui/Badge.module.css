@@ -1,0 +1,38 @@
+.success,
+.warning,
+.danger,
+.info,
+.neutral {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 var(--spacing-md);
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.success {
+  color: var(--color-success);
+  background: var(--color-success-soft);
+}
+
+.warning {
+  color: var(--color-warning);
+  background: var(--color-warning-soft);
+}
+
+.danger {
+  color: var(--color-danger);
+  background: var(--color-danger-soft);
+}
+
+.info {
+  color: var(--color-info);
+  background: var(--color-info-soft);
+}
+
+.neutral {
+  color: var(--color-neutral);
+  background: var(--color-neutral-soft);
+}

@@ -173,6 +173,15 @@ public sealed class AuthenticationServiceTests
 
         Assert.Null(repository.FailedLoginUserId);
 
+        Assert.Equal(
+            (short?)4,
+            repository.FailedLoginMaximumAttempts);
+
+        Assert.Equal(
+            (int?)20,
+            repository
+                .FailedLoginLockoutDurationMinutes);
+
         Assert.Same(
             requestContext,
             repository.FailedLoginRequestContext);
@@ -245,6 +254,15 @@ public sealed class AuthenticationServiceTests
         Assert.Equal(
             user.UserId,
             repository.FailedLoginUserId);
+
+        Assert.Equal(
+            (short?)4,
+            repository.FailedLoginMaximumAttempts);
+
+        Assert.Equal(
+            (int?)20,
+            repository
+                .FailedLoginLockoutDurationMinutes);
 
         Assert.Equal(
             1,
@@ -593,7 +611,22 @@ public sealed class AuthenticationServiceTests
         FakeAuthenticationRepository repository =
             new()
             {
-                AuthenticationUserToReturn = user
+                AuthenticationUserToReturn = user,
+                CreateRefreshTokenToReturn =
+                    new()
+                    {
+                        RefreshTokenId = 1,
+                        UserId = user.UserId,
+                        TokenFamilyId = Guid.NewGuid(),
+                        TokenVersion =
+                            user.TokenVersion,
+                        ExpiresAtUtc =
+                            UtcNow
+                                .AddDays(1)
+                                .UtcDateTime,
+                        CreatedAtUtc =
+                            UtcNow.UtcDateTime
+                    }
             };
 
         FakePasswordService passwordService =
@@ -605,11 +638,27 @@ public sealed class AuthenticationServiceTests
         FakeTokenService tokenService =
             new();
 
+        FakeRefreshTokenService refreshTokenService =
+            new()
+            {
+                GeneratedTokenToReturn =
+                    new(
+                        token:
+                            "fake-refresh-token",
+                        tokenHash:
+                            Enumerable
+                                .Repeat(
+                                    (byte)7,
+                                    32)
+                                .ToArray())
+            };
+
         AuthenticationService service =
             CreateService(
                 repository,
                 passwordService,
-                tokenService);
+                tokenService,
+                refreshTokenService);
 
         AuthenticationRequestContext requestContext =
             CreateRequestContext();
@@ -638,6 +687,14 @@ public sealed class AuthenticationServiceTests
             result.AccessToken);
 
         Assert.Null(result.PasswordChangeToken);
+
+        Assert.Equal(
+            "fake-refresh-token",
+            result.RefreshToken);
+
+        Assert.Equal(
+            UtcNow.AddDays(1).UtcDateTime,
+            result.RefreshTokenExpiresAtUtc);
 
         Assert.NotNull(result.User);
 
@@ -672,6 +729,28 @@ public sealed class AuthenticationServiceTests
         Assert.Equal(
             1,
             tokenService.GenerateAccessTokenCallCount);
+
+        Assert.Equal(
+            1,
+            refreshTokenService.GenerateTokenCallCount);
+
+        Assert.Equal(
+            1,
+            repository.CreateRefreshTokenCallCount);
+
+        Assert.Equal(
+            user.UserId,
+            repository.LastRefreshTokenUserId);
+
+        Assert.Equal(
+            UtcNow.AddDays(1).UtcDateTime,
+            repository.LastRefreshTokenExpiresAtUtc);
+
+        Assert.Equal(
+            refreshTokenService
+                .GeneratedTokenToReturn
+                .TokenHash,
+            repository.LastCreatedRefreshTokenHash);
 
         Assert.Equal(
             0,
@@ -709,12 +788,27 @@ public sealed class AuthenticationServiceTests
     private static AuthenticationService CreateService(
         FakeAuthenticationRepository repository,
         FakePasswordService passwordService,
-        FakeTokenService tokenService)
+        FakeTokenService tokenService,
+        FakeRefreshTokenService? refreshTokenService = null)
     {
         return new AuthenticationService(
             repository,
             passwordService,
             tokenService,
+            refreshTokenService
+                ?? new FakeRefreshTokenService(),
+            new LithoManager.Application.Features.Authentication
+                .AuthenticationSessionOptions
+            {
+                RefreshTokenExpirationDays = 1
+            },
+            new LithoManager.Application.Features.Authentication
+                .AuthenticationSecurityOptions
+            {
+                MaximumFailedLoginAttempts = 4,
+                LockoutDurationMinutes = 20,
+                PasswordResetTokenExpirationMinutes = 15
+            },
             new FixedTimeProvider(UtcNow));
     }
 

@@ -75,6 +75,12 @@ public sealed class AuthenticationDatabaseFixture
         private set;
     } = null!;
 
+    public IRefreshTokenService RefreshTokenService
+    {
+        get;
+        private set;
+    } = null!;
+
     public IDepartmentRepository DepartmentRepository
     {
         get;
@@ -143,6 +149,10 @@ public sealed class AuthenticationDatabaseFixture
         PasswordResetTokenService =
             scopedServices.GetRequiredService<
                 IPasswordResetTokenService>();
+
+        RefreshTokenService =
+            scopedServices.GetRequiredService<
+                IRefreshTokenService>();
 
         DepartmentRepository =
             scopedServices.GetRequiredService<
@@ -514,26 +524,48 @@ public sealed class AuthenticationDatabaseFixture
         ArgumentException.ThrowIfNullOrWhiteSpace(
             requestPath);
 
-        /*
-         * Garantiza que el usuario no esté bloqueado
-         * antes de ejecutar Security.ChangePassword.
-         */
-        await ResetLoginStateAsync();
-
         string passwordHash =
             PasswordService.HashPassword(
                 password);
 
-        await Repository.ChangePasswordAsync(
-            userId:
+        var parameters = new
+        {
+            UserId =
                 SuperAdministratorUserId,
-            newPasswordHash:
-                passwordHash,
-            requestContext:
-                CreateRequestContext(
-                    requestPath),
-            cancellationToken:
-                CancellationToken.None);
+
+            PasswordHash =
+                passwordHash
+        };
+
+        CommandDefinition command =
+            new(
+                commandText:
+                    """
+                    UPDATE Security.Users
+                    SET
+                        PasswordHash = @PasswordHash,
+                        RequiresPasswordChange = 0,
+                        TemporaryPasswordExpiresAtUtc = NULL,
+                        PasswordChangedAtUtc =
+                            SYSUTCDATETIME(),
+                        TokenVersion = TokenVersion + 1,
+                        FailedLoginAttempts = 0,
+                        LockoutEndAtUtc = NULL,
+                        UpdatedAtUtc = SYSUTCDATETIME(),
+                        UpdatedByUserId = @UserId
+                    WHERE UserId = @UserId;
+                    """,
+                parameters:
+                    parameters,
+                commandType:
+                    CommandType.Text,
+                cancellationToken:
+                    CancellationToken.None);
+
+        await using DbConnection connection =
+            _connectionFactory.CreateConnection();
+
+        await connection.ExecuteAsync(command);
     }
 
     public async Task RestoreTestPasswordAsync()
@@ -544,6 +576,44 @@ public sealed class AuthenticationDatabaseFixture
             requestPath:
                 "/integration-tests/" +
                 "restore-original-password");
+    }
+
+    public async Task
+        RequireTemporaryPasswordChangeAsync()
+    {
+        var parameters = new
+        {
+            UserId =
+                SuperAdministratorUserId,
+
+            TemporaryPasswordExpiresAtUtc =
+                DateTime.UtcNow.AddMinutes(30)
+        };
+
+        CommandDefinition command =
+            new(
+                commandText:
+                    """
+                    UPDATE Security.Users
+                    SET
+                        RequiresPasswordChange = 1,
+                        TemporaryPasswordExpiresAtUtc =
+                            @TemporaryPasswordExpiresAtUtc,
+                        UpdatedAtUtc = SYSUTCDATETIME(),
+                        UpdatedByUserId = @UserId
+                    WHERE UserId = @UserId;
+                    """,
+                parameters:
+                    parameters,
+                commandType:
+                    CommandType.Text,
+                cancellationToken:
+                    CancellationToken.None);
+
+        await using DbConnection connection =
+            _connectionFactory.CreateConnection();
+
+        await connection.ExecuteAsync(command);
     }
 
     public static AuthenticationRequestContext
@@ -583,6 +653,26 @@ public sealed class AuthenticationDatabaseFixture
                         "Authentication:Jwt:" +
                         "PasswordChangeTokenExpirationMinutes"
                     ] = "10",
+
+                    [
+                        "Authentication:Session:" +
+                        "RefreshTokenExpirationDays"
+                    ] = "1",
+
+                    [
+                        "Authentication:Security:" +
+                        "PasswordResetTokenExpirationMinutes"
+                    ] = "15",
+
+                    [
+                        "Authentication:Security:" +
+                        "MaximumFailedLoginAttempts"
+                    ] = "5",
+
+                    [
+                        "Authentication:Security:" +
+                        "LockoutDurationMinutes"
+                    ] = "15",
 
                     [
                         "Authentication:Jwt:" +

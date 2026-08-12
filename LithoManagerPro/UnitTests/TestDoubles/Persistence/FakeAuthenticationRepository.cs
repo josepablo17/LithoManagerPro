@@ -9,6 +9,8 @@ using LithoManager.Application.Features.Authentication
 using LithoManager.Application.Features.Authentication.ForgotPassword;
 using LithoManager.Application.Features.Authentication
     .ResetPassword;
+using LithoManager.Application.Features.Authentication
+    .RefreshTokens;
 
 namespace LithoManager.UnitTests.TestDoubles.Persistence;
 
@@ -160,6 +162,18 @@ public sealed class FakeAuthenticationRepository
 
     public AuthenticationRequestContext?
         FailedLoginRequestContext
+    {
+        get;
+        private set;
+    }
+
+    public short? FailedLoginMaximumAttempts
+    {
+        get;
+        private set;
+    }
+
+    public int? FailedLoginLockoutDurationMinutes
     {
         get;
         private set;
@@ -321,6 +335,178 @@ public sealed class FakeAuthenticationRepository
         private set;
     }
 
+    public CreateRefreshTokenData?
+        CreateRefreshTokenToReturn
+    {
+        get;
+        set;
+    }
+
+    public RefreshTokenContextData?
+        RefreshTokenContextToReturn
+    {
+        get;
+        set;
+    }
+
+    public RotateRefreshTokenData?
+        RotateRefreshTokenToReturn
+    {
+        get;
+        set;
+    }
+
+    public RevokeRefreshTokenData?
+        RevokeRefreshTokenToReturn
+    {
+        get;
+        set;
+    }
+
+    public RevokeUserRefreshTokensData?
+        RevokeUserRefreshTokensToReturn
+    {
+        get;
+        set;
+    }
+
+    public int CreateRefreshTokenCallCount
+    {
+        get;
+        private set;
+    }
+
+    public int? LastRefreshTokenUserId
+    {
+        get;
+        private set;
+    }
+
+    public byte[]? LastCreatedRefreshTokenHash
+    {
+        get;
+        private set;
+    }
+
+    public Guid? LastRefreshTokenFamilyId
+    {
+        get;
+        private set;
+    }
+
+    public DateTime? LastRefreshTokenExpiresAtUtc
+    {
+        get;
+        private set;
+    }
+
+    public AuthenticationRequestContext?
+        LastCreateRefreshTokenRequestContext
+    {
+        get;
+        private set;
+    }
+
+    public int GetRefreshTokenContextCallCount
+    {
+        get;
+        private set;
+    }
+
+    public byte[]? LastRefreshTokenContextHash
+    {
+        get;
+        private set;
+    }
+
+    public int RotateRefreshTokenCallCount
+    {
+        get;
+        private set;
+    }
+
+    public byte[]? LastCurrentRefreshTokenHash
+    {
+        get;
+        private set;
+    }
+
+    public byte[]? LastNewRefreshTokenHash
+    {
+        get;
+        private set;
+    }
+
+    public DateTime? LastRotatedRefreshTokenExpiresAtUtc
+    {
+        get;
+        private set;
+    }
+
+    public AuthenticationRequestContext?
+        LastRotateRefreshTokenRequestContext
+    {
+        get;
+        private set;
+    }
+
+    public int RevokeRefreshTokenCallCount
+    {
+        get;
+        private set;
+    }
+
+    public byte[]? LastRevokedRefreshTokenHash
+    {
+        get;
+        private set;
+    }
+
+    public string? LastRefreshTokenRevokedReason
+    {
+        get;
+        private set;
+    }
+
+    public AuthenticationRequestContext?
+        LastRevokeRefreshTokenRequestContext
+    {
+        get;
+        private set;
+    }
+
+    public int RevokeUserRefreshTokensCallCount
+    {
+        get;
+        private set;
+    }
+
+    public int? LastRefreshTokensRevocationUserId
+    {
+        get;
+        private set;
+    }
+
+    public int? LastRefreshTokensRevocationActorUserId
+    {
+        get;
+        private set;
+    }
+
+    public string?
+        LastUserRefreshTokensRevokedReason
+    {
+        get;
+        private set;
+    }
+
+    public AuthenticationRequestContext?
+        LastRevokeUserRefreshTokensRequestContext
+    {
+        get;
+        private set;
+    }
+
     public Task<AuthenticationUserData?>
         GetUserForAuthenticationAsync(
             string emailAddress,
@@ -371,6 +557,8 @@ public sealed class FakeAuthenticationRepository
         RegisterFailedLoginAsync(
             string attemptedEmailAddress,
             int? userId,
+            short maximumFailedLoginAttempts,
+            int lockoutDurationMinutes,
             AuthenticationRequestContext requestContext,
             CancellationToken cancellationToken)
     {
@@ -382,6 +570,12 @@ public sealed class FakeAuthenticationRepository
             attemptedEmailAddress;
 
         FailedLoginUserId = userId;
+
+        FailedLoginMaximumAttempts =
+            maximumFailedLoginAttempts;
+
+        FailedLoginLockoutDurationMinutes =
+            lockoutDurationMinutes;
 
         FailedLoginRequestContext =
             requestContext;
@@ -614,6 +808,159 @@ GetPasswordResetContextByTokenHashAsync(
             CompletePasswordResetToReturn
             ?? throw new InvalidOperationException(
                 "No password-reset completion result " +
+                "was configured for this test.");
+
+        return Task.FromResult(result);
+    }
+
+    public Task<CreateRefreshTokenData>
+    CreateRefreshTokenAsync(
+        int userId,
+        byte[] tokenHash,
+        Guid tokenFamilyId,
+        DateTime expiresAtUtc,
+        AuthenticationRequestContext requestContext,
+        CancellationToken cancellationToken)
+    {
+        cancellationToken
+            .ThrowIfCancellationRequested();
+
+        CreateRefreshTokenCallCount++;
+
+        LastRefreshTokenUserId =
+            userId;
+
+        LastCreatedRefreshTokenHash =
+            (byte[])tokenHash.Clone();
+
+        LastRefreshTokenFamilyId =
+            tokenFamilyId;
+
+        LastRefreshTokenExpiresAtUtc =
+            expiresAtUtc;
+
+        LastCreateRefreshTokenRequestContext =
+            requestContext;
+
+        CreateRefreshTokenData result =
+            CreateRefreshTokenToReturn
+            ?? throw new InvalidOperationException(
+                "No refresh-token creation result " +
+                "was configured for this test.");
+
+        return Task.FromResult(result);
+    }
+
+    public Task<RefreshTokenContextData?>
+    GetRefreshTokenContextByTokenHashAsync(
+        byte[] tokenHash,
+        CancellationToken cancellationToken)
+    {
+        cancellationToken
+            .ThrowIfCancellationRequested();
+
+        GetRefreshTokenContextCallCount++;
+
+        LastRefreshTokenContextHash =
+            (byte[])tokenHash.Clone();
+
+        return Task.FromResult(
+            RefreshTokenContextToReturn);
+    }
+
+    public Task<RotateRefreshTokenData>
+    RotateRefreshTokenAsync(
+        byte[] currentTokenHash,
+        byte[] newTokenHash,
+        DateTime expiresAtUtc,
+        AuthenticationRequestContext requestContext,
+        CancellationToken cancellationToken)
+    {
+        cancellationToken
+            .ThrowIfCancellationRequested();
+
+        RotateRefreshTokenCallCount++;
+
+        LastCurrentRefreshTokenHash =
+            (byte[])currentTokenHash.Clone();
+
+        LastNewRefreshTokenHash =
+            (byte[])newTokenHash.Clone();
+
+        LastRotatedRefreshTokenExpiresAtUtc =
+            expiresAtUtc;
+
+        LastRotateRefreshTokenRequestContext =
+            requestContext;
+
+        RotateRefreshTokenData result =
+            RotateRefreshTokenToReturn
+            ?? throw new InvalidOperationException(
+                "No refresh-token rotation result " +
+                "was configured for this test.");
+
+        return Task.FromResult(result);
+    }
+
+    public Task<RevokeRefreshTokenData>
+    RevokeRefreshTokenAsync(
+        byte[] tokenHash,
+        string revokedReason,
+        AuthenticationRequestContext requestContext,
+        CancellationToken cancellationToken)
+    {
+        cancellationToken
+            .ThrowIfCancellationRequested();
+
+        RevokeRefreshTokenCallCount++;
+
+        LastRevokedRefreshTokenHash =
+            (byte[])tokenHash.Clone();
+
+        LastRefreshTokenRevokedReason =
+            revokedReason;
+
+        LastRevokeRefreshTokenRequestContext =
+            requestContext;
+
+        RevokeRefreshTokenData result =
+            RevokeRefreshTokenToReturn
+            ?? throw new InvalidOperationException(
+                "No refresh-token revocation result " +
+                "was configured for this test.");
+
+        return Task.FromResult(result);
+    }
+
+    public Task<RevokeUserRefreshTokensData>
+    RevokeUserRefreshTokensAsync(
+        int userId,
+        string revokedReason,
+        int? actorUserId,
+        AuthenticationRequestContext requestContext,
+        CancellationToken cancellationToken)
+    {
+        cancellationToken
+            .ThrowIfCancellationRequested();
+
+        RevokeUserRefreshTokensCallCount++;
+
+        LastRefreshTokensRevocationUserId =
+            userId;
+
+        LastRefreshTokensRevocationActorUserId =
+            actorUserId;
+
+        LastUserRefreshTokensRevokedReason =
+            revokedReason;
+
+        LastRevokeUserRefreshTokensRequestContext =
+            requestContext;
+
+        RevokeUserRefreshTokensData result =
+            RevokeUserRefreshTokensToReturn
+            ?? throw new InvalidOperationException(
+                "No user refresh-token revocation result " +
                 "was configured for this test.");
 
         return Task.FromResult(result);
