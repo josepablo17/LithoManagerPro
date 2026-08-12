@@ -3,7 +3,10 @@ using LithoManager.Api.Contracts.Authentication;
 using LithoManager.Api.Extensions;
 using LithoManager.Application.Features.Authentication
     .ChangeTemporaryPassword;
+using LithoManager.Application.Features.Authentication.Logout;
 using LithoManager.Application.Features.Authentication.Login;
+using LithoManager.Application.Features.Authentication
+    .RefreshSession;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
@@ -20,8 +23,16 @@ namespace LithoManager.Api.Controllers;
 [Route("api/auth")]
 public sealed class AuthenticationController : ControllerBase
 {
+    private const string RefreshTokenCookieName =
+        "__Host-LithoManager.RefreshToken";
+
     private readonly IAuthenticationService
         _authenticationService;
+
+    private readonly IRefreshSessionService
+        _refreshSessionService;
+
+    private readonly ILogoutService _logoutService;
 
     private readonly IChangeTemporaryPasswordService
     _changeTemporaryPasswordService;
@@ -37,6 +48,8 @@ public sealed class AuthenticationController : ControllerBase
 
     public AuthenticationController(
         IAuthenticationService authenticationService,
+        IRefreshSessionService refreshSessionService,
+        ILogoutService logoutService,
         IChangeTemporaryPasswordService
             changeTemporaryPasswordService,
         IChangePasswordService changePasswordService,
@@ -45,6 +58,12 @@ public sealed class AuthenticationController : ControllerBase
     {
         ArgumentNullException.ThrowIfNull(
             authenticationService);
+
+        ArgumentNullException.ThrowIfNull(
+            refreshSessionService);
+
+        ArgumentNullException.ThrowIfNull(
+            logoutService);
 
         ArgumentNullException.ThrowIfNull(
             changeTemporaryPasswordService);
@@ -60,6 +79,11 @@ public sealed class AuthenticationController : ControllerBase
 
         _authenticationService =
             authenticationService;
+
+        _refreshSessionService =
+            refreshSessionService;
+
+        _logoutService = logoutService;
 
         _changeTemporaryPasswordService =
             changeTemporaryPasswordService;
@@ -128,6 +152,17 @@ public sealed class AuthenticationController : ControllerBase
                 "A successful login must contain user data.");
         }
 
+        if (result.RequiresPasswordChange)
+        {
+            DeleteRefreshTokenCookie();
+        }
+        else
+        {
+            SetRefreshTokenCookie(
+                result.RefreshToken,
+                result.RefreshTokenExpiresAtUtc);
+        }
+
         LoginResponse response =
             new(
                 RequiresPasswordChange:
@@ -145,6 +180,113 @@ public sealed class AuthenticationController : ControllerBase
                     MapUser(result.User));
 
         return Ok(response);
+    }
+
+    [AllowAnonymous]
+    [HttpPost("refresh")]
+    [Produces("application/json")]
+    [ProducesResponseType(
+        typeof(LoginResponse),
+        StatusCodes.Status200OK)]
+    [ProducesResponseType(
+        typeof(ProblemDetails),
+        StatusCodes.Status401Unauthorized)]
+    public async Task<ActionResult<LoginResponse>>
+    Refresh(
+        CancellationToken cancellationToken)
+    {
+        Guid correlationId =
+            this.PrepareNoStoreResponse();
+
+        if (!Request.Cookies.TryGetValue(
+                RefreshTokenCookieName,
+                out string? refreshToken))
+        {
+            DeleteRefreshTokenCookie();
+
+            return Unauthorized(
+                CreateRefreshFailure(
+                    correlationId));
+        }
+
+        AuthenticationRequestContext requestContext =
+            this.CreateAuthenticationRequestContext(
+                correlationId);
+
+        RefreshSessionResult result =
+            await _refreshSessionService.RefreshAsync(
+                new RefreshSessionCommand(
+                    RefreshToken:
+                        refreshToken,
+                    RequestContext:
+                        requestContext),
+                cancellationToken);
+
+        if (!result.IsSuccessful)
+        {
+            DeleteRefreshTokenCookie();
+
+            return Unauthorized(
+                CreateRefreshFailure(
+                    correlationId));
+        }
+
+        if (result.User is null)
+        {
+            throw new InvalidOperationException(
+                "A successful refresh must contain user data.");
+        }
+
+        SetRefreshTokenCookie(
+            result.RefreshToken,
+            result.RefreshTokenExpiresAtUtc);
+
+        LoginResponse response =
+            new(
+                RequiresPasswordChange: false,
+                TokenType: "Bearer",
+                AccessToken:
+                    result.AccessToken,
+                AccessTokenExpiresAtUtc:
+                    result.AccessTokenExpiresAtUtc,
+                PasswordChangeToken: null,
+                PasswordChangeTokenExpiresAtUtc: null,
+                User:
+                    MapUser(result.User));
+
+        return Ok(response);
+    }
+
+    [AllowAnonymous]
+    [HttpPost("logout")]
+    [ProducesResponseType(
+        StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> Logout(
+        CancellationToken cancellationToken)
+    {
+        Guid correlationId =
+            this.PrepareNoStoreResponse();
+
+        if (Request.Cookies.TryGetValue(
+                RefreshTokenCookieName,
+                out string? refreshToken))
+        {
+            AuthenticationRequestContext requestContext =
+                this.CreateAuthenticationRequestContext(
+                    correlationId);
+
+            await _logoutService.LogoutAsync(
+                new LogoutCommand(
+                    RefreshToken:
+                        refreshToken,
+                    RequestContext:
+                        requestContext),
+                cancellationToken);
+        }
+
+        DeleteRefreshTokenCookie();
+
+        return NoContent();
     }
 
 
@@ -393,6 +535,84 @@ public sealed class AuthenticationController : ControllerBase
         return StatusCode(
             error.statusCode,
             problemDetails);
+    }
+
+    private ProblemDetails CreateRefreshFailure(
+        Guid correlationId)
+    {
+        return this.CreateProblemDetails(
+            statusCode:
+                StatusCodes.Status401Unauthorized,
+            title:
+                "Sesión no válida",
+            detail:
+                "La sesión ya no está disponible. " +
+                "Inicie sesión nuevamente.",
+            errorCode:
+                "invalid_refresh_token",
+            correlationId:
+                correlationId);
+    }
+
+    private void SetRefreshTokenCookie(
+        string? refreshToken,
+        DateTime? expiresAtUtc)
+    {
+        if (string.IsNullOrWhiteSpace(refreshToken))
+        {
+            throw new InvalidOperationException(
+                "A refresh token is required to set the cookie.");
+        }
+
+        if (expiresAtUtc is not DateTime expiration)
+        {
+            throw new InvalidOperationException(
+                "A refresh token expiration is required to set the cookie.");
+        }
+
+        DateTime utcExpiration =
+            DateTime.SpecifyKind(
+                expiration,
+                DateTimeKind.Utc);
+
+        Response.Cookies.Append(
+            RefreshTokenCookieName,
+            refreshToken,
+            CreateRefreshTokenCookieOptions(
+                utcExpiration));
+    }
+
+    private void DeleteRefreshTokenCookie()
+    {
+        Response.Cookies.Delete(
+            RefreshTokenCookieName,
+            CreateRefreshTokenCookieOptions(
+                expiresAtUtc: null));
+    }
+
+    private static CookieOptions
+        CreateRefreshTokenCookieOptions(
+            DateTime? expiresAtUtc)
+    {
+        CookieOptions options =
+            new()
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None,
+                Path = "/"
+            };
+
+        if (expiresAtUtc is DateTime expiration)
+        {
+            options.Expires =
+                new DateTimeOffset(
+                    DateTime.SpecifyKind(
+                        expiration,
+                        DateTimeKind.Utc));
+        }
+
+        return options;
     }
 
     private ObjectResult CreateFailureResponse(

@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text.Json;
 using Xunit;
 
 namespace LithoManager.IntegrationTests.Api
@@ -19,6 +20,9 @@ namespace LithoManager.IntegrationTests.Api
     AuthenticationDatabaseCollection.Name)]
 public sealed class AuthenticationEndpointsTests
 {
+    private const string RefreshTokenCookieName =
+        "__Host-LithoManager.RefreshToken";
+
     private readonly AuthenticationDatabaseFixture
         _databaseFixture;
 
@@ -407,6 +411,373 @@ public sealed class AuthenticationEndpointsTests
     }
 
     [Fact]
+    public async Task Login_WhenCredentialsAreValid_SetsHttpOnlyRefreshCookieAndDoesNotExposeItInJson()
+    {
+        // Arrange
+        await _databaseFixture
+            .ResetLoginStateAsync();
+
+        LoginRequest request =
+            new()
+            {
+                EmailAddress =
+                    AuthenticationDatabaseFixture
+                        .TestEmailAddress,
+
+                Password =
+                    AuthenticationDatabaseFixture
+                        .TestPassword
+            };
+
+        // Act
+        HttpResponseMessage response =
+            await _client.PostAsJsonAsync(
+                "/api/auth/login",
+                request);
+
+        // Assert
+        Assert.Equal(
+            HttpStatusCode.OK,
+            response.StatusCode);
+
+        string responseJson =
+            await response.Content
+                .ReadAsStringAsync();
+
+        LoginResponse? body =
+            JsonSerializer.Deserialize<LoginResponse>(
+                responseJson,
+                JsonSerializerOptions.Web);
+
+        Assert.NotNull(body);
+        Assert.False(body.RequiresPasswordChange);
+        Assert.False(
+            string.IsNullOrWhiteSpace(
+                body.AccessToken));
+
+        string refreshCookie =
+            AssertSingleRefreshSetCookie(
+                response);
+
+        Assert.Contains(
+            "httponly",
+            refreshCookie,
+            StringComparison.OrdinalIgnoreCase);
+
+        Assert.Contains(
+            "secure",
+            refreshCookie,
+            StringComparison.OrdinalIgnoreCase);
+
+        Assert.Contains(
+            "samesite=none",
+            refreshCookie,
+            StringComparison.OrdinalIgnoreCase);
+
+        Assert.Contains(
+            "path=/",
+            refreshCookie,
+            StringComparison.OrdinalIgnoreCase);
+
+        string refreshCookieValue =
+            ExtractCookieValue(refreshCookie);
+
+        Assert.False(
+            string.IsNullOrWhiteSpace(
+                refreshCookieValue));
+
+        Assert.DoesNotContain(
+            refreshCookieValue,
+            responseJson,
+            StringComparison.Ordinal);
+
+        Assert.DoesNotContain(
+            "refreshToken",
+            responseJson,
+            StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task Login_WhenPasswordChangeIsRequired_DoesNotCreateRefreshCookieAndClearsPreviousCookie()
+    {
+        // Arrange
+        await _databaseFixture
+            .RestoreTestPasswordAsync();
+
+        LoginRequest request =
+            new()
+            {
+                EmailAddress =
+                    AuthenticationDatabaseFixture
+                        .TestEmailAddress,
+
+                Password =
+                    AuthenticationDatabaseFixture
+                        .TestPassword
+            };
+
+        HttpResponseMessage initialLoginResponse =
+            await _client.PostAsJsonAsync(
+                "/api/auth/login",
+                request);
+
+        Assert.Equal(
+            HttpStatusCode.OK,
+            initialLoginResponse.StatusCode);
+
+        AssertSingleRefreshSetCookie(
+            initialLoginResponse);
+
+        await _databaseFixture
+            .RequireTemporaryPasswordChangeAsync();
+
+        try
+        {
+            // Act
+            HttpResponseMessage response =
+                await _client.PostAsJsonAsync(
+                    "/api/auth/login",
+                    request);
+
+            // Assert
+            Assert.Equal(
+                HttpStatusCode.OK,
+                response.StatusCode);
+
+            LoginResponse? body =
+                await response.Content
+                    .ReadFromJsonAsync<LoginResponse>();
+
+            Assert.NotNull(body);
+            Assert.True(
+                body.RequiresPasswordChange);
+            Assert.Null(
+                body.AccessToken);
+            Assert.False(
+                string.IsNullOrWhiteSpace(
+                    body.PasswordChangeToken));
+
+            string refreshCookie =
+                AssertSingleRefreshSetCookie(
+                    response);
+
+            AssertRefreshCookieDeletion(
+                refreshCookie);
+        }
+        finally
+        {
+            await _databaseFixture
+                .RestoreTestPasswordAsync();
+        }
+    }
+
+    [Fact]
+    public async Task Refresh_WhenCookieIsMissing_ReturnsUnauthorizedAndClearsCookie()
+    {
+        // Act
+        HttpResponseMessage response =
+            await _client.PostAsync(
+                "/api/auth/refresh",
+                content: null);
+
+        // Assert
+        Assert.Equal(
+            HttpStatusCode.Unauthorized,
+            response.StatusCode);
+
+        ProblemDetails? problem =
+            await response.Content
+                .ReadFromJsonAsync<ProblemDetails>();
+
+        Assert.NotNull(problem);
+        Assert.True(
+            problem.Extensions.TryGetValue(
+                "errorCode",
+                out object? errorCode));
+        Assert.Equal(
+            "invalid_refresh_token",
+            errorCode?.ToString());
+
+        string refreshCookie =
+            AssertSingleRefreshSetCookie(
+                response);
+
+        AssertRefreshCookieDeletion(
+            refreshCookie);
+    }
+
+    [Fact]
+    public async Task Refresh_WhenCookieIsValid_ReturnsNewAccessTokenAndReplacesRefreshCookie()
+    {
+        // Arrange
+        await _databaseFixture
+            .ResetLoginStateAsync();
+
+        LoginRequest loginRequest =
+            new()
+            {
+                EmailAddress =
+                    AuthenticationDatabaseFixture
+                        .TestEmailAddress,
+
+                Password =
+                    AuthenticationDatabaseFixture
+                        .TestPassword
+            };
+
+        HttpResponseMessage loginResponse =
+            await _client.PostAsJsonAsync(
+                "/api/auth/login",
+                loginRequest);
+
+        Assert.Equal(
+            HttpStatusCode.OK,
+            loginResponse.StatusCode);
+
+        string originalCookie =
+            AssertSingleRefreshSetCookie(
+                loginResponse);
+
+        string originalCookiePair =
+            ExtractCookiePair(
+                originalCookie);
+
+        // Act
+        using HttpRequestMessage refreshRequest =
+            new(
+                HttpMethod.Post,
+                "/api/auth/refresh");
+
+        refreshRequest.Headers.Add(
+            "Cookie",
+            originalCookiePair);
+
+        HttpResponseMessage response =
+            await _client.SendAsync(
+                refreshRequest);
+
+        // Assert
+        Assert.Equal(
+            HttpStatusCode.OK,
+            response.StatusCode);
+
+        LoginResponse? body =
+            await response.Content
+                .ReadFromJsonAsync<LoginResponse>();
+
+        Assert.NotNull(body);
+        Assert.False(
+            body.RequiresPasswordChange);
+        Assert.Equal(
+            "Bearer",
+            body.TokenType);
+        Assert.False(
+            string.IsNullOrWhiteSpace(
+                body.AccessToken));
+        Assert.NotNull(
+            body.AccessTokenExpiresAtUtc);
+        Assert.Null(
+            body.PasswordChangeToken);
+        Assert.Equal(
+            _databaseFixture
+                .SuperAdministratorUserId,
+            body.User.UserId);
+
+        string replacementCookie =
+            AssertSingleRefreshSetCookie(
+                response);
+
+        Assert.Contains(
+            "httponly",
+            replacementCookie,
+            StringComparison.OrdinalIgnoreCase);
+
+        Assert.NotEqual(
+            ExtractCookieValue(originalCookie),
+            ExtractCookieValue(replacementCookie));
+    }
+
+    [Fact]
+    public async Task Logout_WhenCookieExists_RevokesSessionAndClearsCookie()
+    {
+        // Arrange
+        await _databaseFixture
+            .ResetLoginStateAsync();
+
+        LoginRequest loginRequest =
+            new()
+            {
+                EmailAddress =
+                    AuthenticationDatabaseFixture
+                        .TestEmailAddress,
+
+                Password =
+                    AuthenticationDatabaseFixture
+                        .TestPassword
+            };
+
+        HttpResponseMessage loginResponse =
+            await _client.PostAsJsonAsync(
+                "/api/auth/login",
+                loginRequest);
+
+        Assert.Equal(
+            HttpStatusCode.OK,
+            loginResponse.StatusCode);
+
+        string refreshCookie =
+            AssertSingleRefreshSetCookie(
+                loginResponse);
+
+        string refreshCookiePair =
+            ExtractCookiePair(
+                refreshCookie);
+
+        using HttpRequestMessage logoutRequest =
+            new(
+                HttpMethod.Post,
+                "/api/auth/logout");
+
+        logoutRequest.Headers.Add(
+            "Cookie",
+            refreshCookiePair);
+
+        // Act
+        HttpResponseMessage response =
+            await _client.SendAsync(
+                logoutRequest);
+
+        // Assert
+        Assert.Equal(
+            HttpStatusCode.NoContent,
+            response.StatusCode);
+
+        string deletedCookie =
+            AssertSingleRefreshSetCookie(
+                response);
+
+        AssertRefreshCookieDeletion(
+            deletedCookie);
+
+        using HttpRequestMessage refreshRequest =
+            new(
+                HttpMethod.Post,
+                "/api/auth/refresh");
+
+        refreshRequest.Headers.Add(
+            "Cookie",
+            refreshCookiePair);
+
+        HttpResponseMessage refreshResponse =
+            await _client.SendAsync(
+                refreshRequest);
+
+        Assert.Equal(
+            HttpStatusCode.Unauthorized,
+            refreshResponse.StatusCode);
+    }
+
+    [Fact]
     public async Task GetCurrentUser_WhenTokenIsMissing_ReturnsUnauthorized()
     {
         // Act
@@ -631,6 +1002,91 @@ SendResetPasswordAsync(
 
         return await _client.SendAsync(
             request);
+    }
+
+    private static string AssertSingleRefreshSetCookie(
+        HttpResponseMessage response)
+    {
+        Assert.True(
+            response.Headers.TryGetValues(
+                "Set-Cookie",
+                out IEnumerable<string>?
+                    setCookieValues));
+
+        string refreshCookie =
+            Assert.Single(
+                setCookieValues,
+                value =>
+                    value.StartsWith(
+                        RefreshTokenCookieName + "=",
+                        StringComparison.Ordinal));
+
+        return refreshCookie;
+    }
+
+    private static string ExtractCookiePair(
+        string setCookieHeader)
+    {
+        int separatorIndex =
+            setCookieHeader.IndexOf(
+                ';',
+                StringComparison.Ordinal);
+
+        return separatorIndex < 0
+            ? setCookieHeader
+            : setCookieHeader[..separatorIndex];
+    }
+
+    private static string ExtractCookieValue(
+        string setCookieHeader)
+    {
+        string cookiePair =
+            ExtractCookiePair(
+                setCookieHeader);
+
+        string prefix =
+            RefreshTokenCookieName + "=";
+
+        Assert.StartsWith(
+            prefix,
+            cookiePair,
+            StringComparison.Ordinal);
+
+        return cookiePair[prefix.Length..];
+    }
+
+    private static void AssertRefreshCookieDeletion(
+        string setCookieHeader)
+    {
+        Assert.Equal(
+            string.Empty,
+            ExtractCookieValue(
+                setCookieHeader));
+
+        Assert.Contains(
+            "expires=",
+            setCookieHeader,
+            StringComparison.OrdinalIgnoreCase);
+
+        Assert.Contains(
+            "httponly",
+            setCookieHeader,
+            StringComparison.OrdinalIgnoreCase);
+
+        Assert.Contains(
+            "secure",
+            setCookieHeader,
+            StringComparison.OrdinalIgnoreCase);
+
+        Assert.Contains(
+            "samesite=none",
+            setCookieHeader,
+            StringComparison.OrdinalIgnoreCase);
+
+        Assert.Contains(
+            "path=/",
+            setCookieHeader,
+            StringComparison.OrdinalIgnoreCase);
     }
 
     private async Task<string>

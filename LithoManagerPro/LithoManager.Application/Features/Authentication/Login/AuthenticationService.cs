@@ -1,5 +1,6 @@
 ﻿using LithoManager.Application.Abstractions.Persistence;
 using LithoManager.Application.Abstractions.Security;
+using LithoManager.Application.Features.Authentication;
 
 namespace LithoManager.Application.Features.Authentication.Login;
 
@@ -8,18 +9,26 @@ public sealed class AuthenticationService
 {
     private const int MaximumEmailAddressLength = 254;
     private const int MaximumPasswordLength = 1024;
-
     private readonly IAuthenticationRepository
         _authenticationRepository;
 
     private readonly IPasswordService _passwordService;
     private readonly ITokenService _tokenService;
+    private readonly IRefreshTokenService
+        _refreshTokenService;
+    private readonly AuthenticationSessionOptions
+        _sessionOptions;
+    private readonly AuthenticationSecurityOptions
+        _securityOptions;
     private readonly TimeProvider _timeProvider;
 
     public AuthenticationService(
         IAuthenticationRepository authenticationRepository,
         IPasswordService passwordService,
         ITokenService tokenService,
+        IRefreshTokenService refreshTokenService,
+        AuthenticationSessionOptions sessionOptions,
+        AuthenticationSecurityOptions securityOptions,
         TimeProvider timeProvider)
     {
         ArgumentNullException.ThrowIfNull(
@@ -27,6 +36,10 @@ public sealed class AuthenticationService
 
         ArgumentNullException.ThrowIfNull(passwordService);
         ArgumentNullException.ThrowIfNull(tokenService);
+        ArgumentNullException.ThrowIfNull(
+            refreshTokenService);
+        ArgumentNullException.ThrowIfNull(sessionOptions);
+        ArgumentNullException.ThrowIfNull(securityOptions);
         ArgumentNullException.ThrowIfNull(timeProvider);
 
         _authenticationRepository =
@@ -34,6 +47,9 @@ public sealed class AuthenticationService
 
         _passwordService = passwordService;
         _tokenService = tokenService;
+        _refreshTokenService = refreshTokenService;
+        _sessionOptions = sessionOptions;
+        _securityOptions = securityOptions;
         _timeProvider = timeProvider;
     }
 
@@ -80,6 +96,12 @@ public sealed class AuthenticationService
                 .RegisterFailedLoginAsync(
                     attemptedEmailAddress: emailAddress,
                     userId: null,
+                    maximumFailedLoginAttempts:
+                        _securityOptions
+                            .MaximumFailedLoginAttempts,
+                    lockoutDurationMinutes:
+                        _securityOptions
+                            .LockoutDurationMinutes,
                     requestContext:
                         command.RequestContext,
                     cancellationToken:
@@ -102,6 +124,12 @@ public sealed class AuthenticationService
                         attemptedEmailAddress:
                             emailAddress,
                         userId: user.UserId,
+                        maximumFailedLoginAttempts:
+                            _securityOptions
+                                .MaximumFailedLoginAttempts,
+                        lockoutDurationMinutes:
+                            _securityOptions
+                                .LockoutDurationMinutes,
                         requestContext:
                             command.RequestContext,
                         cancellationToken:
@@ -173,9 +201,35 @@ public sealed class AuthenticationService
                     EmployeeId:
                         user.EmployeeId));
 
+        GeneratedRefreshToken refreshToken =
+            _refreshTokenService.GenerateToken();
+
+        DateTime refreshTokenExpiresAtUtc =
+            utcNow
+                .AddDays(
+                    _sessionOptions
+                        .RefreshTokenExpirationDays);
+
+        await _authenticationRepository
+            .CreateRefreshTokenAsync(
+                userId:
+                    user.UserId,
+                tokenHash:
+                    refreshToken.TokenHash,
+                tokenFamilyId:
+                    Guid.NewGuid(),
+                expiresAtUtc:
+                    refreshTokenExpiresAtUtc,
+                requestContext:
+                    command.RequestContext,
+                cancellationToken:
+                    cancellationToken);
+
         return LoginResult.Success(
             loginUser,
-            accessToken);
+            accessToken,
+            refreshToken.Token,
+            refreshTokenExpiresAtUtc);
     }
 
     private static bool IsValidInput(

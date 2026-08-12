@@ -397,6 +397,8 @@ public sealed class AuthenticationRepositoryTests
                     attemptedEmailAddress:
                         "unknown.user@lithomanager.local",
                     userId: null,
+                    maximumFailedLoginAttempts: 5,
+                    lockoutDurationMinutes: 15,
                     requestContext:
                         requestContext,
                     cancellationToken:

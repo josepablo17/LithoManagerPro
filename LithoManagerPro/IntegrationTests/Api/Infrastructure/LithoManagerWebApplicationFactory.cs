@@ -63,6 +63,26 @@ public sealed class LithoManagerWebApplicationFactory
             "10");
 
         SetEnvironmentVariable(
+            "Authentication__Session__" +
+            "RefreshTokenExpirationDays",
+            "1");
+
+        SetEnvironmentVariable(
+            "Authentication__Security__" +
+            "PasswordResetTokenExpirationMinutes",
+            "15");
+
+        SetEnvironmentVariable(
+            "Authentication__Security__" +
+            "MaximumFailedLoginAttempts",
+            "5");
+
+        SetEnvironmentVariable(
+            "Authentication__Security__" +
+            "LockoutDurationMinutes",
+            "15");
+
+        SetEnvironmentVariable(
             "Authentication__Jwt__SigningKeyBase64",
             CreateTestSigningKeyBase64());
     }

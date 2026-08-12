@@ -1,8 +1,8 @@
 ﻿CREATE PROCEDURE [Security].[RegisterFailedLogin]
     @AttemptedEmailAddress nvarchar(254),
     @UserId int = NULL,
-    @MaximumFailedAttempts smallint = 5,
-    @LockoutDurationMinutes int = 15,
+    @MaximumFailedAttempts smallint,
+    @LockoutDurationMinutes int,
     @CorrelationId uniqueidentifier = NULL,
     @ClientIpAddress nvarchar(45) = NULL,
     @UserAgent nvarchar(512) = NULL,

@@ -37,7 +37,7 @@ public sealed class ForgotPasswordServiceTests
 
     private static readonly DateTime ExpiresAtUtc =
         UtcNow
-            .AddMinutes(15)
+            .AddMinutes(25)
             .UtcDateTime;
 
     [Fact]
@@ -600,6 +600,15 @@ public sealed class ForgotPasswordServiceTests
                 tokenService,
             passwordResetEmailSender:
                 emailSender,
+            securityOptions:
+                new LithoManager.Application.Features
+                    .Authentication
+                    .AuthenticationSecurityOptions
+                {
+                    PasswordResetTokenExpirationMinutes = 25,
+                    MaximumFailedLoginAttempts = 5,
+                    LockoutDurationMinutes = 15
+                },
             timeProvider:
                 new FixedTimeProvider(
                     UtcNow));

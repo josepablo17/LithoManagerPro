@@ -212,6 +212,27 @@ public sealed class
             tokenService:
                 _fixture.TokenService,
 
+            refreshTokenService:
+                _fixture.RefreshTokenService,
+
+            sessionOptions:
+                new LithoManager.Application.Features
+                    .Authentication
+                    .AuthenticationSessionOptions
+                {
+                    RefreshTokenExpirationDays = 1
+                },
+
+            securityOptions:
+                new LithoManager.Application.Features
+                    .Authentication
+                    .AuthenticationSecurityOptions
+                {
+                    PasswordResetTokenExpirationMinutes = 15,
+                    MaximumFailedLoginAttempts = 5,
+                    LockoutDurationMinutes = 15
+                },
+
             timeProvider:
                 _fixture.TimeProvider);
     }
