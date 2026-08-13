@@ -135,6 +135,89 @@ public sealed class
     }
 
     [Fact]
+    public async Task LoginAsync_WhenUserLogsInAgain_IssuesNewTokenVersion()
+    {
+        // Arrange
+        await _fixture.ResetLoginStateAsync();
+
+        AuthenticationService service =
+            CreateService();
+
+        LoginCommand firstLogin =
+            new(
+                EmailAddress:
+                    AuthenticationDatabaseFixture
+                        .TestEmailAddress,
+
+                Password:
+                    AuthenticationDatabaseFixture
+                        .TestPassword,
+
+                RequestContext:
+                    AuthenticationDatabaseFixture
+                        .CreateRequestContext(
+                            "/integration-tests/" +
+                            "login-first-session"));
+
+        LoginCommand secondLogin =
+            new(
+                EmailAddress:
+                    AuthenticationDatabaseFixture
+                        .TestEmailAddress,
+
+                Password:
+                    AuthenticationDatabaseFixture
+                        .TestPassword,
+
+                RequestContext:
+                    AuthenticationDatabaseFixture
+                        .CreateRequestContext(
+                            "/integration-tests/" +
+                            "login-second-session"));
+
+        // Act
+        LoginResult firstResult =
+            await service.LoginAsync(
+                firstLogin,
+                CancellationToken.None);
+
+        LoginResult secondResult =
+            await service.LoginAsync(
+                secondLogin,
+                CancellationToken.None);
+
+        // Assert
+        Assert.True(firstResult.IsSuccessful);
+        Assert.True(secondResult.IsSuccessful);
+
+        int firstTokenVersion =
+            ReadTokenVersion(
+                Assert.IsType<string>(
+                    firstResult.AccessToken));
+
+        int secondTokenVersion =
+            ReadTokenVersion(
+                Assert.IsType<string>(
+                    secondResult.AccessToken));
+
+        Assert.Equal(
+            firstTokenVersion + 1,
+            secondTokenVersion);
+
+        UserTokenValidationData? currentUser =
+            await _fixture.Repository
+                .GetUserTokenValidationByIdAsync(
+                    _fixture.SuperAdministratorUserId,
+                    CancellationToken.None);
+
+        Assert.NotNull(currentUser);
+
+        Assert.Equal(
+            secondTokenVersion,
+            currentUser.TokenVersion);
+    }
+
+    [Fact]
     public async Task LoginAsync_WhenPasswordIsInvalid_RegistersFailedAttempt()
     {
         // Arrange
@@ -235,5 +318,28 @@ public sealed class
 
             timeProvider:
                 _fixture.TimeProvider);
+    }
+
+    private static int ReadTokenVersion(
+        string accessToken)
+    {
+        JwtSecurityToken jwt =
+            new JwtSecurityTokenHandler()
+                .ReadJwtToken(
+                    accessToken);
+
+        string tokenVersion =
+            Assert.Single(
+                jwt.Claims,
+                claim =>
+                    claim.Type == "token_version")
+                .Value;
+
+        Assert.True(
+            int.TryParse(
+                tokenVersion,
+                out int parsedTokenVersion));
+
+        return parsedTokenVersion;
     }
 }

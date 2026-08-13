@@ -65,9 +65,12 @@
     <Folder Include="Tables\Security" />
     <Folder Include="Tables\HumanResources" />
     <Folder Include="Seeds\Security" />
+    <Folder Include="Tables\LeaveManagement" />
+    <Folder Include="Seeds\LeaveManagement" />
     <Folder Include="StoredProcedures\Security" />
     <Folder Include="StoredProcedures\Audit" />
     <Folder Include="StoredProcedures\HumanResources" />
+    <Folder Include="StoredProcedures\LeaveManagement" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\Audit\AuditLogs.sql" />
@@ -76,10 +79,21 @@
     <Build Include="Tables\Security\RefreshTokens.sql" />
     <Build Include="Tables\HumanResources\Departments.sql" />
     <Build Include="Tables\HumanResources\Employees.sql" />
+    <Build Include="Tables\LeaveManagement\LeaveTypes.sql" />
+    <Build Include="Tables\LeaveManagement\LeaveRequestStatuses.sql" />
+    <Build Include="Tables\LeaveManagement\LeavePolicies.sql" />
+    <Build Include="Tables\LeaveManagement\EmployeeLeaveBalances.sql" />
+    <Build Include="Tables\LeaveManagement\LeaveRequests.sql" />
+    <Build Include="Tables\LeaveManagement\LeaveRequestStatusHistory.sql" />
+    <Build Include="Tables\LeaveManagement\LeaveBalanceTransactions.sql" />
     <Build Include="Schemas\Audit.sql" />
     <Build Include="Schemas\HumanResources.sql" />
+    <Build Include="Schemas\LeaveManagement.sql" />
     <Build Include="Schemas\Security.sql" />
     <None Include="Seeds\Security\Roles.sql" />
+    <None Include="Seeds\LeaveManagement\LeaveRequestStatuses.sql" />
+    <None Include="Seeds\LeaveManagement\LeaveTypes.sql" />
+    <None Include="Seeds\LeaveManagement\LeavePolicies.sql" />
     <Build Include="StoredProcedures\Security\GetUserForAuthentication.sql" />
     <Build Include="StoredProcedures\Security\RegisterSuccessfulLogin.sql" />
     <Build Include="StoredProcedures\Security\RegisterFailedLogin.sql" />
@@ -110,6 +124,16 @@
     <Build Include="StoredProcedures\HumanResources\GetEmployees.sql" />
     <Build Include="StoredProcedures\HumanResources\UpdateEmployee.sql" />
     <Build Include="StoredProcedures\HumanResources\SetEmployeeStatus.sql" />
+    <Build Include="StoredProcedures\LeaveManagement\GetLeaveTypes.sql" />
+    <Build Include="StoredProcedures\LeaveManagement\GetLeaveRequestStatuses.sql" />
+    <Build Include="StoredProcedures\LeaveManagement\GetEmployeeLeaveBalance.sql" />
+    <Build Include="StoredProcedures\LeaveManagement\AdjustEmployeeLeaveBalance.sql" />
+    <Build Include="StoredProcedures\LeaveManagement\GetMyLeaveRequests.sql" />
+    <Build Include="StoredProcedures\LeaveManagement\GetLeaveRequests.sql" />
+    <Build Include="StoredProcedures\LeaveManagement\GetLeaveRequestById.sql" />
+    <Build Include="StoredProcedures\LeaveManagement\CreateLeaveRequest.sql" />
+    <Build Include="StoredProcedures\LeaveManagement\CancelLeaveRequest.sql" />
+    <Build Include="StoredProcedures\LeaveManagement\RespondLeaveRequest.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\PostDeployment.sql" />

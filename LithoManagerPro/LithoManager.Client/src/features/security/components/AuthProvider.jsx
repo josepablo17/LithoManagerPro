@@ -1,10 +1,12 @@
 import {
   useCallback,
+  useEffect,
   useMemo,
   useState,
 } from 'react'
 import { AuthContext } from '../hooks/authContext.js'
 import { login as requestLogin } from '../services/authService.js'
+import { unauthorizedSessionEventName } from '../../../services/apiClient.js'
 
 export function AuthProvider({ children }) {
   const [session, setSession] = useState(null)
@@ -47,6 +49,20 @@ export function AuthProvider({ children }) {
   const logout = useCallback(() => {
     setSession(null)
   }, [])
+
+  useEffect(() => {
+    window.addEventListener(
+      unauthorizedSessionEventName,
+      logout,
+    )
+
+    return () => {
+      window.removeEventListener(
+        unauthorizedSessionEventName,
+        logout,
+      )
+    }
+  }, [logout])
 
   const value = useMemo(
     () => ({

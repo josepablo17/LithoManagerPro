@@ -5,6 +5,7 @@ import { NotFoundPage } from './app/NotFoundPage.jsx'
 import { PlaceholderPage } from './app/PlaceholderPage.jsx'
 import { DepartmentsPage } from './features/humanResources/pages/DepartmentsPage.jsx'
 import { EmployeesPage } from './features/humanResources/pages/EmployeesPage.jsx'
+import { LeaveRequestsPage } from './features/leaveManagement/pages/LeaveRequestsPage.jsx'
 import { ProtectedRoute } from './features/security/components/ProtectedRoute.jsx'
 import { LoginPage } from './features/security/pages/LoginPage.jsx'
 import { AppLayout } from './layouts/AppLayout.jsx'
@@ -31,12 +32,7 @@ function App() {
         />
         <Route
           path="leave-management/requests"
-          element={
-            <PlaceholderPage
-              title="Solicitudes"
-              description="Gestiona solicitudes de vacaciones y permisos."
-            />
-          }
+          element={<LeaveRequestsPage />}
         />
         <Route
           path="leave-management/balances"
