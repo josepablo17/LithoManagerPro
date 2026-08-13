@@ -1,0 +1,221 @@
+.summaryBar {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--spacing-md);
+}
+
+.summaryItem {
+  min-height: 76px;
+  padding: var(--spacing-lg);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.summaryItem span {
+  display: block;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+.summaryItem strong {
+  display: block;
+  margin-top: var(--spacing-sm);
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.toolbarGroup {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+.searchBox {
+  position: relative;
+  width: min(100%, 360px);
+}
+
+.searchIcon {
+  position: absolute;
+  top: 50%;
+  left: var(--spacing-md);
+  color: var(--color-text-muted);
+  transform: translateY(-50%);
+}
+
+.searchInput {
+  width: 100%;
+  min-height: 40px;
+  padding: 0 var(--spacing-md) 0 40px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.actionsCell {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-sm);
+  min-width: 190px;
+}
+
+.departmentName {
+  display: grid;
+  gap: var(--spacing-xs);
+}
+
+.departmentName strong {
+  font-weight: 600;
+}
+
+.departmentName span {
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+.muted {
+  color: var(--color-text-secondary);
+}
+
+.loadingCell,
+.emptyCell {
+  height: 160px;
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: grid;
+  place-items: center;
+  padding: var(--spacing-xl);
+  background: rgba(15, 23, 42, 0.42);
+}
+
+.modal {
+  width: min(100%, 560px);
+  max-height: min(720px, calc(100vh - 48px));
+  overflow: auto;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+}
+
+.modalHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-xl);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.modalHeader h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.modalHeader p {
+  margin: var(--spacing-sm) 0 0;
+  color: var(--color-text-secondary);
+}
+
+.confirmModal {
+  width: min(100%, 460px);
+}
+
+.confirmBody {
+  display: grid;
+  gap: var(--spacing-md);
+  padding: var(--spacing-xl);
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+.confirmBody p {
+  margin: 0;
+}
+
+.warningText {
+  padding: var(--spacing-md);
+  color: var(--color-warning);
+  background: var(--color-warning-soft);
+  border-radius: var(--radius-md);
+}
+
+.confirmActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-md);
+  padding: 0 var(--spacing-xl) var(--spacing-xl);
+}
+
+.form {
+  display: grid;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-xl);
+}
+
+.field {
+  display: grid;
+  gap: var(--spacing-sm);
+}
+
+.label {
+  color: var(--color-text-primary);
+  font-weight: 500;
+}
+
+.textarea,
+.textareaError {
+  min-height: 108px;
+  padding: var(--spacing-md);
+  resize: vertical;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font: inherit;
+}
+
+.textareaError {
+  border-color: var(--color-danger);
+}
+
+.fieldFooter {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+.errorText {
+  color: var(--color-danger);
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-md);
+  padding-top: var(--spacing-md);
+}
+
+@media (width < 760px) {
+  .summaryBar {
+    grid-template-columns: 1fr;
+  }
+
+  .actionsCell {
+    justify-content: flex-start;
+  }
+
+  .modalOverlay {
+    padding: var(--spacing-md);
+  }
+}
