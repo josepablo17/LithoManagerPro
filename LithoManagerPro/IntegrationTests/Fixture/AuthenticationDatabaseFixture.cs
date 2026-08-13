@@ -7,6 +7,7 @@ using LithoManager.Application.Features
     .HumanResources.Departments;
 using LithoManager.Application.Features
     .HumanResources.Employees;
+using LithoManager.Application.Features.LeaveManagement;
 using LithoManager.Infrastructure;
 using LithoManager.Infrastructure.Persistence.Dapper;
 using Microsoft.Extensions.Configuration;
@@ -93,6 +94,13 @@ public sealed class AuthenticationDatabaseFixture
         private set;
     } = null!;
 
+    public ILeaveManagementRepository
+        LeaveManagementRepository
+    {
+        get;
+        private set;
+    } = null!;
+
     public async Task InitializeAsync()
     {
         IConfiguration configuration =
@@ -161,6 +169,10 @@ public sealed class AuthenticationDatabaseFixture
         EmployeeRepository =
             scopedServices.GetRequiredService<
                 IEmployeeRepository>();
+
+        LeaveManagementRepository =
+            scopedServices.GetRequiredService<
+                ILeaveManagementRepository>();
 
         TimeProvider =
             scopedServices.GetRequiredService<
@@ -500,6 +512,148 @@ public sealed class AuthenticationDatabaseFixture
                         1,
                         @UserId
                     );
+                    """,
+                parameters:
+                    parameters,
+                commandType:
+                    CommandType.Text,
+                cancellationToken:
+                    CancellationToken.None);
+
+        await using DbConnection connection =
+            _connectionFactory.CreateConnection();
+
+        await connection.ExecuteAsync(command);
+    }
+
+    public async Task<int>
+        GetEmployeeIdByIdentificationNumberAsync(
+            string identificationNumber)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(
+            identificationNumber);
+
+        var parameters = new
+        {
+            IdentificationNumber =
+                identificationNumber
+        };
+
+        CommandDefinition command =
+            new(
+                commandText:
+                    """
+                    SELECT E.EmployeeId
+                    FROM HumanResources.Employees AS E
+                    WHERE E.IdentificationNumber =
+                        @IdentificationNumber;
+                    """,
+                parameters:
+                    parameters,
+                commandType:
+                    CommandType.Text,
+                cancellationToken:
+                    CancellationToken.None);
+
+        await using DbConnection connection =
+            _connectionFactory.CreateConnection();
+
+        return await connection.QuerySingleAsync<int>(
+            command);
+    }
+
+    public async Task RemoveLeaveManagementTestDataAsync(
+        string identificationNumber)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(
+            identificationNumber);
+
+        var parameters = new
+        {
+            UserId =
+                SuperAdministratorUserId,
+
+            IdentificationNumber =
+                identificationNumber
+        };
+
+        CommandDefinition command =
+            new(
+                commandText:
+                    """
+                    DECLARE @EmployeeIds TABLE
+                    (
+                        EmployeeId int NOT NULL
+                            PRIMARY KEY
+                    );
+
+                    INSERT INTO @EmployeeIds
+                    (
+                        EmployeeId
+                    )
+                    SELECT E.EmployeeId
+                    FROM HumanResources.Employees AS E
+                    WHERE E.IdentificationNumber =
+                        @IdentificationNumber
+                        OR E.UserId = @UserId;
+
+                    DELETE LBT
+                    FROM LeaveManagement.LeaveBalanceTransactions AS LBT
+                    WHERE EXISTS
+                    (
+                        SELECT 1
+                        FROM LeaveManagement.EmployeeLeaveBalances AS ELB
+                        WHERE ELB.EmployeeLeaveBalanceId =
+                            LBT.EmployeeLeaveBalanceId
+                            AND EXISTS
+                            (
+                                SELECT 1
+                                FROM @EmployeeIds AS E
+                                WHERE E.EmployeeId =
+                                    ELB.EmployeeId
+                            )
+                    )
+                    OR EXISTS
+                    (
+                        SELECT 1
+                        FROM LeaveManagement.LeaveRequests AS LR
+                        WHERE LR.LeaveRequestId =
+                            LBT.LeaveRequestId
+                            AND EXISTS
+                            (
+                                SELECT 1
+                                FROM @EmployeeIds AS E
+                                WHERE E.EmployeeId =
+                                    LR.EmployeeId
+                            )
+                    );
+
+                    DELETE LRSH
+                    FROM LeaveManagement.LeaveRequestStatusHistory AS LRSH
+                    INNER JOIN LeaveManagement.LeaveRequests AS LR
+                        ON LR.LeaveRequestId =
+                            LRSH.LeaveRequestId
+                    INNER JOIN @EmployeeIds AS E
+                        ON E.EmployeeId =
+                            LR.EmployeeId;
+
+                    DELETE LR
+                    FROM LeaveManagement.LeaveRequests AS LR
+                    INNER JOIN @EmployeeIds AS E
+                        ON E.EmployeeId =
+                            LR.EmployeeId;
+
+                    DELETE ELB
+                    FROM LeaveManagement.EmployeeLeaveBalances AS ELB
+                    INNER JOIN @EmployeeIds AS E
+                        ON E.EmployeeId =
+                            ELB.EmployeeId;
+
+                    DELETE E
+                    FROM HumanResources.Employees AS E
+                    WHERE E.IdentificationNumber =
+                        @IdentificationNumber
+                        OR E.UserId = @UserId;
                     """,
                 parameters:
                     parameters,

@@ -1,5 +1,8 @@
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ?? ''
 
+export const unauthorizedSessionEventName =
+  'lithomanager:unauthorized-session'
+
 export class ApiClientError extends Error {
   constructor({ message, status, errorCode, details }) {
     super(message)
@@ -39,6 +42,16 @@ export async function apiRequest(path, options = {}) {
   })
 
   if (!response.ok) {
+    if (
+      response.status === 401
+      && accessToken
+      && typeof window !== 'undefined'
+    ) {
+      window.dispatchEvent(
+        new CustomEvent(unauthorizedSessionEventName),
+      )
+    }
+
     throw await createApiError(response)
   }
 
@@ -115,6 +128,24 @@ function getConflictMessage(errorCode) {
       'El usuario indicado ya está vinculado a otro empleado.',
     department_inactive:
       'El departamento indicado no está activo.',
+    employee_inactive:
+      'El empleado indicado no está activo.',
+    leave_type_not_found:
+      'El tipo de vacaciones indicado no está disponible.',
+    leave_policy_not_found:
+      'No hay una política de vacaciones activa.',
+    leave_balance_not_found:
+      'No hay un saldo de vacaciones registrado.',
+    insufficient_leave_balance:
+      'No hay suficientes días disponibles.',
+    pending_leave_request_exists:
+      'Ya existe una solicitud pendiente.',
+    leave_request_date_overlap:
+      'Ya existe una solicitud en ese rango de fechas.',
+    leave_request_not_found:
+      'No encontramos la solicitud indicada.',
+    leave_request_already_resolved:
+      'La solicitud ya fue resuelta.',
   }
 
   return messages[errorCode]

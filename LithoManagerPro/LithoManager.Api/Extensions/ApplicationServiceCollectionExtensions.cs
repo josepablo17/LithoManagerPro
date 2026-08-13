@@ -35,6 +35,26 @@ using LithoManager.Application.Features
     .HumanResources.Employees.SetEmployeeStatus;
 using LithoManager.Application.Features
     .HumanResources.Employees.UpdateEmployee;
+using LithoManager.Application.Features
+    .LeaveManagement.AdjustEmployeeLeaveBalance;
+using LithoManager.Application.Features
+    .LeaveManagement.CancelLeaveRequest;
+using LithoManager.Application.Features
+    .LeaveManagement.CreateLeaveRequest;
+using LithoManager.Application.Features
+    .LeaveManagement.GetEmployeeLeaveBalance;
+using LithoManager.Application.Features
+    .LeaveManagement.GetLeaveRequestById;
+using LithoManager.Application.Features
+    .LeaveManagement.GetLeaveRequests;
+using LithoManager.Application.Features
+    .LeaveManagement.GetLeaveRequestStatuses;
+using LithoManager.Application.Features
+    .LeaveManagement.GetLeaveTypes;
+using LithoManager.Application.Features
+    .LeaveManagement.GetMyLeaveRequests;
+using LithoManager.Application.Features
+    .LeaveManagement.RespondLeaveRequest;
 using LithoManager.Application.Security;
 using Microsoft.Extensions.Configuration;
 
@@ -179,6 +199,46 @@ public static class ApplicationServiceCollectionExtensions
         services.AddScoped<
             ISetEmployeeStatusService,
             SetEmployeeStatusService>();
+
+        services.AddScoped<
+            IGetLeaveTypesService,
+            GetLeaveTypesService>();
+
+        services.AddScoped<
+            IGetLeaveRequestStatusesService,
+            GetLeaveRequestStatusesService>();
+
+        services.AddScoped<
+            IGetEmployeeLeaveBalanceService,
+            GetEmployeeLeaveBalanceService>();
+
+        services.AddScoped<
+            IAdjustEmployeeLeaveBalanceService,
+            AdjustEmployeeLeaveBalanceService>();
+
+        services.AddScoped<
+            IGetMyLeaveRequestsService,
+            GetMyLeaveRequestsService>();
+
+        services.AddScoped<
+            IGetLeaveRequestsService,
+            GetLeaveRequestsService>();
+
+        services.AddScoped<
+            IGetLeaveRequestByIdService,
+            GetLeaveRequestByIdService>();
+
+        services.AddScoped<
+            ICreateLeaveRequestService,
+            CreateLeaveRequestService>();
+
+        services.AddScoped<
+            ICancelLeaveRequestService,
+            CancelLeaveRequestService>();
+
+        services.AddScoped<
+            IRespondLeaveRequestService,
+            RespondLeaveRequestService>();
 
         return services;
     }

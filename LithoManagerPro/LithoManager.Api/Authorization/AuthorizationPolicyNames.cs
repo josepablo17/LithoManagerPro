@@ -10,4 +10,10 @@ public static class AuthorizationPolicyNames
 
     public const string HumanResourcesEmployees =
         "HumanResourcesEmployees";
+
+    public const string LeaveManagementAdministration =
+        "LeaveManagementAdministration";
+
+    public const string LeaveManagementAdministrationMutation =
+        "LeaveManagementAdministrationMutation";
 }

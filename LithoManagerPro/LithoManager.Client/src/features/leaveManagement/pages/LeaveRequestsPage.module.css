@@ -1,0 +1,249 @@
+.summaryBar {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--spacing-md);
+}
+
+.summaryItem {
+  min-height: 76px;
+  padding: var(--spacing-lg);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.summaryItem span {
+  display: block;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+.summaryItem strong {
+  display: block;
+  margin-top: var(--spacing-sm);
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.tabs {
+  display: inline-flex;
+  width: fit-content;
+  padding: 4px;
+  background: var(--color-neutral-soft);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.tab,
+.tabActive {
+  min-height: 36px;
+  padding: 0 var(--spacing-lg);
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-sm);
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.tabActive {
+  color: var(--color-text-primary);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.toolbarGroup {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+.searchBox {
+  position: relative;
+  width: min(100%, 360px);
+}
+
+.searchIcon {
+  position: absolute;
+  top: 50%;
+  left: var(--spacing-md);
+  color: var(--color-text-muted);
+  transform: translateY(-50%);
+}
+
+.searchInput {
+  width: 100%;
+  min-height: 40px;
+  padding: 0 var(--spacing-md) 0 40px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.dateInput {
+  min-height: 40px;
+  padding: 0 var(--spacing-md);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.employeeCell {
+  display: grid;
+  gap: var(--spacing-xs);
+}
+
+.employeeCell strong,
+.periodCell strong {
+  font-weight: 600;
+}
+
+.employeeCell span,
+.periodCell span,
+.muted {
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+.periodCell {
+  display: grid;
+  gap: var(--spacing-xs);
+}
+
+.actionsCell {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-sm);
+  min-width: 180px;
+}
+
+.loadingCell,
+.emptyCell {
+  height: 160px;
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: grid;
+  place-items: center;
+  padding: var(--spacing-xl);
+  background: rgba(15, 23, 42, 0.42);
+}
+
+.modal {
+  width: min(100%, 560px);
+  max-height: min(720px, calc(100vh - 48px));
+  overflow: auto;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+}
+
+.confirmModal {
+  width: min(100%, 460px);
+}
+
+.modalHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-xl);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.modalHeader h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.modalHeader p {
+  margin: var(--spacing-sm) 0 0;
+  color: var(--color-text-secondary);
+}
+
+.form {
+  display: grid;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-xl);
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-lg);
+}
+
+.field {
+  display: grid;
+  gap: var(--spacing-sm);
+}
+
+.label {
+  color: var(--color-text-primary);
+  font-weight: 500;
+}
+
+.errorText {
+  color: var(--color-danger);
+  font-size: 13px;
+}
+
+.confirmBody {
+  display: grid;
+  gap: var(--spacing-md);
+  padding: var(--spacing-xl);
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+.confirmBody p {
+  margin: 0;
+}
+
+.warningText {
+  padding: var(--spacing-md);
+  color: var(--color-warning);
+  background: var(--color-warning-soft);
+  border-radius: var(--radius-md);
+}
+
+.formActions,
+.confirmActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-md);
+}
+
+.confirmActions {
+  padding: 0 var(--spacing-xl) var(--spacing-xl);
+}
+
+@media (width < 900px) {
+  .summaryBar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (width < 760px) {
+  .summaryBar,
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .actionsCell {
+    justify-content: flex-start;
+  }
+
+  .modalOverlay {
+    padding: var(--spacing-md);
+  }
+}

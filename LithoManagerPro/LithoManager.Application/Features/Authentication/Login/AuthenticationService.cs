@@ -188,19 +188,6 @@ public sealed class AuthenticationService
                 passwordChangeToken);
         }
 
-        AccessTokenResult accessToken =
-            _tokenService.GenerateAccessToken(
-                new AccessTokenUserData(
-                    UserId: user.UserId,
-                    EmailAddress:
-                        user.EmailAddress,
-                    TokenVersion:
-                        user.TokenVersion,
-                    RoleCode:
-                        user.RoleCode,
-                    EmployeeId:
-                        user.EmployeeId));
-
         GeneratedRefreshToken refreshToken =
             _refreshTokenService.GenerateToken();
 
@@ -210,20 +197,34 @@ public sealed class AuthenticationService
                     _sessionOptions
                         .RefreshTokenExpirationDays);
 
-        await _authenticationRepository
-            .CreateRefreshTokenAsync(
-                userId:
-                    user.UserId,
-                tokenHash:
-                    refreshToken.TokenHash,
-                tokenFamilyId:
-                    Guid.NewGuid(),
-                expiresAtUtc:
-                    refreshTokenExpiresAtUtc,
-                requestContext:
-                    command.RequestContext,
-                cancellationToken:
-                    cancellationToken);
+        var session =
+            await _authenticationRepository
+                .CreateRefreshTokenAsync(
+                    userId:
+                        user.UserId,
+                    tokenHash:
+                        refreshToken.TokenHash,
+                    tokenFamilyId:
+                        Guid.NewGuid(),
+                    expiresAtUtc:
+                        refreshTokenExpiresAtUtc,
+                    requestContext:
+                        command.RequestContext,
+                    cancellationToken:
+                        cancellationToken);
+
+        AccessTokenResult accessToken =
+            _tokenService.GenerateAccessToken(
+                new AccessTokenUserData(
+                    UserId: user.UserId,
+                    EmailAddress:
+                        user.EmailAddress,
+                    TokenVersion:
+                        session.TokenVersion,
+                    RoleCode:
+                        user.RoleCode,
+                    EmployeeId:
+                        user.EmployeeId));
 
         return LoginResult.Success(
             loginUser,

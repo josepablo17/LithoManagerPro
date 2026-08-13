@@ -150,10 +150,25 @@ BEGIN
         END;
 
         /*
-            The product rule is one active refresh session per user.
-            A new login closes any previous active session before
-            the new token is inserted.
+            The product rule is one active session per user.
+            A new login invalidates existing access tokens through
+            TokenVersion and closes any previous active refresh session.
         */
+        SET @TokenVersion = @TokenVersion + 1;
+
+        UPDATE [Security].[Users]
+        SET
+            [TokenVersion] =
+                @TokenVersion,
+
+            [UpdatedAtUtc] =
+                @OccurredAtUtc,
+
+            [UpdatedByUserId] =
+                @UserId
+
+        WHERE [UserId] = @UserId;
+
         UPDATE [Security].[RefreshTokens]
         SET
             [RevokedAtUtc] =

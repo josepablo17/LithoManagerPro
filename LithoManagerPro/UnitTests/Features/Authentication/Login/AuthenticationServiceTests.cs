@@ -608,6 +608,9 @@ public sealed class AuthenticationServiceTests
         AuthenticationUserData user =
             CreateValidEmployeeUser();
 
+        int sessionTokenVersion =
+            user.TokenVersion + 1;
+
         FakeAuthenticationRepository repository =
             new()
             {
@@ -619,7 +622,7 @@ public sealed class AuthenticationServiceTests
                         UserId = user.UserId,
                         TokenFamilyId = Guid.NewGuid(),
                         TokenVersion =
-                            user.TokenVersion,
+                            sessionTokenVersion,
                         ExpiresAtUtc =
                             UtcNow
                                 .AddDays(1)
@@ -770,7 +773,7 @@ public sealed class AuthenticationServiceTests
                 .EmailAddress);
 
         Assert.Equal(
-            user.TokenVersion,
+            sessionTokenVersion,
             tokenService.AccessTokenUserReceived
                 .TokenVersion);
 
