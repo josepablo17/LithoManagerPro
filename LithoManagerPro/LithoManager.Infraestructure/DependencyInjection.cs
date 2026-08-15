@@ -1,6 +1,9 @@
 using LithoManager.Application.Abstractions.Persistence;
 using LithoManager.Application.Abstractions.Security;
+using LithoManager.Application.Abstractions.Storage;
 using LithoManager.Infrastructure.Persistence.Dapper;
+using LithoManager.Infrastructure.Persistence.Repositories
+    .Documents;
 using LithoManager.Infrastructure.Persistence.Repositories
     .HumanResources;
 using LithoManager.Infrastructure.Persistence.Repositories
@@ -8,6 +11,7 @@ using LithoManager.Infrastructure.Persistence.Repositories
 using LithoManager.Infrastructure.Persistence.Repositories.Security;
 using LithoManager.Infrastructure.Security;
 using LithoManager.Infrastructure.Security.Tokens;
+using LithoManager.Infrastructure.Storage.Documents;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net.Mail;
@@ -55,6 +59,32 @@ public static class DependencyInjection
         services.AddScoped<
             ILeaveManagementRepository,
             LeaveManagementRepository>();
+
+        services.AddScoped<
+            IDocumentRepository,
+            DocumentRepository>();
+
+        services
+            .AddOptions<DocumentStorageOptions>()
+            .Bind(
+                configuration.GetSection(
+                    DocumentStorageOptions.SectionName))
+            .Validate(
+                options =>
+                    !string.IsNullOrWhiteSpace(
+                        options.ProviderName),
+                "Documents:Storage:ProviderName is required.")
+            .Validate(
+                options =>
+                    options.MaximumFileSizeBytes
+                        is > 0 and <= 100 * 1024 * 1024,
+                "Documents:Storage:MaximumFileSizeBytes " +
+                "must be between 1 byte and 100 MB.")
+            .ValidateOnStart();
+
+        services.AddSingleton<
+            IEmployeeDocumentStorage,
+            LocalEmployeeDocumentStorage>();
 
         services.AddSingleton<
             IPasswordService,

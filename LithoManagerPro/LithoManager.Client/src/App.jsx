@@ -3,6 +3,7 @@ import { DashboardPage } from './app/DashboardPage.jsx'
 import { ForbiddenPage } from './app/ForbiddenPage.jsx'
 import { NotFoundPage } from './app/NotFoundPage.jsx'
 import { PlaceholderPage } from './app/PlaceholderPage.jsx'
+import { DocumentsPage } from './features/documents/pages/DocumentsPage.jsx'
 import { DepartmentsPage } from './features/humanResources/pages/DepartmentsPage.jsx'
 import { EmployeesPage } from './features/humanResources/pages/EmployeesPage.jsx'
 import { LeaveRequestsPage } from './features/leaveManagement/pages/LeaveRequestsPage.jsx'
@@ -43,15 +44,7 @@ function App() {
             />
           }
         />
-        <Route
-          path="documents"
-          element={
-            <PlaceholderPage
-              title="Documentos"
-              description="Administra expedientes y documentos laborales."
-            />
-          }
-        />
+        <Route path="documents" element={<DocumentsPage />} />
         <Route
           path="forms"
           element={

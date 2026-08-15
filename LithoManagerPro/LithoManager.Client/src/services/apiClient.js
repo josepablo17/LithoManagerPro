@@ -25,7 +25,11 @@ export async function apiRequest(path, options = {}) {
   const requestHeaders = new Headers(headers)
   requestHeaders.set('Accept', 'application/json')
 
-  if (body !== undefined) {
+  const isFormData =
+    typeof FormData !== 'undefined'
+    && body instanceof FormData
+
+  if (body !== undefined && !isFormData) {
     requestHeaders.set('Content-Type', 'application/json')
   }
 
@@ -37,7 +41,7 @@ export async function apiRequest(path, options = {}) {
     method,
     headers: requestHeaders,
     credentials: 'include',
-    body: body === undefined ? undefined : JSON.stringify(body),
+    body: createRequestBody(body, isFormData),
     signal,
   })
 
@@ -60,6 +64,48 @@ export async function apiRequest(path, options = {}) {
   }
 
   return response.json()
+}
+
+export async function apiDownload(path, options = {}) {
+  const {
+    accessToken,
+    headers,
+    signal,
+  } = options
+
+  const requestHeaders = new Headers(headers)
+
+  if (accessToken) {
+    requestHeaders.set('Authorization', `Bearer ${accessToken}`)
+  }
+
+  const response = await fetch(`${apiBaseUrl}${path}`, {
+    method: 'GET',
+    headers: requestHeaders,
+    credentials: 'include',
+    signal,
+  })
+
+  if (!response.ok) {
+    if (
+      response.status === 401
+      && accessToken
+      && typeof window !== 'undefined'
+    ) {
+      window.dispatchEvent(
+        new CustomEvent(unauthorizedSessionEventName),
+      )
+    }
+
+    throw await createApiError(response)
+  }
+
+  return {
+    blob: await response.blob(),
+    fileName: getFileNameFromDisposition(
+      response.headers.get('content-disposition'),
+    ),
+  }
 }
 
 async function createApiError(response) {
@@ -146,8 +192,36 @@ function getConflictMessage(errorCode) {
       'No encontramos la solicitud indicada.',
     leave_request_already_resolved:
       'La solicitud ya fue resuelta.',
+    duplicate_document_storage:
+      'No pudimos registrar el archivo. Inténtalo de nuevo.',
+    document_file_not_found:
+      'No encontramos el archivo solicitado.',
   }
 
   return messages[errorCode]
     ?? 'Existe un conflicto con la información enviada.'
+}
+
+function createRequestBody(body, isFormData) {
+  if (body === undefined) {
+    return undefined
+  }
+
+  return isFormData ? body : JSON.stringify(body)
+}
+
+function getFileNameFromDisposition(disposition) {
+  if (!disposition) {
+    return null
+  }
+
+  const utf8Match = disposition.match(/filename\*=UTF-8''([^;]+)/i)
+
+  if (utf8Match?.[1]) {
+    return decodeURIComponent(utf8Match[1])
+  }
+
+  const fileNameMatch = disposition.match(/filename="?([^";]+)"?/i)
+
+  return fileNameMatch?.[1] ?? null
 }

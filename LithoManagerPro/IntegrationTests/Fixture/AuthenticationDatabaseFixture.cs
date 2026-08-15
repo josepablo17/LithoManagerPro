@@ -7,6 +7,7 @@ using LithoManager.Application.Features
     .HumanResources.Departments;
 using LithoManager.Application.Features
     .HumanResources.Employees;
+using LithoManager.Application.Features.Documents;
 using LithoManager.Application.Features.LeaveManagement;
 using LithoManager.Infrastructure;
 using LithoManager.Infrastructure.Persistence.Dapper;
@@ -101,6 +102,12 @@ public sealed class AuthenticationDatabaseFixture
         private set;
     } = null!;
 
+    public IDocumentRepository DocumentRepository
+    {
+        get;
+        private set;
+    } = null!;
+
     public async Task InitializeAsync()
     {
         IConfiguration configuration =
@@ -173,6 +180,10 @@ public sealed class AuthenticationDatabaseFixture
         LeaveManagementRepository =
             scopedServices.GetRequiredService<
                 ILeaveManagementRepository>();
+
+        DocumentRepository =
+            scopedServices.GetRequiredService<
+                IDocumentRepository>();
 
         TimeProvider =
             scopedServices.GetRequiredService<
@@ -440,6 +451,63 @@ public sealed class AuthenticationDatabaseFixture
 
                     DELETE FROM HumanResources.Departments
                     WHERE DepartmentCode = @DepartmentCode;
+                    """,
+                parameters:
+                    parameters,
+                commandType:
+                    CommandType.Text,
+                cancellationToken:
+                    CancellationToken.None);
+
+        await using DbConnection connection =
+            _connectionFactory.CreateConnection();
+
+        await connection.ExecuteAsync(command);
+    }
+
+    public async Task RemoveDocumentTestDataAsync(
+        string identificationNumber)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(
+            identificationNumber);
+
+        var parameters = new
+        {
+            IdentificationNumber =
+                identificationNumber
+        };
+
+        CommandDefinition command =
+            new(
+                commandText:
+                    """
+                    DECLARE @EmployeeIds TABLE
+                    (
+                        EmployeeId int NOT NULL
+                            PRIMARY KEY
+                    );
+
+                    INSERT INTO @EmployeeIds
+                    (
+                        EmployeeId
+                    )
+                    SELECT E.EmployeeId
+                    FROM HumanResources.Employees AS E
+                    WHERE E.IdentificationNumber =
+                        @IdentificationNumber;
+
+                    DELETE ED
+                    FROM Documents.EmployeeDocuments AS ED
+                    INNER JOIN Documents.EmployeeRecords AS ER
+                        ON ER.EmployeeRecordId =
+                            ED.EmployeeRecordId
+                    INNER JOIN @EmployeeIds AS E
+                        ON E.EmployeeId = ER.EmployeeId;
+
+                    DELETE ER
+                    FROM Documents.EmployeeRecords AS ER
+                    INNER JOIN @EmployeeIds AS E
+                        ON E.EmployeeId = ER.EmployeeId;
                     """,
                 parameters:
                     parameters,

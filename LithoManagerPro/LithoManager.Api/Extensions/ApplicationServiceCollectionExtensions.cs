@@ -16,6 +16,22 @@ using LithoManager.Application.Features.Authentication
 using LithoManager.Application.Features.Authentication
     .ResetPassword;
 using LithoManager.Application.Features
+    .Documents.CreateEmployeeDocument;
+using LithoManager.Application.Features
+    .Documents.EnsureEmployeeRecord;
+using LithoManager.Application.Features
+    .Documents.GetDocumentTypes;
+using LithoManager.Application.Features
+    .Documents.GetEmployeeDocumentById;
+using LithoManager.Application.Features
+    .Documents.GetEmployeeDocumentDownloadContext;
+using LithoManager.Application.Features
+    .Documents.GetEmployeeDocuments;
+using LithoManager.Application.Features
+    .Documents.SetEmployeeDocumentStatus;
+using LithoManager.Application.Features
+    .Documents.UpdateEmployeeDocument;
+using LithoManager.Application.Features
     .HumanResources.Departments.CreateDepartment;
 using LithoManager.Application.Features
     .HumanResources.Departments.GetDepartmentById;
@@ -239,6 +255,38 @@ public static class ApplicationServiceCollectionExtensions
         services.AddScoped<
             IRespondLeaveRequestService,
             RespondLeaveRequestService>();
+
+        services.AddScoped<
+            IGetDocumentTypesService,
+            GetDocumentTypesService>();
+
+        services.AddScoped<
+            IEnsureEmployeeRecordService,
+            EnsureEmployeeRecordService>();
+
+        services.AddScoped<
+            IGetEmployeeDocumentsService,
+            GetEmployeeDocumentsService>();
+
+        services.AddScoped<
+            IGetEmployeeDocumentByIdService,
+            GetEmployeeDocumentByIdService>();
+
+        services.AddScoped<
+            IGetEmployeeDocumentDownloadContextService,
+            GetEmployeeDocumentDownloadContextService>();
+
+        services.AddScoped<
+            ICreateEmployeeDocumentService,
+            CreateEmployeeDocumentService>();
+
+        services.AddScoped<
+            IUpdateEmployeeDocumentService,
+            UpdateEmployeeDocumentService>();
+
+        services.AddScoped<
+            ISetEmployeeDocumentStatusService,
+            SetEmployeeDocumentStatusService>();
 
         return services;
     }
