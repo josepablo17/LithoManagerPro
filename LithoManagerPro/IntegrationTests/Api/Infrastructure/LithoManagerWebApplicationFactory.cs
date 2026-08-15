@@ -11,10 +11,19 @@ public sealed class LithoManagerWebApplicationFactory
         _previousEnvironmentValues =
             new();
 
+    private readonly string _documentStorageRootPath;
+
     private bool _environmentRestored;
 
     public LithoManagerWebApplicationFactory()
     {
+        _documentStorageRootPath =
+            Path.Combine(
+                Path.GetTempPath(),
+                "LithoManager",
+                "ApiDocumentStorageTests",
+                Guid.NewGuid().ToString("N"));
+
         IConfiguration secrets =
             new ConfigurationBuilder()
                 .AddUserSecrets<
@@ -85,6 +94,14 @@ public sealed class LithoManagerWebApplicationFactory
         SetEnvironmentVariable(
             "Authentication__Jwt__SigningKeyBase64",
             CreateTestSigningKeyBase64());
+
+        SetEnvironmentVariable(
+            "Documents__Storage__RootPath",
+            _documentStorageRootPath);
+
+        SetEnvironmentVariable(
+            "Documents__Storage__MaximumFileSizeBytes",
+            (1024 * 1024).ToString());
     }
 
     protected override void ConfigureWebHost(
@@ -106,6 +123,7 @@ public sealed class LithoManagerWebApplicationFactory
             if (disposing)
             {
                 RestoreEnvironmentVariables();
+                DeleteDocumentStorageRootPath();
             }
         }
     }
@@ -141,6 +159,16 @@ public sealed class LithoManagerWebApplicationFactory
         }
 
         _environmentRestored = true;
+    }
+
+    private void DeleteDocumentStorageRootPath()
+    {
+        if (Directory.Exists(_documentStorageRootPath))
+        {
+            Directory.Delete(
+                _documentStorageRootPath,
+                recursive: true);
+        }
     }
 
     private static string

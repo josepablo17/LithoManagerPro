@@ -3,3 +3,4 @@
 :r ./../Seeds/LeaveManagement/LeaveRequestStatuses.sql
 :r ./../Seeds/LeaveManagement/LeaveTypes.sql
 :r ./../Seeds/LeaveManagement/LeavePolicies.sql
+:r ./../Seeds/Documents/DocumentTypes.sql

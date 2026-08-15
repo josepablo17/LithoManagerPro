@@ -16,4 +16,10 @@ public static class AuthorizationPolicyNames
 
     public const string LeaveManagementAdministrationMutation =
         "LeaveManagementAdministrationMutation";
+
+    public const string DocumentAdministration =
+        "DocumentAdministration";
+
+    public const string DocumentAdministrationMutation =
+        "DocumentAdministrationMutation";
 }
