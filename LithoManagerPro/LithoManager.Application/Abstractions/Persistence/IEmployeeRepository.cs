@@ -7,9 +7,19 @@ namespace LithoManager.Application.Abstractions.Persistence;
 
 public interface IEmployeeRepository
 {
+    Task<IReadOnlyList<AssignableEmployeeUserData>>
+        GetAssignableEmployeeUsersAsync(
+            int? employeeId,
+            CancellationToken cancellationToken);
+
+    Task<IReadOnlyList<EmployeeIdentificationTypeData>>
+        GetEmployeeIdentificationTypesAsync(
+            CancellationToken cancellationToken);
+
     Task<EmployeeData> CreateEmployeeAsync(
         int? userId,
         int departmentId,
+        string identificationType,
         string identificationNumber,
         string firstName,
         string lastName,
@@ -34,10 +44,19 @@ public interface IEmployeeRepository
         bool? isActive,
         CancellationToken cancellationToken);
 
+    Task<IReadOnlyList<EmployeeSalaryHistoryData>>
+        GetEmployeeSalaryHistoryAsync(
+            int actorUserId,
+            int employeeId,
+            DateTime? effectiveFromDate,
+            DateTime? effectiveToDate,
+            CancellationToken cancellationToken);
+
     Task<EmployeeData> UpdateEmployeeAsync(
         int employeeId,
         int? userId,
         int departmentId,
+        string identificationType,
         string identificationNumber,
         string firstName,
         string lastName,

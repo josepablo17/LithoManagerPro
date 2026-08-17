@@ -276,7 +276,7 @@ public sealed class DepartmentEndpointsTests
             CreateDepartmentCode();
 
         string identificationNumber =
-            "DEPT-" + Guid.NewGuid()
+            "DEPT" + Guid.NewGuid()
                 .ToString("N")[..12]
                 .ToUpperInvariant();
 

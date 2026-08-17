@@ -3,10 +3,14 @@
     [EmployeeId] int IDENTITY(1,1) NOT NULL,
     [UserId] int NULL,
     [DepartmentId] int NOT NULL,
+    [IdentificationType] nvarchar(30) NOT NULL
+        CONSTRAINT [DfEmployeesIdentificationType]
+        DEFAULT (N'CEDULA_FISICA'),
+
     [IdentificationNumber] nvarchar(30) NOT NULL,
     [FirstName] nvarchar(100) NOT NULL,
     [LastName] nvarchar(150) NOT NULL,
-    [PhoneNumber] nvarchar(25) NULL,
+    [PhoneNumber] nvarchar(8) NULL,
     [BirthDate] date NULL,
     [HireDate] date NOT NULL,
     [TerminationDate] date NULL,
@@ -46,14 +50,49 @@
         FOREIGN KEY ([UpdatedByUserId])
         REFERENCES [Security].[Users] ([UserId]),
 
-    CONSTRAINT [UqEmployeesIdentificationNumber]
-        UNIQUE ([IdentificationNumber]),
+    CONSTRAINT [UqEmployeesIdentificationTypeIdentificationNumber]
+        UNIQUE ([IdentificationType], [IdentificationNumber]),
+
+    CONSTRAINT [CkEmployeesIdentificationType]
+        CHECK
+        (
+            [IdentificationType] IN
+            (
+                N'CEDULA_FISICA',
+                N'DIMEX',
+                N'PASAPORTE'
+            )
+        ),
 
     CONSTRAINT [CkEmployeesIdentificationNumberNotBlank]
         CHECK (LEN(LTRIM(RTRIM([IdentificationNumber]))) > 0),
 
     CONSTRAINT [CkEmployeesIdentificationNumberTrimmed]
         CHECK ([IdentificationNumber] = LTRIM(RTRIM([IdentificationNumber]))),
+
+    CONSTRAINT [CkEmployeesIdentificationNumberFormat]
+        CHECK
+        (
+            (
+                [IdentificationType] = N'CEDULA_FISICA'
+                AND LEN([IdentificationNumber]) = 9
+                AND [IdentificationNumber] NOT LIKE N'%[^0-9]%'
+                AND LEFT([IdentificationNumber], 1) <> N'0'
+            )
+            OR
+            (
+                [IdentificationType] = N'DIMEX'
+                AND LEN([IdentificationNumber]) IN (11, 12)
+                AND [IdentificationNumber] NOT LIKE N'%[^0-9]%'
+                AND LEFT([IdentificationNumber], 1) <> N'0'
+            )
+            OR
+            (
+                [IdentificationType] = N'PASAPORTE'
+                AND LEN([IdentificationNumber]) BETWEEN 6 AND 20
+                AND [IdentificationNumber] NOT LIKE N'%[^0-9A-Za-z]%'
+            )
+        ),
 
     CONSTRAINT [CkEmployeesFirstNameNotBlank]
         CHECK (LEN(LTRIM(RTRIM([FirstName]))) > 0),
@@ -78,6 +117,24 @@
         (
             [PhoneNumber] IS NULL
             OR LEN(LTRIM(RTRIM([PhoneNumber]))) > 0
+        ),
+
+    CONSTRAINT [CkEmployeesPhoneNumberTrimmed]
+        CHECK
+        (
+            [PhoneNumber] IS NULL
+            OR [PhoneNumber] = LTRIM(RTRIM([PhoneNumber]))
+        ),
+
+    CONSTRAINT [CkEmployeesPhoneNumberFormat]
+        CHECK
+        (
+            [PhoneNumber] IS NULL
+            OR
+            (
+                LEN([PhoneNumber]) = 8
+                AND [PhoneNumber] NOT LIKE N'%[^0-9]%'
+            )
         ),
 
     CONSTRAINT [CkEmployeesProfileImagePathNotBlank]
@@ -116,6 +173,7 @@ CREATE NONCLUSTERED INDEX [IxEmployeesDepartmentIdIsActive]
     INCLUDE
     (
         [UserId],
+        [IdentificationType],
         [IdentificationNumber],
         [FirstName],
         [LastName],

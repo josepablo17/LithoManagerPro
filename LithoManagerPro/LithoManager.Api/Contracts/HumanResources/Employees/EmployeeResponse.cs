@@ -9,6 +9,7 @@ public sealed record EmployeeResponse(
     string DepartmentCode,
     string DepartmentName,
     bool IsDepartmentActive,
+    string IdentificationType,
     string IdentificationNumber,
     string FirstName,
     string LastName,

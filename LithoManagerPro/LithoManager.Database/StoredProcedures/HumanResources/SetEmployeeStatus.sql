@@ -66,10 +66,11 @@ BEGIN
     DECLARE @ExistingDepartmentCode nvarchar(50);
     DECLARE @ExistingDepartmentName nvarchar(100);
     DECLARE @ExistingIsDepartmentActive bit;
+    DECLARE @ExistingIdentificationType nvarchar(30);
     DECLARE @ExistingIdentificationNumber nvarchar(30);
     DECLARE @ExistingFirstName nvarchar(100);
     DECLARE @ExistingLastName nvarchar(150);
-    DECLARE @ExistingPhoneNumber nvarchar(25);
+    DECLARE @ExistingPhoneNumber nvarchar(8);
     DECLARE @ExistingBirthDate date;
     DECLARE @ExistingHireDate date;
     DECLARE @ExistingTerminationDate date;
@@ -85,10 +86,11 @@ BEGIN
         [EmployeeId] int NOT NULL,
         [UserId] int NULL,
         [DepartmentId] int NOT NULL,
+        [IdentificationType] nvarchar(30) NOT NULL,
         [IdentificationNumber] nvarchar(30) NOT NULL,
         [FirstName] nvarchar(100) NOT NULL,
         [LastName] nvarchar(150) NOT NULL,
-        [PhoneNumber] nvarchar(25) NULL,
+        [PhoneNumber] nvarchar(8) NULL,
         [BirthDate] date NULL,
         [HireDate] date NOT NULL,
         [TerminationDate] date NULL,
@@ -192,6 +194,8 @@ BEGIN
                 D.[Name],
             @ExistingIsDepartmentActive =
                 D.[IsActive],
+            @ExistingIdentificationType =
+                E.[IdentificationType],
             @ExistingIdentificationNumber =
                 E.[IdentificationNumber],
             @ExistingFirstName =
@@ -252,6 +256,7 @@ BEGIN
                 @EmployeeId AS [EmployeeId],
                 @ExistingUserId AS [UserId],
                 @ExistingDepartmentId AS [DepartmentId],
+                @ExistingIdentificationType AS [IdentificationType],
                 @ExistingIdentificationNumber AS [IdentificationNumber],
                 @ExistingFirstName AS [FirstName],
                 @ExistingLastName AS [LastName],
@@ -273,6 +278,7 @@ BEGIN
                 [EmployeeId],
                 [UserId],
                 [DepartmentId],
+                [IdentificationType],
                 [IdentificationNumber],
                 [FirstName],
                 [LastName],
@@ -294,6 +300,7 @@ BEGIN
                 E.[EmployeeId],
                 E.[UserId],
                 E.[DepartmentId],
+                E.[IdentificationType],
                 E.[IdentificationNumber],
                 E.[FirstName],
                 E.[LastName],
@@ -327,6 +334,7 @@ BEGIN
                 INSERTED.[EmployeeId],
                 INSERTED.[UserId],
                 INSERTED.[DepartmentId],
+                INSERTED.[IdentificationType],
                 INSERTED.[IdentificationNumber],
                 INSERTED.[FirstName],
                 INSERTED.[LastName],
@@ -348,6 +356,7 @@ BEGIN
                 [EmployeeId],
                 [UserId],
                 [DepartmentId],
+                [IdentificationType],
                 [IdentificationNumber],
                 [FirstName],
                 [LastName],
@@ -426,6 +435,7 @@ BEGIN
                     E.[EmployeeId],
                     E.[UserId],
                     E.[DepartmentId],
+                    E.[IdentificationType],
                     E.[IdentificationNumber],
                     E.[FirstName],
                     E.[LastName],
@@ -453,6 +463,7 @@ BEGIN
             @ExistingDepartmentCode AS [DepartmentCode],
             @ExistingDepartmentName AS [DepartmentName],
             @ExistingIsDepartmentActive AS [IsDepartmentActive],
+            E.[IdentificationType],
             E.[IdentificationNumber],
             E.[FirstName],
             E.[LastName],

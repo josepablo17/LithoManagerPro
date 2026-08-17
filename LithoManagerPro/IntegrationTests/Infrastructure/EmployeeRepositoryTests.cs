@@ -213,6 +213,8 @@ public sealed class EmployeeRepositoryTests
                         null,
                     departmentId:
                         department.DepartmentId,
+                    identificationType:
+                        employee.IdentificationType,
                     identificationNumber:
                         employee.IdentificationNumber,
                     firstName:
@@ -256,6 +258,8 @@ public sealed class EmployeeRepositoryTests
                                     null,
                                 departmentId:
                                     department.DepartmentId,
+                                identificationType:
+                                    employee.IdentificationType,
                                 identificationNumber:
                                     employee.IdentificationNumber,
                                 firstName:
@@ -292,6 +296,132 @@ public sealed class EmployeeRepositoryTests
             Assert.Equal(
                 EmployeeErrorCode.ConcurrencyConflict,
                 exception.ErrorCode);
+        }
+        finally
+        {
+            await _fixture.RemoveDepartmentTestDataAsync(
+                departmentCode,
+                identificationNumber);
+        }
+    }
+
+    [Fact]
+    public async Task GetEmployeeSalaryHistoryAsync_WhenSalaryChanges_ReturnsHistoricalAndCurrentRows()
+    {
+        // Arrange
+        string departmentCode =
+            CreateDepartmentCode();
+
+        string identificationNumber =
+            CreateIdentificationNumber();
+
+        await _fixture.RemoveDepartmentTestDataAsync(
+            departmentCode,
+            identificationNumber);
+
+        try
+        {
+            DepartmentData department =
+                await CreateDepartmentAsync(
+                    departmentCode,
+                    CreateDepartmentName());
+
+            EmployeeData employee =
+                await CreateEmployeeAsync(
+                    department.DepartmentId,
+                    identificationNumber,
+                    CreateRequestContext(
+                        "/integration-tests/" +
+                        "employees/salary-history-create"));
+
+            decimal updatedSalary = 1450.00m;
+
+            await _fixture.EmployeeRepository
+                .UpdateEmployeeAsync(
+                    employeeId:
+                        employee.EmployeeId,
+                    userId:
+                        employee.UserId,
+                    departmentId:
+                        employee.DepartmentId,
+                    identificationType:
+                        employee.IdentificationType,
+                    identificationNumber:
+                        employee.IdentificationNumber,
+                    firstName:
+                        employee.FirstName,
+                    lastName:
+                        employee.LastName,
+                    phoneNumber:
+                        employee.PhoneNumber,
+                    birthDate:
+                        employee.BirthDate,
+                    hireDate:
+                        employee.HireDate,
+                    terminationDate:
+                        employee.TerminationDate,
+                    jobTitle:
+                        employee.JobTitle,
+                    baseSalary:
+                        updatedSalary,
+                    profileImagePath:
+                        employee.ProfileImagePath,
+                    expectedRowVersion:
+                        employee.RowVersion,
+                    actorUserId:
+                        _fixture.SuperAdministratorUserId,
+                    requestContext:
+                        CreateRequestContext(
+                            "/integration-tests/" +
+                            "employees/salary-history-update"),
+                    cancellationToken:
+                        CancellationToken.None);
+
+            // Act
+            IReadOnlyList<EmployeeSalaryHistoryData>
+                salaryHistory =
+                    await _fixture.EmployeeRepository
+                        .GetEmployeeSalaryHistoryAsync(
+                            actorUserId:
+                                _fixture.SuperAdministratorUserId,
+                            employeeId:
+                                employee.EmployeeId,
+                            effectiveFromDate:
+                                null,
+                            effectiveToDate:
+                                null,
+                            cancellationToken:
+                                CancellationToken.None);
+
+            // Assert
+            Assert.Equal(
+                2,
+                salaryHistory.Count);
+
+            EmployeeSalaryHistoryData currentSalary =
+                Assert.Single(
+                    salaryHistory,
+                    item => item.IsCurrent);
+
+            Assert.Equal(
+                updatedSalary,
+                currentSalary.BaseSalary);
+            Assert.Null(
+                currentSalary.EffectiveToDate);
+
+            EmployeeSalaryHistoryData historicalSalary =
+                Assert.Single(
+                    salaryHistory,
+                    item => !item.IsCurrent);
+
+            Assert.Equal(
+                employee.BaseSalary,
+                historicalSalary.BaseSalary);
+            Assert.NotNull(
+                historicalSalary.EffectiveToDate);
+            Assert.True(
+                historicalSalary.EffectiveToDate.Value.Date
+                    < currentSalary.EffectiveFromDate.Date);
         }
         finally
         {
@@ -364,6 +494,8 @@ public sealed class EmployeeRepositoryTests
                     null,
                 departmentId:
                     departmentId,
+                identificationType:
+                    "CEDULA_FISICA",
                 identificationNumber:
                     identificationNumber,
                 firstName:
@@ -371,7 +503,7 @@ public sealed class EmployeeRepositoryTests
                 lastName:
                     "Rivera",
                 phoneNumber:
-                    "5555-0101",
+                    "55550101",
                 birthDate:
                     new DateTime(
                         1990,
@@ -443,8 +575,12 @@ public sealed class EmployeeRepositoryTests
 
     private static string CreateIdentificationNumber()
     {
-        return "EMP-" + Guid.NewGuid()
-            .ToString("N")[..12]
-            .ToUpperInvariant();
+        string digits = new(
+            Guid.NewGuid()
+                .ToString("N")
+                .Where(char.IsDigit)
+                .ToArray());
+
+        return "1" + digits.PadRight(8, '0')[..8];
     }
 }

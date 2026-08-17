@@ -6,10 +6,18 @@ namespace LithoManager.Application.Features
 
 internal static class EmployeeValidation
 {
-    private const int MaximumIdentificationNumberLength = 30;
+    private const string PhysicalIdIdentificationType =
+        "CEDULA_FISICA";
+
+    private const string DimexIdentificationType =
+        "DIMEX";
+
+    private const string PassportIdentificationType =
+        "PASAPORTE";
+
     private const int MaximumFirstNameLength = 100;
     private const int MaximumLastNameLength = 150;
-    private const int MaximumPhoneNumberLength = 25;
+    private const int PhoneNumberLength = 8;
     private const int MaximumJobTitleLength = 100;
     private const int MaximumProfileImagePathLength = 500;
     private const int MaximumSearchTermLength = 150;
@@ -26,12 +34,39 @@ internal static class EmployeeValidation
         return departmentId > 0;
     }
 
-    public static bool IsValidIdentificationNumber(
+    public static bool IsValidIdentification(
+        string? identificationType,
         string? identificationNumber)
     {
-        return IsValidRequiredText(
-            identificationNumber,
-            MaximumIdentificationNumberLength);
+        string? normalizedIdentificationType =
+            Normalize(identificationType)?.ToUpperInvariant();
+
+        string? normalizedIdentificationNumber =
+            Normalize(identificationNumber);
+
+        if (normalizedIdentificationType is null
+            || normalizedIdentificationNumber is null)
+        {
+            return false;
+        }
+
+        return normalizedIdentificationType switch
+        {
+            PhysicalIdIdentificationType =>
+                IsValidNumericIdentificationNumber(
+                    normalizedIdentificationNumber,
+                    minimumLength: 9,
+                    maximumLength: 9),
+            DimexIdentificationType =>
+                IsValidNumericIdentificationNumber(
+                    normalizedIdentificationNumber,
+                    minimumLength: 11,
+                    maximumLength: 12),
+            PassportIdentificationType =>
+                IsValidPassportIdentificationNumber(
+                    normalizedIdentificationNumber),
+            _ => false
+        };
     }
 
     public static bool IsValidFirstName(
@@ -53,9 +88,14 @@ internal static class EmployeeValidation
     public static bool IsValidPhoneNumber(
         string? phoneNumber)
     {
-        return IsValidOptionalText(
-            phoneNumber,
-            MaximumPhoneNumberLength);
+        string? normalizedPhoneNumber =
+            Normalize(phoneNumber);
+
+        return normalizedPhoneNumber is null
+            || (
+                normalizedPhoneNumber.Length == PhoneNumberLength
+                && normalizedPhoneNumber.All(char.IsDigit)
+            );
     }
 
     public static bool IsValidEmploymentDates(
@@ -104,6 +144,28 @@ internal static class EmployeeValidation
         return departmentId is null or > 0;
     }
 
+    public static bool IsValidEmployeeId(
+        int employeeId)
+    {
+        return employeeId > 0;
+    }
+
+    public static bool IsValidActorUserId(
+        int actorUserId)
+    {
+        return actorUserId > 0;
+    }
+
+    public static bool IsValidEffectiveDateRange(
+        DateTime? effectiveFromDate,
+        DateTime? effectiveToDate)
+    {
+        return effectiveFromDate is null
+            || effectiveToDate is null
+            || effectiveToDate.Value.Date
+                >= effectiveFromDate.Value.Date;
+    }
+
     public static bool IsValidRowVersion(
         byte[]? rowVersion)
     {
@@ -141,6 +203,24 @@ internal static class EmployeeValidation
 
         return normalizedValue is null
             || normalizedValue.Length <= maximumLength;
+    }
+
+    private static bool IsValidNumericIdentificationNumber(
+        string identificationNumber,
+        int minimumLength,
+        int maximumLength)
+    {
+        return identificationNumber.Length >= minimumLength
+            && identificationNumber.Length <= maximumLength
+            && identificationNumber[0] != '0'
+            && identificationNumber.All(char.IsDigit);
+    }
+
+    private static bool IsValidPassportIdentificationNumber(
+        string identificationNumber)
+    {
+        return identificationNumber.Length is >= 6 and <= 20
+            && identificationNumber.All(char.IsLetterOrDigit);
     }
 
     private static string? Normalize(

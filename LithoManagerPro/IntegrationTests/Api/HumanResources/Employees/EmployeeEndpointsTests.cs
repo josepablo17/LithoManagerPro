@@ -87,6 +87,8 @@ public sealed class EmployeeEndpointsTests
                         null,
                     DepartmentId =
                         department.DepartmentId,
+                    IdentificationType =
+                        "CEDULA_FISICA",
                     IdentificationNumber =
                         identificationNumber,
                     FirstName =
@@ -94,7 +96,7 @@ public sealed class EmployeeEndpointsTests
                     LastName =
                         "Rivera",
                     PhoneNumber =
-                        "5555-0101",
+                        "55550101",
                     BirthDate =
                         new DateTime(
                             1990,
@@ -157,6 +159,9 @@ public sealed class EmployeeEndpointsTests
             Assert.Equal(
                 department.DepartmentId,
                 employee.DepartmentId);
+            Assert.Equal(
+                "CEDULA_FISICA",
+                employee.IdentificationType);
             Assert.Equal(
                 identificationNumber,
                 employee.IdentificationNumber);
@@ -239,6 +244,8 @@ public sealed class EmployeeEndpointsTests
                         null,
                     departmentId:
                         department.DepartmentId,
+                    identificationType:
+                        employee.IdentificationType,
                     identificationNumber:
                         employee.IdentificationNumber,
                     firstName:
@@ -281,6 +288,8 @@ public sealed class EmployeeEndpointsTests
                         null,
                     DepartmentId =
                         department.DepartmentId,
+                    IdentificationType =
+                        employee.IdentificationType,
                     IdentificationNumber =
                         employee.IdentificationNumber,
                     FirstName =
@@ -349,6 +358,188 @@ public sealed class EmployeeEndpointsTests
         }
     }
 
+    [Fact]
+    public async Task GetEmployeeIdentificationTypes_WhenAccessTokenIsValid_ReturnsIdentificationTypes()
+    {
+        // Arrange
+        string accessToken =
+            await LoginAndGetAccessTokenAsync();
+
+        using HttpRequestMessage request =
+            CreateAuthorizedRequest(
+                HttpMethod.Get,
+                "/api/human-resources/employees/" +
+                "identification-types",
+                accessToken,
+                Guid.NewGuid());
+
+        // Act
+        HttpResponseMessage response =
+            await _client.SendAsync(request);
+
+        // Assert
+        Assert.Equal(
+            HttpStatusCode.OK,
+            response.StatusCode);
+
+        IReadOnlyList<EmployeeIdentificationTypeResponse>?
+            identificationTypes =
+                await response.Content.ReadFromJsonAsync<
+                    IReadOnlyList<
+                        EmployeeIdentificationTypeResponse>>();
+
+        Assert.NotNull(identificationTypes);
+
+        Assert.Contains(
+            identificationTypes,
+            identificationType =>
+                identificationType.IdentificationType
+                    == "CEDULA_FISICA"
+                && identificationType.IsNumericOnly
+                && identificationType.MinLength == 9
+                && identificationType.MaxLength == 9);
+
+        Assert.Contains(
+            identificationTypes,
+            identificationType =>
+                identificationType.IdentificationType
+                    == "DIMEX");
+
+        Assert.Contains(
+            identificationTypes,
+            identificationType =>
+                identificationType.IdentificationType
+                    == "PASAPORTE"
+                && !identificationType.IsNumericOnly);
+    }
+
+    [Fact]
+    public async Task GetEmployeeSalaryHistory_WhenEmployeeExists_ReturnsSalaryHistory()
+    {
+        // Arrange
+        string departmentCode =
+            CreateDepartmentCode();
+
+        string identificationNumber =
+            CreateIdentificationNumber();
+
+        await _databaseFixture
+            .RemoveDepartmentTestDataAsync(
+                departmentCode,
+                identificationNumber);
+
+        try
+        {
+            DepartmentData department =
+                await CreateDepartmentAsync(
+                    departmentCode,
+                    CreateDepartmentName());
+
+            EmployeeData employee =
+                await CreateEmployeeAsync(
+                    department.DepartmentId,
+                    identificationNumber);
+
+            string accessToken =
+                await LoginAndGetAccessTokenAsync();
+
+            using HttpRequestMessage request =
+                CreateAuthorizedRequest(
+                    HttpMethod.Get,
+                    "/api/human-resources/employees/" +
+                    employee.EmployeeId +
+                    "/salary-history",
+                    accessToken,
+                    Guid.NewGuid());
+
+            // Act
+            HttpResponseMessage response =
+                await _client.SendAsync(request);
+
+            // Assert
+            Assert.Equal(
+                HttpStatusCode.OK,
+                response.StatusCode);
+
+            IReadOnlyList<EmployeeSalaryHistoryResponse>?
+                salaryHistory =
+                    await response.Content.ReadFromJsonAsync<
+                        IReadOnlyList<
+                            EmployeeSalaryHistoryResponse>>();
+
+            Assert.NotNull(salaryHistory);
+
+            EmployeeSalaryHistoryResponse currentSalary =
+                Assert.Single(salaryHistory);
+
+            Assert.Equal(
+                employee.EmployeeId,
+                currentSalary.EmployeeId);
+            Assert.Equal(
+                employee.IdentificationType,
+                currentSalary.IdentificationType);
+            Assert.Equal(
+                identificationNumber,
+                currentSalary.IdentificationNumber);
+            Assert.Equal(
+                employee.BaseSalary,
+                currentSalary.BaseSalary);
+            Assert.True(currentSalary.IsCurrent);
+            Assert.Equal(
+                8,
+                Convert.FromBase64String(
+                    currentSalary.RowVersion).Length);
+        }
+        finally
+        {
+            await _databaseFixture
+                .RemoveDepartmentTestDataAsync(
+                    departmentCode,
+                    identificationNumber);
+        }
+    }
+
+    [Fact]
+    public async Task GetEmployeeSalaryHistory_WhenDateRangeIsInvalid_ReturnsBadRequest()
+    {
+        // Arrange
+        string accessToken =
+            await LoginAndGetAccessTokenAsync();
+
+        using HttpRequestMessage request =
+            CreateAuthorizedRequest(
+                HttpMethod.Get,
+                "/api/human-resources/employees/1/" +
+                "salary-history?effectiveFromDate=2026-08-10" +
+                "&effectiveToDate=2026-08-09",
+                accessToken,
+                Guid.NewGuid());
+
+        // Act
+        HttpResponseMessage response =
+            await _client.SendAsync(request);
+
+        // Assert
+        Assert.Equal(
+            HttpStatusCode.BadRequest,
+            response.StatusCode);
+
+        ProblemDetails? problem =
+            await response.Content
+                .ReadFromJsonAsync<ProblemDetails>();
+
+        Assert.NotNull(problem);
+
+        Assert.True(
+            problem.Extensions.TryGetValue(
+                "errorCode",
+                out object? errorCode));
+
+        Assert.Equal(
+            "invalid_request",
+            errorCode?.ToString());
+    }
+
     private Task<EmployeeData> CreateEmployeeAsync(
         int departmentId,
         string identificationNumber)
@@ -359,6 +550,8 @@ public sealed class EmployeeEndpointsTests
                     null,
                 departmentId:
                     departmentId,
+                identificationType:
+                    "CEDULA_FISICA",
                 identificationNumber:
                     identificationNumber,
                 firstName:
@@ -366,7 +559,7 @@ public sealed class EmployeeEndpointsTests
                 lastName:
                     "Rivera",
                 phoneNumber:
-                    "5555-0101",
+                    "55550101",
                 birthDate:
                     new DateTime(
                         1990,
@@ -493,6 +686,30 @@ public sealed class EmployeeEndpointsTests
         return request;
     }
 
+    private static HttpRequestMessage
+        CreateAuthorizedRequest(
+            HttpMethod method,
+            string requestUri,
+            string accessToken,
+            Guid correlationId)
+    {
+        HttpRequestMessage request =
+            new(
+                method,
+                requestUri);
+
+        request.Headers.Authorization =
+            new AuthenticationHeaderValue(
+                scheme: "Bearer",
+                parameter: accessToken);
+
+        request.Headers.Add(
+            "X-Correlation-ID",
+            correlationId.ToString());
+
+        return request;
+    }
+
     private static string CreateDepartmentCode()
     {
         return "EA" + Guid.NewGuid()
@@ -508,8 +725,12 @@ public sealed class EmployeeEndpointsTests
 
     private static string CreateIdentificationNumber()
     {
-        return "API-" + Guid.NewGuid()
-            .ToString("N")[..12]
-            .ToUpperInvariant();
+        string digits = new(
+            Guid.NewGuid()
+                .ToString("N")
+                .Where(char.IsDigit)
+                .ToArray());
+
+        return "2" + digits.PadRight(8, '0')[..8];
     }
 }

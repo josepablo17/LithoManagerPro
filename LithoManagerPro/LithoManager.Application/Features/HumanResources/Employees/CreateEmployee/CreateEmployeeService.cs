@@ -35,7 +35,8 @@ public sealed class CreateEmployeeService
             || !EmployeeValidation.IsValidDepartmentId(
                 command.DepartmentId)
             || !EmployeeValidation
-                .IsValidIdentificationNumber(
+                .IsValidIdentification(
+                    command.IdentificationType,
                     command.IdentificationNumber)
             || !EmployeeValidation.IsValidFirstName(
                 command.FirstName)
@@ -65,6 +66,8 @@ public sealed class CreateEmployeeService
                         command.UserId,
                     departmentId:
                         command.DepartmentId,
+                    identificationType:
+                        command.IdentificationType!,
                     identificationNumber:
                         command.IdentificationNumber!,
                     firstName:

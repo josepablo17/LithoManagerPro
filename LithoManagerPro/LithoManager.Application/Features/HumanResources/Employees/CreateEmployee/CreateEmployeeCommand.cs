@@ -7,6 +7,7 @@ namespace LithoManager.Application.Features
 public sealed record CreateEmployeeCommand(
     int? UserId,
     int DepartmentId,
+    string? IdentificationType,
     string? IdentificationNumber,
     string? FirstName,
     string? LastName,

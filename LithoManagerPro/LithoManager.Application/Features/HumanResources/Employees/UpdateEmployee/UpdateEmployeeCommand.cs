@@ -8,6 +8,7 @@ public sealed record UpdateEmployeeCommand(
     int EmployeeId,
     int? UserId,
     int DepartmentId,
+    string? IdentificationType,
     string? IdentificationNumber,
     string? FirstName,
     string? LastName,

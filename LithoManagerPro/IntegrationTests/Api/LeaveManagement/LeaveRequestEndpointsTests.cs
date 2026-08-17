@@ -297,7 +297,7 @@ public sealed class LeaveRequestEndpointsTests
 
     private static string CreateIdentificationNumber()
     {
-        return "LAPI-" + Guid.NewGuid()
+        return "LAPI" + Guid.NewGuid()
             .ToString("N")[..12]
             .ToUpperInvariant();
     }

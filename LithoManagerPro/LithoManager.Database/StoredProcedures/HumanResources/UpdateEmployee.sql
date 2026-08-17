@@ -2,6 +2,7 @@ CREATE PROCEDURE [HumanResources].[UpdateEmployee]
     @EmployeeId int,
     @UserId int = NULL,
     @DepartmentId int,
+    @IdentificationType nvarchar(4000),
     @IdentificationNumber nvarchar(4000),
     @FirstName nvarchar(4000),
     @LastName nvarchar(4000),
@@ -30,6 +31,12 @@ BEGIN
         COALESCE(
             @CorrelationId,
             NEWID()
+        );
+
+    DECLARE @NormalizedIdentificationType nvarchar(4000) =
+        NULLIF(
+            UPPER(LTRIM(RTRIM(@IdentificationType))),
+            N''
         );
 
     DECLARE @NormalizedIdentificationNumber nvarchar(4000) =
@@ -115,10 +122,64 @@ BEGIN
             1;
     END;
 
+    IF @NormalizedIdentificationType IS NULL
+    BEGIN
+        THROW 52173,
+            N'IdentificationType is required.',
+            1;
+    END;
+
+    IF @NormalizedIdentificationType NOT IN
+    (
+        N'CEDULA_FISICA',
+        N'DIMEX',
+        N'PASAPORTE'
+    )
+    BEGIN
+        THROW 52174,
+            N'IdentificationType is not valid.',
+            1;
+    END;
+
     IF LEN(@NormalizedIdentificationNumber) > 30
     BEGIN
         THROW 52147,
             N'IdentificationNumber cannot exceed 30 characters.',
+            1;
+    END;
+
+    IF
+    (
+        @NormalizedIdentificationType = N'CEDULA_FISICA'
+        AND
+        (
+            LEN(@NormalizedIdentificationNumber) <> 9
+            OR @NormalizedIdentificationNumber LIKE N'%[^0-9]%'
+            OR LEFT(@NormalizedIdentificationNumber, 1) = N'0'
+        )
+    )
+    OR
+    (
+        @NormalizedIdentificationType = N'DIMEX'
+        AND
+        (
+            LEN(@NormalizedIdentificationNumber) NOT IN (11, 12)
+            OR @NormalizedIdentificationNumber LIKE N'%[^0-9]%'
+            OR LEFT(@NormalizedIdentificationNumber, 1) = N'0'
+        )
+    )
+    OR
+    (
+        @NormalizedIdentificationType = N'PASAPORTE'
+        AND
+        (
+            LEN(@NormalizedIdentificationNumber) NOT BETWEEN 6 AND 20
+            OR @NormalizedIdentificationNumber LIKE N'%[^0-9A-Za-z]%'
+        )
+    )
+    BEGIN
+        THROW 52175,
+            N'IdentificationNumber does not match the selected IdentificationType.',
             1;
     END;
 
@@ -151,10 +212,14 @@ BEGIN
     END;
 
     IF @NormalizedPhoneNumber IS NOT NULL
-       AND LEN(@NormalizedPhoneNumber) > 25
+       AND
+       (
+           LEN(@NormalizedPhoneNumber) <> 8
+           OR @NormalizedPhoneNumber LIKE N'%[^0-9]%'
+       )
     BEGIN
         THROW 52152,
-            N'PhoneNumber cannot exceed 25 characters.',
+            N'PhoneNumber must contain exactly 8 digits.',
             1;
     END;
 
@@ -219,10 +284,11 @@ BEGIN
 
     DECLARE @ExistingUserId int;
     DECLARE @ExistingDepartmentId int;
+    DECLARE @ExistingIdentificationType nvarchar(30);
     DECLARE @ExistingIdentificationNumber nvarchar(30);
     DECLARE @ExistingFirstName nvarchar(100);
     DECLARE @ExistingLastName nvarchar(150);
-    DECLARE @ExistingPhoneNumber nvarchar(25);
+    DECLARE @ExistingPhoneNumber nvarchar(8);
     DECLARE @ExistingBirthDate date;
     DECLARE @ExistingHireDate date;
     DECLARE @ExistingTerminationDate date;
@@ -231,16 +297,19 @@ BEGIN
     DECLARE @ExistingProfileImagePath nvarchar(500);
     DECLARE @ExistingIsActive bit;
     DECLARE @ExistingRowVersion varbinary(8);
+    DECLARE @CurrentSalaryHistoryId int;
+    DECLARE @CurrentSalaryEffectiveFromDate date;
 
     DECLARE @UpdatedEmployee TABLE
     (
         [EmployeeId] int NOT NULL,
         [UserId] int NULL,
         [DepartmentId] int NOT NULL,
+        [IdentificationType] nvarchar(30) NOT NULL,
         [IdentificationNumber] nvarchar(30) NOT NULL,
         [FirstName] nvarchar(100) NOT NULL,
         [LastName] nvarchar(150) NOT NULL,
-        [PhoneNumber] nvarchar(25) NULL,
+        [PhoneNumber] nvarchar(8) NULL,
         [BirthDate] date NULL,
         [HireDate] date NOT NULL,
         [TerminationDate] date NULL,
@@ -336,6 +405,8 @@ BEGIN
                 E.[UserId],
             @ExistingDepartmentId =
                 E.[DepartmentId],
+            @ExistingIdentificationType =
+                E.[IdentificationType],
             @ExistingIdentificationNumber =
                 E.[IdentificationNumber],
             @ExistingFirstName =
@@ -439,13 +510,15 @@ BEGIN
             SELECT 1
             FROM [HumanResources].[Employees] AS E
                 WITH (UPDLOCK, HOLDLOCK)
-            WHERE E.[IdentificationNumber] =
+            WHERE E.[IdentificationType] =
+                @NormalizedIdentificationType
+              AND E.[IdentificationNumber] =
                 @NormalizedIdentificationNumber
               AND E.[EmployeeId] <> @EmployeeId
         )
         BEGIN
             THROW 52171,
-                N'An employee with the same IdentificationNumber already exists.',
+                N'An employee with the same identification already exists.',
                 1;
         END;
 
@@ -455,6 +528,7 @@ BEGIN
                 @EmployeeId AS [EmployeeId],
                 @ExistingUserId AS [UserId],
                 @ExistingDepartmentId AS [DepartmentId],
+                @ExistingIdentificationType AS [IdentificationType],
                 @ExistingIdentificationNumber AS [IdentificationNumber],
                 @ExistingFirstName AS [FirstName],
                 @ExistingLastName AS [LastName],
@@ -475,6 +549,8 @@ BEGIN
                 @UserId,
             [DepartmentId] =
                 @DepartmentId,
+            [IdentificationType] =
+                @NormalizedIdentificationType,
             [IdentificationNumber] =
                 @NormalizedIdentificationNumber,
             [FirstName] =
@@ -503,6 +579,7 @@ BEGIN
             INSERTED.[EmployeeId],
             INSERTED.[UserId],
             INSERTED.[DepartmentId],
+            INSERTED.[IdentificationType],
             INSERTED.[IdentificationNumber],
             INSERTED.[FirstName],
             INSERTED.[LastName],
@@ -524,6 +601,7 @@ BEGIN
             [EmployeeId],
             [UserId],
             [DepartmentId],
+            [IdentificationType],
             [IdentificationNumber],
             [FirstName],
             [LastName],
@@ -548,6 +626,90 @@ BEGIN
             THROW 52172,
                 N'The employee update returned an unexpected row count.',
                 1;
+        END;
+
+        IF @ExistingBaseSalary <> @BaseSalary
+        BEGIN
+            DECLARE @SalaryEffectiveFromDate date =
+                CASE
+                    WHEN @HireDate > CONVERT(date, @OccurredAtUtc)
+                        THEN @HireDate
+                    ELSE CONVERT(date, @OccurredAtUtc)
+                END;
+
+            SELECT TOP (1)
+                @CurrentSalaryHistoryId =
+                    ESH.[EmployeeSalaryHistoryId],
+                @CurrentSalaryEffectiveFromDate =
+                    ESH.[EffectiveFromDate]
+            FROM [HumanResources].[EmployeeSalaryHistory] AS ESH
+                WITH (UPDLOCK, HOLDLOCK)
+            WHERE ESH.[EmployeeId] = @EmployeeId
+              AND ESH.[EffectiveToDate] IS NULL
+            ORDER BY
+                ESH.[EffectiveFromDate] DESC,
+                ESH.[EmployeeSalaryHistoryId] DESC;
+
+            IF @CurrentSalaryHistoryId IS NULL
+            BEGIN
+                INSERT INTO [HumanResources].[EmployeeSalaryHistory]
+                (
+                    [EmployeeId],
+                    [BaseSalary],
+                    [EffectiveFromDate],
+                    [CreatedByUserId]
+                )
+                VALUES
+                (
+                    @EmployeeId,
+                    @BaseSalary,
+                    @SalaryEffectiveFromDate,
+                    @ActorUserId
+                );
+            END;
+            ELSE IF @CurrentSalaryEffectiveFromDate >= @SalaryEffectiveFromDate
+            BEGIN
+                UPDATE [HumanResources].[EmployeeSalaryHistory]
+                SET
+                    [BaseSalary] =
+                        @BaseSalary,
+                    [UpdatedAtUtc] =
+                        @OccurredAtUtc,
+                    [UpdatedByUserId] =
+                        @ActorUserId
+                WHERE [EmployeeSalaryHistoryId] = @CurrentSalaryHistoryId;
+            END;
+            ELSE
+            BEGIN
+                UPDATE [HumanResources].[EmployeeSalaryHistory]
+                SET
+                    [EffectiveToDate] =
+                        DATEADD(
+                            DAY,
+                            -1,
+                            @SalaryEffectiveFromDate
+                        ),
+                    [UpdatedAtUtc] =
+                        @OccurredAtUtc,
+                    [UpdatedByUserId] =
+                        @ActorUserId
+                WHERE [EmployeeSalaryHistoryId] = @CurrentSalaryHistoryId;
+
+                INSERT INTO [HumanResources].[EmployeeSalaryHistory]
+                (
+                    [EmployeeId],
+                    [BaseSalary],
+                    [EffectiveFromDate],
+                    [CreatedByUserId]
+                )
+                VALUES
+                (
+                    @EmployeeId,
+                    @BaseSalary,
+                    @SalaryEffectiveFromDate,
+                    @ActorUserId
+                );
+            END;
         END;
 
         INSERT INTO [Audit].[AuditLogs]
@@ -597,6 +759,7 @@ BEGIN
                     E.[EmployeeId],
                     E.[UserId],
                     E.[DepartmentId],
+                    E.[IdentificationType],
                     E.[IdentificationNumber],
                     E.[FirstName],
                     E.[LastName],
@@ -624,6 +787,7 @@ BEGIN
             @DepartmentCode AS [DepartmentCode],
             @DepartmentName AS [DepartmentName],
             @IsDepartmentActive AS [IsDepartmentActive],
+            E.[IdentificationType],
             E.[IdentificationNumber],
             E.[FirstName],
             E.[LastName],

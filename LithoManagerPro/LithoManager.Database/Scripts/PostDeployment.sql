@@ -4,3 +4,4 @@
 :r ./../Seeds/LeaveManagement/LeaveTypes.sql
 :r ./../Seeds/LeaveManagement/LeavePolicies.sql
 :r ./../Seeds/Documents/DocumentTypes.sql
+:r ./../Seeds/HumanResources/EmployeeSalaryHistory.sql
