@@ -9,7 +9,13 @@ using LithoManager.Application.Features
 using LithoManager.Application.Features
     .HumanResources.Employees.CreateEmployee;
 using LithoManager.Application.Features
+    .HumanResources.Employees.GetAssignableEmployeeUsers;
+using LithoManager.Application.Features
     .HumanResources.Employees.GetEmployeeById;
+using LithoManager.Application.Features
+    .HumanResources.Employees.GetEmployeeIdentificationTypes;
+using LithoManager.Application.Features
+    .HumanResources.Employees.GetEmployeeSalaryHistory;
 using LithoManager.Application.Features
     .HumanResources.Employees.GetEmployees;
 using LithoManager.Application.Features
@@ -32,11 +38,20 @@ public sealed class EmployeesController : ControllerBase
     private readonly ICreateEmployeeService
         _createEmployeeService;
 
+    private readonly IGetAssignableEmployeeUsersService
+        _getAssignableEmployeeUsersService;
+
     private readonly IGetEmployeeByIdService
         _getEmployeeByIdService;
 
+    private readonly IGetEmployeeIdentificationTypesService
+        _getEmployeeIdentificationTypesService;
+
     private readonly IGetEmployeesService
         _getEmployeesService;
+
+    private readonly IGetEmployeeSalaryHistoryService
+        _getEmployeeSalaryHistoryService;
 
     private readonly IUpdateEmployeeService
         _updateEmployeeService;
@@ -46,8 +61,14 @@ public sealed class EmployeesController : ControllerBase
 
     public EmployeesController(
         ICreateEmployeeService createEmployeeService,
+        IGetAssignableEmployeeUsersService
+            getAssignableEmployeeUsersService,
         IGetEmployeeByIdService getEmployeeByIdService,
+        IGetEmployeeIdentificationTypesService
+            getEmployeeIdentificationTypesService,
         IGetEmployeesService getEmployeesService,
+        IGetEmployeeSalaryHistoryService
+            getEmployeeSalaryHistoryService,
         IUpdateEmployeeService updateEmployeeService,
         ISetEmployeeStatusService setEmployeeStatusService)
     {
@@ -55,10 +76,19 @@ public sealed class EmployeesController : ControllerBase
             createEmployeeService);
 
         ArgumentNullException.ThrowIfNull(
+            getAssignableEmployeeUsersService);
+
+        ArgumentNullException.ThrowIfNull(
             getEmployeeByIdService);
 
         ArgumentNullException.ThrowIfNull(
+            getEmployeeIdentificationTypesService);
+
+        ArgumentNullException.ThrowIfNull(
             getEmployeesService);
+
+        ArgumentNullException.ThrowIfNull(
+            getEmployeeSalaryHistoryService);
 
         ArgumentNullException.ThrowIfNull(
             updateEmployeeService);
@@ -69,11 +99,20 @@ public sealed class EmployeesController : ControllerBase
         _createEmployeeService =
             createEmployeeService;
 
+        _getAssignableEmployeeUsersService =
+            getAssignableEmployeeUsersService;
+
         _getEmployeeByIdService =
             getEmployeeByIdService;
 
+        _getEmployeeIdentificationTypesService =
+            getEmployeeIdentificationTypesService;
+
         _getEmployeesService =
             getEmployeesService;
+
+        _getEmployeeSalaryHistoryService =
+            getEmployeeSalaryHistoryService;
 
         _updateEmployeeService =
             updateEmployeeService;
@@ -125,6 +164,8 @@ public sealed class EmployeesController : ControllerBase
                 request.UserId,
             DepartmentId:
                 request.DepartmentId ?? 0,
+            IdentificationType:
+                request.IdentificationType,
             IdentificationNumber:
                 request.IdentificationNumber,
             FirstName:
@@ -208,6 +249,77 @@ public sealed class EmployeesController : ControllerBase
             MapEmployee(result.Employee!));
     }
 
+    [HttpGet("assignable-users")]
+    [Produces("application/json")]
+    [ProducesResponseType(
+        typeof(IReadOnlyList<
+            AssignableEmployeeUserResponse>),
+        StatusCodes.Status200OK)]
+    [ProducesResponseType(
+        typeof(ProblemDetails),
+        StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<IReadOnlyList<
+        AssignableEmployeeUserResponse>>> GetAssignableUsers(
+            [FromQuery] int? employeeId,
+            CancellationToken cancellationToken)
+    {
+        this.PrepareNoStoreResponse();
+
+        AssignableEmployeeUsersResult result =
+            await _getAssignableEmployeeUsersService.GetAsync(
+                new GetAssignableEmployeeUsersQuery(
+                    EmployeeId:
+                        employeeId),
+                cancellationToken);
+
+        if (!result.IsSuccessful)
+        {
+            return CreateFailureResponse(
+                result,
+                correlationId: null);
+        }
+
+        return Ok(
+            result.Users
+                .Select(MapAssignableUser)
+                .ToList());
+    }
+
+    [HttpGet("identification-types")]
+    [Produces("application/json")]
+    [ProducesResponseType(
+        typeof(IReadOnlyList<
+            EmployeeIdentificationTypeResponse>),
+        StatusCodes.Status200OK)]
+    [ProducesResponseType(
+        typeof(ProblemDetails),
+        StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<IReadOnlyList<
+        EmployeeIdentificationTypeResponse>>>
+        GetEmployeeIdentificationTypes(
+            CancellationToken cancellationToken)
+    {
+        this.PrepareNoStoreResponse();
+
+        EmployeeIdentificationTypesResult result =
+            await _getEmployeeIdentificationTypesService
+                .GetAsync(
+                    new GetEmployeeIdentificationTypesQuery(),
+                    cancellationToken);
+
+        if (!result.IsSuccessful)
+        {
+            return CreateFailureResponse(
+                result,
+                correlationId: null);
+        }
+
+        return Ok(
+            result.IdentificationTypes
+                .Select(MapIdentificationType)
+                .ToList());
+    }
+
     [HttpGet]
     [Produces("application/json")]
     [ProducesResponseType(
@@ -246,6 +358,78 @@ public sealed class EmployeesController : ControllerBase
         return Ok(
             result.Employees
                 .Select(MapEmployee)
+                .ToList());
+    }
+
+    [HttpGet("{employeeId:int}/salary-history")]
+    [Produces("application/json")]
+    [ProducesResponseType(
+        typeof(IReadOnlyList<
+            EmployeeSalaryHistoryResponse>),
+        StatusCodes.Status200OK)]
+    [ProducesResponseType(
+        typeof(ProblemDetails),
+        StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(
+        typeof(ProblemDetails),
+        StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(
+        typeof(ProblemDetails),
+        StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(
+        typeof(ProblemDetails),
+        StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<IReadOnlyList<
+        EmployeeSalaryHistoryResponse>>>
+        GetEmployeeSalaryHistory(
+            int employeeId,
+            [FromQuery] DateTime? effectiveFromDate,
+            [FromQuery] DateTime? effectiveToDate,
+            CancellationToken cancellationToken)
+    {
+        Guid correlationId =
+            this.PrepareNoStoreResponse();
+
+        if (!this.TryResolveAuthenticatedUserId(
+                out int actorUserId))
+        {
+            return Unauthorized(
+                this.CreateProblemDetails(
+                    statusCode:
+                        StatusCodes.Status401Unauthorized,
+                    title:
+                        "Token inválido",
+                    detail:
+                        "No fue posible identificar al usuario.",
+                    errorCode:
+                        "invalid_token",
+                    correlationId:
+                        correlationId));
+        }
+
+        EmployeeSalaryHistoryResult result =
+            await _getEmployeeSalaryHistoryService.GetAsync(
+                new GetEmployeeSalaryHistoryQuery(
+                    ActorUserId:
+                        actorUserId,
+                    EmployeeId:
+                        employeeId,
+                    EffectiveFromDate:
+                        effectiveFromDate,
+                    EffectiveToDate:
+                        effectiveToDate),
+                cancellationToken);
+
+        if (!result.IsSuccessful)
+        {
+            return CreateFailureResponse(
+                result,
+                correlationId);
+        }
+
+        return Ok(
+            result.SalaryHistory
+                .Select(MapSalaryHistory)
                 .ToList());
     }
 
@@ -304,6 +488,8 @@ public sealed class EmployeesController : ControllerBase
                 request.UserId,
             DepartmentId:
                 request.DepartmentId ?? 0,
+            IdentificationType:
+                request.IdentificationType,
             IdentificationNumber:
                 request.IdentificationNumber,
             FirstName:
@@ -470,7 +656,34 @@ public sealed class EmployeesController : ControllerBase
     }
 
     private ObjectResult CreateFailureResponse(
+        AssignableEmployeeUsersResult result,
+        Guid? correlationId)
+    {
+        return CreateFailureResponse(
+            result.ErrorCode,
+            correlationId);
+    }
+
+    private ObjectResult CreateFailureResponse(
         EmployeesResult result,
+        Guid? correlationId)
+    {
+        return CreateFailureResponse(
+            result.ErrorCode,
+            correlationId);
+    }
+
+    private ObjectResult CreateFailureResponse(
+        EmployeeIdentificationTypesResult result,
+        Guid? correlationId)
+    {
+        return CreateFailureResponse(
+            result.ErrorCode,
+            correlationId);
+    }
+
+    private ObjectResult CreateFailureResponse(
+        EmployeeSalaryHistoryResult result,
         Guid? correlationId)
     {
         return CreateFailureResponse(
@@ -510,7 +723,7 @@ public sealed class EmployeesController : ControllerBase
                 StatusCodes.Status409Conflict,
                 "duplicate_identification_number",
                 "Identificación duplicada",
-                "Ya existe un empleado con el mismo número de identificación."
+                "Ya existe un empleado con el mismo tipo y número de identificación."
             ),
 
             EmployeeErrorCode.UserNotFound =>
@@ -646,6 +859,8 @@ public sealed class EmployeesController : ControllerBase
                 employee.DepartmentName,
             IsDepartmentActive:
                 employee.IsDepartmentActive,
+            IdentificationType:
+                employee.IdentificationType,
             IdentificationNumber:
                 employee.IdentificationNumber,
             FirstName:
@@ -679,5 +894,94 @@ public sealed class EmployeesController : ControllerBase
             RowVersion:
                 Convert.ToBase64String(
                     employee.RowVersion));
+    }
+
+    private static EmployeeSalaryHistoryResponse
+        MapSalaryHistory(
+            EmployeeSalaryHistoryInfo salaryHistory)
+    {
+        return new EmployeeSalaryHistoryResponse(
+            EmployeeSalaryHistoryId:
+                salaryHistory.EmployeeSalaryHistoryId,
+            EmployeeId:
+                salaryHistory.EmployeeId,
+            IdentificationType:
+                salaryHistory.IdentificationType,
+            IdentificationNumber:
+                salaryHistory.IdentificationNumber,
+            FirstName:
+                salaryHistory.FirstName,
+            LastName:
+                salaryHistory.LastName,
+            DepartmentId:
+                salaryHistory.DepartmentId,
+            DepartmentCode:
+                salaryHistory.DepartmentCode,
+            DepartmentName:
+                salaryHistory.DepartmentName,
+            BaseSalary:
+                salaryHistory.BaseSalary,
+            EffectiveFromDate:
+                salaryHistory.EffectiveFromDate,
+            EffectiveToDate:
+                salaryHistory.EffectiveToDate,
+            IsCurrent:
+                salaryHistory.IsCurrent,
+            CreatedAtUtc:
+                salaryHistory.CreatedAtUtc,
+            CreatedByUserId:
+                salaryHistory.CreatedByUserId,
+            UpdatedAtUtc:
+                salaryHistory.UpdatedAtUtc,
+            UpdatedByUserId:
+                salaryHistory.UpdatedByUserId,
+            RowVersion:
+                Convert.ToBase64String(
+                    salaryHistory.RowVersion));
+    }
+
+    private static AssignableEmployeeUserResponse
+        MapAssignableUser(
+            AssignableEmployeeUserInfo user)
+    {
+        return new AssignableEmployeeUserResponse(
+            UserId:
+                user.UserId,
+            EmailAddress:
+                user.EmailAddress,
+            RoleId:
+                user.RoleId,
+            RoleCode:
+                user.RoleCode,
+            RoleName:
+                user.RoleName,
+            AssignedEmployeeId:
+                user.AssignedEmployeeId,
+            AssignedEmployeeFirstName:
+                user.AssignedEmployeeFirstName,
+            AssignedEmployeeLastName:
+                user.AssignedEmployeeLastName);
+    }
+
+    private static EmployeeIdentificationTypeResponse
+        MapIdentificationType(
+            EmployeeIdentificationTypeInfo
+                identificationType)
+    {
+        return new EmployeeIdentificationTypeResponse(
+            IdentificationType:
+                identificationType.IdentificationType,
+            Name:
+                identificationType.Name,
+            MinLength:
+                identificationType.MinLength,
+            MaxLength:
+                identificationType.MaxLength,
+            IsNumericOnly:
+                identificationType.IsNumericOnly,
+            AllowsLeadingZero:
+                identificationType.AllowsLeadingZero,
+            SortOrder:
+                identificationType.SortOrder);
     }
 }

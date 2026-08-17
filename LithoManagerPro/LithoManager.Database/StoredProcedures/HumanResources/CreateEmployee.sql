@@ -1,6 +1,7 @@
 CREATE PROCEDURE [HumanResources].[CreateEmployee]
     @UserId int = NULL,
     @DepartmentId int,
+    @IdentificationType nvarchar(4000),
     @IdentificationNumber nvarchar(4000),
     @FirstName nvarchar(4000),
     @LastName nvarchar(4000),
@@ -28,6 +29,12 @@ BEGIN
         COALESCE(
             @CorrelationId,
             NEWID()
+        );
+
+    DECLARE @NormalizedIdentificationType nvarchar(4000) =
+        NULLIF(
+            UPPER(LTRIM(RTRIM(@IdentificationType))),
+            N''
         );
 
     DECLARE @NormalizedIdentificationNumber nvarchar(4000) =
@@ -97,10 +104,64 @@ BEGIN
             1;
     END;
 
+    IF @NormalizedIdentificationType IS NULL
+    BEGIN
+        THROW 52129,
+            N'IdentificationType is required.',
+            1;
+    END;
+
+    IF @NormalizedIdentificationType NOT IN
+    (
+        N'CEDULA_FISICA',
+        N'DIMEX',
+        N'PASAPORTE'
+    )
+    BEGIN
+        THROW 52130,
+            N'IdentificationType is not valid.',
+            1;
+    END;
+
     IF LEN(@NormalizedIdentificationNumber) > 30
     BEGIN
         THROW 52105,
             N'IdentificationNumber cannot exceed 30 characters.',
+            1;
+    END;
+
+    IF
+    (
+        @NormalizedIdentificationType = N'CEDULA_FISICA'
+        AND
+        (
+            LEN(@NormalizedIdentificationNumber) <> 9
+            OR @NormalizedIdentificationNumber LIKE N'%[^0-9]%'
+            OR LEFT(@NormalizedIdentificationNumber, 1) = N'0'
+        )
+    )
+    OR
+    (
+        @NormalizedIdentificationType = N'DIMEX'
+        AND
+        (
+            LEN(@NormalizedIdentificationNumber) NOT IN (11, 12)
+            OR @NormalizedIdentificationNumber LIKE N'%[^0-9]%'
+            OR LEFT(@NormalizedIdentificationNumber, 1) = N'0'
+        )
+    )
+    OR
+    (
+        @NormalizedIdentificationType = N'PASAPORTE'
+        AND
+        (
+            LEN(@NormalizedIdentificationNumber) NOT BETWEEN 6 AND 20
+            OR @NormalizedIdentificationNumber LIKE N'%[^0-9A-Za-z]%'
+        )
+    )
+    BEGIN
+        THROW 52131,
+            N'IdentificationNumber does not match the selected IdentificationType.',
             1;
     END;
 
@@ -133,10 +194,14 @@ BEGIN
     END;
 
     IF @NormalizedPhoneNumber IS NOT NULL
-       AND LEN(@NormalizedPhoneNumber) > 25
+       AND
+       (
+           LEN(@NormalizedPhoneNumber) <> 8
+           OR @NormalizedPhoneNumber LIKE N'%[^0-9]%'
+       )
     BEGIN
         THROW 52110,
-            N'PhoneNumber cannot exceed 25 characters.',
+            N'PhoneNumber must contain exactly 8 digits.',
             1;
     END;
 
@@ -204,10 +269,11 @@ BEGIN
         [EmployeeId] int NOT NULL,
         [UserId] int NULL,
         [DepartmentId] int NOT NULL,
+        [IdentificationType] nvarchar(30) NOT NULL,
         [IdentificationNumber] nvarchar(30) NOT NULL,
         [FirstName] nvarchar(100) NOT NULL,
         [LastName] nvarchar(150) NOT NULL,
-        [PhoneNumber] nvarchar(25) NULL,
+        [PhoneNumber] nvarchar(8) NULL,
         [BirthDate] date NULL,
         [HireDate] date NOT NULL,
         [TerminationDate] date NULL,
@@ -358,12 +424,14 @@ BEGIN
             SELECT 1
             FROM [HumanResources].[Employees] AS E
                 WITH (UPDLOCK, HOLDLOCK)
-            WHERE E.[IdentificationNumber] =
+            WHERE E.[IdentificationType] =
+                @NormalizedIdentificationType
+              AND E.[IdentificationNumber] =
                 @NormalizedIdentificationNumber
         )
         BEGIN
             THROW 52127,
-                N'An employee with the same IdentificationNumber already exists.',
+                N'An employee with the same identification already exists.',
                 1;
         END;
 
@@ -371,6 +439,7 @@ BEGIN
         (
             [UserId],
             [DepartmentId],
+            [IdentificationType],
             [IdentificationNumber],
             [FirstName],
             [LastName],
@@ -388,6 +457,7 @@ BEGIN
             INSERTED.[EmployeeId],
             INSERTED.[UserId],
             INSERTED.[DepartmentId],
+            INSERTED.[IdentificationType],
             INSERTED.[IdentificationNumber],
             INSERTED.[FirstName],
             INSERTED.[LastName],
@@ -409,6 +479,7 @@ BEGIN
             [EmployeeId],
             [UserId],
             [DepartmentId],
+            [IdentificationType],
             [IdentificationNumber],
             [FirstName],
             [LastName],
@@ -430,6 +501,7 @@ BEGIN
         (
             @UserId,
             @DepartmentId,
+            @NormalizedIdentificationType,
             @NormalizedIdentificationNumber,
             @NormalizedFirstName,
             @NormalizedLastName,
@@ -455,6 +527,21 @@ BEGIN
             @EmployeeId =
                 E.[EmployeeId]
         FROM @CreatedEmployee AS E;
+
+        INSERT INTO [HumanResources].[EmployeeSalaryHistory]
+        (
+            [EmployeeId],
+            [BaseSalary],
+            [EffectiveFromDate],
+            [CreatedByUserId]
+        )
+        VALUES
+        (
+            @EmployeeId,
+            @BaseSalary,
+            @HireDate,
+            @ActorUserId
+        );
 
         INSERT INTO [Audit].[AuditLogs]
         (
@@ -501,6 +588,7 @@ BEGIN
                     E.[EmployeeId],
                     E.[UserId],
                     E.[DepartmentId],
+                    E.[IdentificationType],
                     E.[IdentificationNumber],
                     E.[FirstName],
                     E.[LastName],
@@ -528,6 +616,7 @@ BEGIN
             @DepartmentCode AS [DepartmentCode],
             @DepartmentName AS [DepartmentName],
             @IsDepartmentActive AS [IsDepartmentActive],
+            E.[IdentificationType],
             E.[IdentificationNumber],
             E.[FirstName],
             E.[LastName],

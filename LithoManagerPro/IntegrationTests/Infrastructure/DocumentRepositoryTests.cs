@@ -372,7 +372,7 @@ public sealed class DocumentRepositoryTests
 
     private static string CreateIdentificationNumber()
     {
-        return "DOC-" + Guid.NewGuid()
+        return "DOC" + Guid.NewGuid()
             .ToString("N")[..12]
             .ToUpperInvariant();
     }

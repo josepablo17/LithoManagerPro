@@ -298,7 +298,7 @@ public sealed class AuthenticationDatabaseFixture
             "Integration Tests";
 
         const string identificationNumber =
-            "INTEGRATION-ADMIN";
+            "INTEGRATIONADMIN";
 
         var parameters = new
         {
@@ -316,6 +316,14 @@ public sealed class AuthenticationDatabaseFixture
             new(
                 commandText:
                     """
+                    DELETE ESH
+                    FROM HumanResources.EmployeeSalaryHistory AS ESH
+                    INNER JOIN HumanResources.Employees AS E
+                        ON E.EmployeeId = ESH.EmployeeId
+                    WHERE E.UserId = @UserId
+                       OR E.IdentificationNumber =
+                            @IdentificationNumber;
+
                     DELETE FROM HumanResources.Employees
                     WHERE UserId = @UserId
                        OR IdentificationNumber = @IdentificationNumber;
@@ -355,6 +363,7 @@ public sealed class AuthenticationDatabaseFixture
                     (
                         UserId,
                         DepartmentId,
+                        IdentificationType,
                         IdentificationNumber,
                         FirstName,
                         LastName,
@@ -368,6 +377,7 @@ public sealed class AuthenticationDatabaseFixture
                     (
                         @UserId,
                         @DepartmentId,
+                        N'PASAPORTE',
                         @IdentificationNumber,
                         N'Integration',
                         N'Administrator',
@@ -398,13 +408,21 @@ public sealed class AuthenticationDatabaseFixture
             UserId =
                 SuperAdministratorUserId,
             IdentificationNumber =
-                "INTEGRATION-ADMIN"
+                "INTEGRATIONADMIN"
         };
 
         CommandDefinition command =
             new(
                 commandText:
                     """
+                    DELETE ESH
+                    FROM HumanResources.EmployeeSalaryHistory AS ESH
+                    INNER JOIN HumanResources.Employees AS E
+                        ON E.EmployeeId = ESH.EmployeeId
+                    WHERE E.UserId = @UserId
+                       OR E.IdentificationNumber =
+                            @IdentificationNumber;
+
                     DELETE FROM HumanResources.Employees
                     WHERE UserId = @UserId
                        OR IdentificationNumber = @IdentificationNumber;
@@ -440,6 +458,32 @@ public sealed class AuthenticationDatabaseFixture
             new(
                 commandText:
                     """
+                    DECLARE @EmployeeIds TABLE
+                    (
+                        EmployeeId int NOT NULL
+                            PRIMARY KEY
+                    );
+
+                    INSERT INTO @EmployeeIds
+                    (
+                        EmployeeId
+                    )
+                    SELECT E.EmployeeId
+                    FROM HumanResources.Employees AS E
+                    INNER JOIN HumanResources.Departments AS D
+                        ON D.DepartmentId = E.DepartmentId
+                    WHERE D.DepartmentCode = @DepartmentCode
+                    UNION
+                    SELECT E.EmployeeId
+                    FROM HumanResources.Employees AS E
+                    WHERE E.IdentificationNumber =
+                        @IdentificationNumber;
+
+                    DELETE ESH
+                    FROM HumanResources.EmployeeSalaryHistory AS ESH
+                    INNER JOIN @EmployeeIds AS E
+                        ON E.EmployeeId = ESH.EmployeeId;
+
                     DELETE E
                     FROM HumanResources.Employees AS E
                     INNER JOIN HumanResources.Departments AS D
@@ -550,6 +594,14 @@ public sealed class AuthenticationDatabaseFixture
             new(
                 commandText:
                     """
+                    DELETE ESH
+                    FROM HumanResources.EmployeeSalaryHistory AS ESH
+                    INNER JOIN HumanResources.Employees AS E
+                        ON E.EmployeeId = ESH.EmployeeId
+                    WHERE E.UserId = @UserId
+                       OR E.IdentificationNumber =
+                            @IdentificationNumber;
+
                     DELETE FROM HumanResources.Employees
                     WHERE UserId = @UserId
                        OR IdentificationNumber = @IdentificationNumber;
@@ -558,6 +610,7 @@ public sealed class AuthenticationDatabaseFixture
                     (
                         UserId,
                         DepartmentId,
+                        IdentificationType,
                         IdentificationNumber,
                         FirstName,
                         LastName,
@@ -571,6 +624,7 @@ public sealed class AuthenticationDatabaseFixture
                     (
                         @UserId,
                         @DepartmentId,
+                        N'PASAPORTE',
                         @IdentificationNumber,
                         N'Integration',
                         N'Administrator',
@@ -716,6 +770,11 @@ public sealed class AuthenticationDatabaseFixture
                     INNER JOIN @EmployeeIds AS E
                         ON E.EmployeeId =
                             ELB.EmployeeId;
+
+                    DELETE ESH
+                    FROM HumanResources.EmployeeSalaryHistory AS ESH
+                    INNER JOIN @EmployeeIds AS E
+                        ON E.EmployeeId = ESH.EmployeeId;
 
                     DELETE E
                     FROM HumanResources.Employees AS E

@@ -44,7 +44,13 @@ using LithoManager.Application.Features
 using LithoManager.Application.Features
     .HumanResources.Employees.CreateEmployee;
 using LithoManager.Application.Features
+    .HumanResources.Employees.GetAssignableEmployeeUsers;
+using LithoManager.Application.Features
     .HumanResources.Employees.GetEmployeeById;
+using LithoManager.Application.Features
+    .HumanResources.Employees.GetEmployeeIdentificationTypes;
+using LithoManager.Application.Features
+    .HumanResources.Employees.GetEmployeeSalaryHistory;
 using LithoManager.Application.Features
     .HumanResources.Employees.GetEmployees;
 using LithoManager.Application.Features
@@ -201,12 +207,24 @@ public static class ApplicationServiceCollectionExtensions
             CreateEmployeeService>();
 
         services.AddScoped<
+            IGetAssignableEmployeeUsersService,
+            GetAssignableEmployeeUsersService>();
+
+        services.AddScoped<
             IGetEmployeeByIdService,
             GetEmployeeByIdService>();
 
         services.AddScoped<
+            IGetEmployeeIdentificationTypesService,
+            GetEmployeeIdentificationTypesService>();
+
+        services.AddScoped<
             IGetEmployeesService,
             GetEmployeesService>();
+
+        services.AddScoped<
+            IGetEmployeeSalaryHistoryService,
+            GetEmployeeSalaryHistoryService>();
 
         services.AddScoped<
             IUpdateEmployeeService,

@@ -36,7 +36,8 @@ public sealed class UpdateEmployeeService
             || !EmployeeValidation.IsValidDepartmentId(
                 command.DepartmentId)
             || !EmployeeValidation
-                .IsValidIdentificationNumber(
+                .IsValidIdentification(
+                    command.IdentificationType,
                     command.IdentificationNumber)
             || !EmployeeValidation.IsValidFirstName(
                 command.FirstName)
@@ -70,6 +71,8 @@ public sealed class UpdateEmployeeService
                         command.UserId,
                     departmentId:
                         command.DepartmentId,
+                    identificationType:
+                        command.IdentificationType!,
                     identificationNumber:
                         command.IdentificationNumber!,
                     firstName:

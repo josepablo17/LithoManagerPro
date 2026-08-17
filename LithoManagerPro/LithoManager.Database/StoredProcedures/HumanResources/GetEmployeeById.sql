@@ -18,6 +18,7 @@ BEGIN
         D.[DepartmentCode],
         D.[Name] AS [DepartmentName],
         D.[IsActive] AS [IsDepartmentActive],
+        E.[IdentificationType],
         E.[IdentificationNumber],
         E.[FirstName],
         E.[LastName],
@@ -26,7 +27,10 @@ BEGIN
         E.[HireDate],
         E.[TerminationDate],
         E.[JobTitle],
-        E.[BaseSalary],
+        COALESCE(
+            CurrentSalary.[BaseSalary],
+            E.[BaseSalary]
+        ) AS [BaseSalary],
         E.[ProfileImagePath],
         E.[IsActive],
         E.[CreatedAtUtc],
@@ -39,6 +43,9 @@ BEGIN
         ON U.[UserId] = E.[UserId]
     INNER JOIN [HumanResources].[Departments] AS D
         ON D.[DepartmentId] = E.[DepartmentId]
+    LEFT JOIN [HumanResources].[EmployeeSalaryHistory] AS CurrentSalary
+        ON CurrentSalary.[EmployeeId] = E.[EmployeeId]
+       AND CurrentSalary.[EffectiveToDate] IS NULL
     WHERE E.[EmployeeId] = @EmployeeId;
 END;
 GO

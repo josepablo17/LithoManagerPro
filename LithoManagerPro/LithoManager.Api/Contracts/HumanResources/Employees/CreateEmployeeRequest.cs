@@ -12,6 +12,11 @@ public sealed class CreateEmployeeRequest
 
     [Required]
     [StringLength(30)]
+    public string IdentificationType { get; init; } =
+        string.Empty;
+
+    [Required]
+    [StringLength(20)]
     public string IdentificationNumber { get; init; } =
         string.Empty;
 
@@ -25,7 +30,8 @@ public sealed class CreateEmployeeRequest
     public string LastName { get; init; } =
         string.Empty;
 
-    [StringLength(25)]
+    [StringLength(8)]
+    [RegularExpression(@"^\d{8}$")]
     public string? PhoneNumber { get; init; }
 
     public DateTime? BirthDate { get; init; }

@@ -19,6 +19,9 @@ public sealed class EmployeeData
 
     public bool IsDepartmentActive { get; init; }
 
+    public string IdentificationType { get; init; } =
+        string.Empty;
+
     public string IdentificationNumber { get; init; } =
         string.Empty;
 

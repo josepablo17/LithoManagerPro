@@ -65,6 +65,7 @@
     <Folder Include="Tables\Security" />
     <Folder Include="Tables\HumanResources" />
     <Folder Include="Seeds\Security" />
+    <Folder Include="Seeds\HumanResources" />
     <Folder Include="Tables\LeaveManagement" />
     <Folder Include="Tables\Documents" />
     <Folder Include="Seeds\LeaveManagement" />
@@ -82,6 +83,7 @@
     <Build Include="Tables\Security\RefreshTokens.sql" />
     <Build Include="Tables\HumanResources\Departments.sql" />
     <Build Include="Tables\HumanResources\Employees.sql" />
+    <Build Include="Tables\HumanResources\EmployeeSalaryHistory.sql" />
     <Build Include="Tables\LeaveManagement\LeaveTypes.sql" />
     <Build Include="Tables\LeaveManagement\LeaveRequestStatuses.sql" />
     <Build Include="Tables\LeaveManagement\LeavePolicies.sql" />
@@ -98,6 +100,7 @@
     <Build Include="Schemas\LeaveManagement.sql" />
     <Build Include="Schemas\Security.sql" />
     <None Include="Seeds\Security\Roles.sql" />
+    <None Include="Seeds\HumanResources\EmployeeSalaryHistory.sql" />
     <None Include="Seeds\LeaveManagement\LeaveRequestStatuses.sql" />
     <None Include="Seeds\LeaveManagement\LeaveTypes.sql" />
     <None Include="Seeds\LeaveManagement\LeavePolicies.sql" />
@@ -127,9 +130,12 @@
     <Build Include="StoredProcedures\HumanResources\GetDepartments.sql" />
     <Build Include="StoredProcedures\HumanResources\UpdateDepartment.sql" />
     <Build Include="StoredProcedures\HumanResources\SetDepartmentStatus.sql" />
+    <Build Include="StoredProcedures\HumanResources\GetEmployeeIdentificationTypes.sql" />
+    <Build Include="StoredProcedures\HumanResources\GetAssignableEmployeeUsers.sql" />
     <Build Include="StoredProcedures\HumanResources\CreateEmployee.sql" />
     <Build Include="StoredProcedures\HumanResources\GetEmployeeById.sql" />
     <Build Include="StoredProcedures\HumanResources\GetEmployees.sql" />
+    <Build Include="StoredProcedures\HumanResources\GetEmployeeSalaryHistory.sql" />
     <Build Include="StoredProcedures\HumanResources\UpdateEmployee.sql" />
     <Build Include="StoredProcedures\HumanResources\SetEmployeeStatus.sql" />
     <Build Include="StoredProcedures\LeaveManagement\GetLeaveTypes.sql" />

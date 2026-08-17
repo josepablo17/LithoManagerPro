@@ -5,7 +5,13 @@ using LithoManager.Application.Features
 using LithoManager.Application.Features
     .HumanResources.Employees.CreateEmployee;
 using LithoManager.Application.Features
+    .HumanResources.Employees.GetAssignableEmployeeUsers;
+using LithoManager.Application.Features
     .HumanResources.Employees.GetEmployeeById;
+using LithoManager.Application.Features
+    .HumanResources.Employees.GetEmployeeIdentificationTypes;
+using LithoManager.Application.Features
+    .HumanResources.Employees.GetEmployeeSalaryHistory;
 using LithoManager.Application.Features
     .HumanResources.Employees.GetEmployees;
 using LithoManager.Application.Features
@@ -115,7 +121,10 @@ public sealed class EmployeeServiceTests
 
         Assert.Equal(20, employee.EmployeeId);
         Assert.Null(employee.UserId);
-        Assert.Equal("EMP-001", employee.IdentificationNumber);
+        Assert.Equal(
+            "CEDULA_FISICA",
+            employee.IdentificationType);
+        Assert.Equal("123456789", employee.IdentificationNumber);
 
         Assert.Equal(
             1,
@@ -123,7 +132,10 @@ public sealed class EmployeeServiceTests
         Assert.Null(repository.LastUserId);
         Assert.Equal(10, repository.LastDepartmentId);
         Assert.Equal(
-            "EMP-001",
+            "CEDULA_FISICA",
+            repository.LastIdentificationType);
+        Assert.Equal(
+            "123456789",
             repository.LastIdentificationNumber);
         Assert.Equal(
             CorrelationId,
@@ -282,6 +294,200 @@ public sealed class EmployeeServiceTests
     }
 
     [Fact]
+    public async Task GetIdentificationTypesAsync_WhenQueryIsValid_ReturnsIdentificationTypes()
+    {
+        // Arrange
+        FakeEmployeeRepository repository = new();
+
+        GetEmployeeIdentificationTypesService service =
+            new(repository);
+
+        // Act
+        EmployeeIdentificationTypesResult result =
+            await service.GetAsync(
+                new GetEmployeeIdentificationTypesQuery(),
+                CancellationToken.None);
+
+        // Assert
+        Assert.True(result.IsSuccessful);
+
+        EmployeeIdentificationTypeInfo identificationType =
+            Assert.Single(result.IdentificationTypes);
+
+        Assert.Equal(
+            "CEDULA_FISICA",
+            identificationType.IdentificationType);
+        Assert.True(identificationType.IsNumericOnly);
+
+        Assert.Equal(
+            1,
+            repository.GetEmployeeIdentificationTypesCallCount);
+    }
+
+    [Fact]
+    public async Task GetAssignableUsersAsync_WhenQueryIsValid_ReturnsUsers()
+    {
+        // Arrange
+        FakeEmployeeRepository repository = new();
+
+        GetAssignableEmployeeUsersService service =
+            new(repository);
+
+        // Act
+        AssignableEmployeeUsersResult result =
+            await service.GetAsync(
+                new GetAssignableEmployeeUsersQuery(
+                    EmployeeId: 20),
+                CancellationToken.None);
+
+        // Assert
+        Assert.True(result.IsSuccessful);
+
+        AssignableEmployeeUserInfo user =
+            Assert.Single(result.Users);
+
+        Assert.Equal(12, user.UserId);
+        Assert.Equal(
+            "ana@lithomanager.test",
+            user.EmailAddress);
+
+        Assert.Equal(
+            1,
+            repository.GetAssignableEmployeeUsersCallCount);
+        Assert.Equal(
+            20,
+            repository.LastAssignableEmployeeId);
+    }
+
+    [Fact]
+    public async Task GetSalaryHistoryAsync_WhenDateRangeIsInvalid_ReturnsInvalidRequest()
+    {
+        // Arrange
+        FakeEmployeeRepository repository = new();
+
+        GetEmployeeSalaryHistoryService service =
+            new(repository);
+
+        GetEmployeeSalaryHistoryQuery query =
+            new(
+                ActorUserId: 1,
+                EmployeeId: 20,
+                EffectiveFromDate:
+                    new DateTime(
+                        2026,
+                        8,
+                        10),
+                EffectiveToDate:
+                    new DateTime(
+                        2026,
+                        8,
+                        9));
+
+        // Act
+        EmployeeSalaryHistoryResult result =
+            await service.GetAsync(
+                query,
+                CancellationToken.None);
+
+        // Assert
+        AssertFailure(
+            result,
+            EmployeeErrorCode.InvalidRequest);
+
+        Assert.Equal(
+            0,
+            repository.GetEmployeeSalaryHistoryCallCount);
+    }
+
+    [Fact]
+    public async Task GetSalaryHistoryAsync_WhenQueryIsValid_ReturnsSalaryHistory()
+    {
+        // Arrange
+        FakeEmployeeRepository repository = new();
+
+        GetEmployeeSalaryHistoryService service =
+            new(repository);
+
+        DateTime effectiveFromDate =
+            new(
+                2026,
+                8,
+                1);
+
+        DateTime effectiveToDate =
+            new(
+                2026,
+                8,
+                31);
+
+        // Act
+        EmployeeSalaryHistoryResult result =
+            await service.GetAsync(
+                new GetEmployeeSalaryHistoryQuery(
+                    ActorUserId: 1,
+                    EmployeeId: 20,
+                    EffectiveFromDate: effectiveFromDate,
+                    EffectiveToDate: effectiveToDate),
+                CancellationToken.None);
+
+        // Assert
+        Assert.True(result.IsSuccessful);
+        Assert.Equal(
+            EmployeeErrorCode.None,
+            result.ErrorCode);
+
+        EmployeeSalaryHistoryInfo salaryHistory =
+            Assert.Single(result.SalaryHistory);
+
+        Assert.Equal(30, salaryHistory.EmployeeSalaryHistoryId);
+        Assert.Equal(20, salaryHistory.EmployeeId);
+        Assert.True(salaryHistory.IsCurrent);
+
+        Assert.Equal(
+            1,
+            repository.GetEmployeeSalaryHistoryCallCount);
+        Assert.Equal(1, repository.LastActorUserId);
+        Assert.Equal(20, repository.LastEmployeeId);
+        Assert.Equal(
+            effectiveFromDate,
+            repository.LastEffectiveFromDate);
+        Assert.Equal(
+            effectiveToDate,
+            repository.LastEffectiveToDate);
+    }
+
+    [Fact]
+    public async Task GetSalaryHistoryAsync_WhenAccessIsNotAvailable_ReturnsAccessNotAvailable()
+    {
+        // Arrange
+        FakeEmployeeRepository repository =
+            new()
+            {
+                ExceptionToThrow =
+                    CreatePersistenceException(
+                        EmployeeErrorCode.AccessNotAvailable)
+            };
+
+        GetEmployeeSalaryHistoryService service =
+            new(repository);
+
+        // Act
+        EmployeeSalaryHistoryResult result =
+            await service.GetAsync(
+                new GetEmployeeSalaryHistoryQuery(
+                    ActorUserId: 1,
+                    EmployeeId: 20,
+                    EffectiveFromDate: null,
+                    EffectiveToDate: null),
+                CancellationToken.None);
+
+        // Assert
+        AssertFailure(
+            result,
+            EmployeeErrorCode.AccessNotAvailable);
+    }
+
+    [Fact]
     public async Task UpdateAsync_WhenRowVersionIsInvalid_ReturnsInvalidRequest()
     {
         // Arrange
@@ -364,6 +570,9 @@ public sealed class EmployeeServiceTests
             repository.UpdateEmployeeCallCount);
         Assert.Equal(20, repository.LastEmployeeId);
         Assert.Equal(
+            "CEDULA_FISICA",
+            repository.LastIdentificationType);
+        Assert.Equal(
             RowVersion,
             repository.LastExpectedRowVersion);
     }
@@ -432,10 +641,11 @@ public sealed class EmployeeServiceTests
         return new CreateEmployeeCommand(
             UserId: null,
             DepartmentId: 10,
-            IdentificationNumber: "EMP-001",
+            IdentificationType: "CEDULA_FISICA",
+            IdentificationNumber: "123456789",
             FirstName: "Ana",
             LastName: "Rivera",
-            PhoneNumber: "5555-0101",
+            PhoneNumber: "55550101",
             BirthDate:
                 new DateTime(
                     1990,
@@ -461,10 +671,11 @@ public sealed class EmployeeServiceTests
             EmployeeId: 20,
             UserId: null,
             DepartmentId: 10,
-            IdentificationNumber: "EMP-001",
+            IdentificationType: "CEDULA_FISICA",
+            IdentificationNumber: "123456789",
             FirstName: "Ana",
             LastName: "Rivera",
-            PhoneNumber: "5555-0101",
+            PhoneNumber: "55550101",
             BirthDate:
                 new DateTime(
                     1990,
@@ -530,5 +741,14 @@ public sealed class EmployeeServiceTests
         Assert.False(result.IsSuccessful);
         Assert.Equal(errorCode, result.ErrorCode);
         Assert.Null(result.Employee);
+    }
+
+    private static void AssertFailure(
+        EmployeeSalaryHistoryResult result,
+        EmployeeErrorCode errorCode)
+    {
+        Assert.False(result.IsSuccessful);
+        Assert.Equal(errorCode, result.ErrorCode);
+        Assert.Empty(result.SalaryHistory);
     }
 }

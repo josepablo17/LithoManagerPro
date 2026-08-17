@@ -427,7 +427,7 @@ public sealed class LeaveManagementRepositoryTests
 
     private static string CreateIdentificationNumber()
     {
-        return "LEAVE-" + Guid.NewGuid()
+        return "LEAVE" + Guid.NewGuid()
             .ToString("N")[..12]
             .ToUpperInvariant();
     }

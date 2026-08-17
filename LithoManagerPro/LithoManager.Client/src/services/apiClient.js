@@ -169,7 +169,7 @@ function getConflictMessage(errorCode) {
     duplicate_department_name:
       'Ya existe un departamento con el mismo nombre.',
     duplicate_identification_number:
-      'Ya existe un empleado con ese número de identificación.',
+      'Ya existe un empleado con ese tipo y número de identificación.',
     user_already_assigned:
       'El usuario indicado ya está vinculado a otro empleado.',
     department_inactive:

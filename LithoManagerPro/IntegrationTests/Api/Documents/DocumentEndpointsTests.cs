@@ -369,7 +369,7 @@ public sealed class DocumentEndpointsTests
 
     private static string CreateIdentificationNumber()
     {
-        return "DAPI-" + Guid.NewGuid()
+        return "DAPI" + Guid.NewGuid()
             .ToString("N")[..12]
             .ToUpperInvariant();
     }
