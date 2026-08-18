@@ -8,6 +8,8 @@ using LithoManager.Infrastructure.Persistence.Repositories
     .HumanResources;
 using LithoManager.Infrastructure.Persistence.Repositories
     .LeaveManagement;
+using LithoManager.Infrastructure.Persistence.Repositories
+    .Payroll;
 using LithoManager.Infrastructure.Persistence.Repositories.Security;
 using LithoManager.Infrastructure.Security;
 using LithoManager.Infrastructure.Security.Tokens;
@@ -59,6 +61,10 @@ public static class DependencyInjection
         services.AddScoped<
             ILeaveManagementRepository,
             LeaveManagementRepository>();
+
+        services.AddScoped<
+            IPayrollRepository,
+            PayrollRepository>();
 
         services.AddScoped<
             IDocumentRepository,
