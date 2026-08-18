@@ -22,4 +22,10 @@ public static class AuthorizationPolicyNames
 
     public const string DocumentAdministrationMutation =
         "DocumentAdministrationMutation";
+
+    public const string PayrollAdministration =
+        "PayrollAdministration";
+
+    public const string PayrollAdministrationMutation =
+        "PayrollAdministrationMutation";
 }

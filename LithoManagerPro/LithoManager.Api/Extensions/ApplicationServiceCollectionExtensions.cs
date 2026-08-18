@@ -77,6 +77,24 @@ using LithoManager.Application.Features
     .LeaveManagement.GetMyLeaveRequests;
 using LithoManager.Application.Features
     .LeaveManagement.RespondLeaveRequest;
+using LithoManager.Application.Features
+    .Payroll.ApproveEmployeeDisability;
+using LithoManager.Application.Features
+    .Payroll.CancelEmployeeDisability;
+using LithoManager.Application.Features
+    .Payroll.CancelOvertimeRecord;
+using LithoManager.Application.Features
+    .Payroll.CreateEmployeeDisability;
+using LithoManager.Application.Features
+    .Payroll.CreateOvertimeRecord;
+using LithoManager.Application.Features
+    .Payroll.GetPayrollConfiguration;
+using LithoManager.Application.Features
+    .Payroll.RespondOvertimeRecord;
+using LithoManager.Application.Features
+    .Payroll.SaveAttendanceRecord;
+using LithoManager.Application.Features
+    .Payroll.SetEmployeeWorkSchedule;
 using LithoManager.Application.Security;
 using Microsoft.Extensions.Configuration;
 
@@ -273,6 +291,42 @@ public static class ApplicationServiceCollectionExtensions
         services.AddScoped<
             IRespondLeaveRequestService,
             RespondLeaveRequestService>();
+
+        services.AddScoped<
+            IPayrollConfigurationService,
+            PayrollConfigurationService>();
+
+        services.AddScoped<
+            ISetEmployeeWorkScheduleService,
+            SetEmployeeWorkScheduleService>();
+
+        services.AddScoped<
+            ISaveAttendanceRecordService,
+            SaveAttendanceRecordService>();
+
+        services.AddScoped<
+            ICreateOvertimeRecordService,
+            CreateOvertimeRecordService>();
+
+        services.AddScoped<
+            IRespondOvertimeRecordService,
+            RespondOvertimeRecordService>();
+
+        services.AddScoped<
+            ICancelOvertimeRecordService,
+            CancelOvertimeRecordService>();
+
+        services.AddScoped<
+            ICreateEmployeeDisabilityService,
+            CreateEmployeeDisabilityService>();
+
+        services.AddScoped<
+            IApproveEmployeeDisabilityService,
+            ApproveEmployeeDisabilityService>();
+
+        services.AddScoped<
+            ICancelEmployeeDisabilityService,
+            CancelEmployeeDisabilityService>();
 
         services.AddScoped<
             IGetDocumentTypesService,

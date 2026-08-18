@@ -283,6 +283,47 @@ public static class AuthenticationExtensions
                         "SuperAdministrator",
                         "HumanResourcesAdministrator");
                 });
+
+            options.AddPolicy(
+                AuthorizationPolicyNames
+                    .PayrollAdministration,
+                policy =>
+                {
+                    policy.AddAuthenticationSchemes(
+                        JwtBearerDefaults
+                            .AuthenticationScheme);
+
+                    policy.RequireAuthenticatedUser();
+
+                    policy.RequireClaim(
+                        TokenUseClaimType,
+                        AccessTokenUse);
+
+                    policy.RequireRole(
+                        "SuperAdministrator",
+                        "HumanResourcesAdministrator",
+                        "HumanResourcesStaff");
+                });
+
+            options.AddPolicy(
+                AuthorizationPolicyNames
+                    .PayrollAdministrationMutation,
+                policy =>
+                {
+                    policy.AddAuthenticationSchemes(
+                        JwtBearerDefaults
+                            .AuthenticationScheme);
+
+                    policy.RequireAuthenticatedUser();
+
+                    policy.RequireClaim(
+                        TokenUseClaimType,
+                        AccessTokenUse);
+
+                    policy.RequireRole(
+                        "SuperAdministrator",
+                        "HumanResourcesAdministrator");
+                });
         });
 
         return services;
