@@ -98,6 +98,7 @@ BEGIN
     DECLARE @IsActorEmployeeActive bit;
     DECLARE @IsActorDepartmentActive bit;
     DECLARE @DepartmentId int;
+    DECLARE @NewValuesJson nvarchar(max);
 
     DECLARE @CreatedDepartment TABLE
     (
@@ -115,6 +116,14 @@ BEGIN
 
     BEGIN TRY
         BEGIN TRANSACTION;
+
+        /*
+            Resolve the authenticated actor.
+
+            Authorization will also exist at API level,
+            but the database needs valid actor data for
+            the audit log.
+        */
 
         SELECT
             @ActorEmailAddress =
@@ -227,6 +236,10 @@ BEGIN
                 1;
         END;
 
+        /*
+            Create department.
+        */
+
         INSERT INTO [HumanResources].[Departments]
         (
             [DepartmentCode],
@@ -275,6 +288,8 @@ BEGIN
                 1;
         END;
 
+        SET @NewValuesJson =
+        (
         SELECT
             @DepartmentId =
                 D.[DepartmentId]
@@ -334,6 +349,11 @@ BEGIN
         );
 
         COMMIT TRANSACTION;
+
+        /*
+            According to our database standard,
+            Create operations return the generated ID.
+        */
 
         SELECT
             D.[DepartmentId],
