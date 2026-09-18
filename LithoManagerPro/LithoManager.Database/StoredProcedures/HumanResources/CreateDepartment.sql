@@ -12,6 +12,10 @@ BEGIN
     SET NOCOUNT ON;
     SET XACT_ABORT ON;
 
+    /*
+        General values
+    */
+
     DECLARE @OccurredAtUtc datetime2(3) =
         SYSUTCDATETIME();
 
@@ -20,6 +24,10 @@ BEGIN
             @CorrelationId,
             NEWID()
         );
+
+    /*
+        Normalize input values
+    */
 
     DECLARE @NormalizedDepartmentCode nvarchar(4000) =
         NULLIF(
@@ -38,6 +46,10 @@ BEGIN
             LTRIM(RTRIM(@Description)),
             N''
         );
+
+    /*
+        Basic input validation
+    */
 
     IF @ActorUserId IS NULL
        OR @ActorUserId <= 0
@@ -90,13 +102,24 @@ BEGIN
             1;
     END;
 
+    /*
+        Actor information
+    */
+
     DECLARE @ActorEmailAddress nvarchar(254);
     DECLARE @ActorRoleCode nvarchar(50);
+
     DECLARE @IsActorUserActive bit;
     DECLARE @IsActorRoleActive bit;
+
     DECLARE @ActorEmployeeId int;
     DECLARE @IsActorEmployeeActive bit;
     DECLARE @IsActorDepartmentActive bit;
+
+    /*
+        Created department information
+    */
+
     DECLARE @DepartmentId int;
     DECLARE @NewValuesJson nvarchar(max);
 
@@ -115,14 +138,15 @@ BEGIN
     );
 
     BEGIN TRY
+
         BEGIN TRANSACTION;
 
         /*
-            Resolve the authenticated actor.
+            Resolve authenticated actor.
 
-            Authorization will also exist at API level,
-            but the database needs valid actor data for
-            the audit log.
+            Authorization can also exist at API level,
+            but the database requires valid actor data
+            for authorization and audit logging.
         */
 
         SELECT
@@ -161,6 +185,10 @@ BEGIN
 
         WHERE U.[UserId] = @ActorUserId;
 
+        /*
+            Validate actor
+        */
+
         IF @ActorEmailAddress IS NULL
         BEGIN
             THROW 52008,
@@ -168,14 +196,14 @@ BEGIN
                 1;
         END;
 
-        IF @IsActorUserActive = 0
+        IF @IsActorUserActive <> 1
         BEGIN
             THROW 52009,
                 N'The actor user account is inactive.',
                 1;
         END;
 
-        IF @IsActorRoleActive = 0
+        IF @IsActorRoleActive <> 1
         BEGIN
             THROW 52010,
                 N'The actor role is inactive.',
@@ -190,13 +218,25 @@ BEGIN
                 1;
         END;
 
+        /*
+            Only validate the department when the employee
+            is actually assigned to one.
+
+            If DepartmentId is optional for an employee,
+            a NULL department should not invalidate the actor.
+        */
+
         IF @ActorEmployeeId IS NOT NULL
-           AND @IsActorDepartmentActive <> 1
+           AND @IsActorDepartmentActive = 0
         BEGIN
             THROW 52012,
                 N'The actor department is inactive.',
                 1;
         END;
+
+        /*
+            Database-level authorization
+        */
 
         IF @ActorRoleCode NOT IN
         (
@@ -208,6 +248,10 @@ BEGIN
                 N'The actor role is not allowed to create departments.',
                 1;
         END;
+
+        /*
+            Validate DepartmentCode uniqueness
+        */
 
         IF EXISTS
         (
@@ -223,12 +267,17 @@ BEGIN
                 1;
         END;
 
+        /*
+            Validate Name uniqueness
+        */
+
         IF EXISTS
         (
             SELECT 1
             FROM [HumanResources].[Departments] AS D
                 WITH (UPDLOCK, HOLDLOCK)
-            WHERE D.[Name] = @NormalizedName
+            WHERE D.[Name] =
+                @NormalizedName
         )
         BEGIN
             THROW 52015,
@@ -237,7 +286,7 @@ BEGIN
         END;
 
         /*
-            Create department.
+            Create department
         */
 
         INSERT INTO [HumanResources].[Departments]
@@ -281,6 +330,10 @@ BEGIN
             @ActorUserId
         );
 
+        /*
+            A Create operation must insert exactly one row.
+        */
+
         IF @@ROWCOUNT <> 1
         BEGIN
             THROW 52016,
@@ -288,12 +341,41 @@ BEGIN
                 1;
         END;
 
-        SET @NewValuesJson =
-        (
+        /*
+            Resolve generated DepartmentId
+        */
+
         SELECT
             @DepartmentId =
                 D.[DepartmentId]
         FROM @CreatedDepartment AS D;
+
+        IF @DepartmentId IS NULL
+        BEGIN
+            THROW 52017,
+                N'The generated DepartmentId could not be resolved.',
+                1;
+        END;
+
+        /*
+            Build audit JSON
+        */
+
+        SET @NewValuesJson =
+        (
+            SELECT
+                D.[DepartmentId],
+                D.[DepartmentCode],
+                D.[Name],
+                D.[Description],
+                D.[IsActive]
+            FROM @CreatedDepartment AS D
+            FOR JSON PATH, WITHOUT_ARRAY_WRAPPER
+        );
+
+        /*
+            Audit successful operation
+        */
 
         INSERT INTO [Audit].[AuditLogs]
         (
@@ -321,10 +403,12 @@ BEGIN
             N'HumanResources',
             N'DepartmentCreated',
             N'Departments',
+
             CONVERT(
                 nvarchar(100),
                 @DepartmentId
             ),
+
             N'User',
             @ActorUserId,
             @ActorEmailAddress,
@@ -335,24 +419,14 @@ BEGIN
             @UserAgent,
             N'POST',
             @RequestPath,
-            (
-                SELECT
-                    D.[DepartmentId],
-                    D.[DepartmentCode],
-                    D.[Name],
-                    D.[Description],
-                    D.[IsActive]
-                FROM @CreatedDepartment AS D
-                FOR JSON PATH, WITHOUT_ARRAY_WRAPPER
-            ),
+            @NewValuesJson,
             @OccurredAtUtc
         );
 
         COMMIT TRANSACTION;
 
         /*
-            According to our database standard,
-            Create operations return the generated ID.
+            Return created department.
         */
 
         SELECT
@@ -367,14 +441,19 @@ BEGIN
             D.[UpdatedByUserId],
             D.[RowVersion]
         FROM @CreatedDepartment AS D;
+
     END TRY
+
     BEGIN CATCH
+
         IF XACT_STATE() <> 0
         BEGIN
             ROLLBACK TRANSACTION;
         END;
 
         THROW;
+
     END CATCH;
+
 END;
 GO

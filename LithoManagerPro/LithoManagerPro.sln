@@ -3,10 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36705.20
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LithoManager.Domain", "LithoManager.Domain\LithoManager.Domain.csproj", "{79D0F47D-A6CE-4B49-90A6-A2A3B9F6F36E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LithoManager.Infrastructure", "LithoManager.Infraestructure\LithoManager.Infrastructure.csproj", "{BFE79D02-67EE-4AAF-93DC-7306D8C86C9A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LithoManager.Application", "LithoManager.Application\LithoManager.Application.csproj", "{7C6E301A-572C-4387-B191-2A78555EE0CD}"
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "LithoManager.Database", "LithoManager.Database\LithoManager.Database.sqlproj", "{1DD9BAF3-2EDB-4EB2-AEC1-9BD49DF2F7A5}"
@@ -17,20 +13,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LithoManager.UnitTests", "U
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LithoManager.IntegrationTests", "IntegrationTests\LithoManager.IntegrationTests.csproj", "{8C97890D-3636-4406-AFE9-549B6EEC34B1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LithoManager.Infrastructure", "LithoManager.Infrastructure\LithoManager.Infrastructure.csproj", "{F46FF43C-A709-58E9-DED9-01C15C7DE78A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{79D0F47D-A6CE-4B49-90A6-A2A3B9F6F36E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{79D0F47D-A6CE-4B49-90A6-A2A3B9F6F36E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{79D0F47D-A6CE-4B49-90A6-A2A3B9F6F36E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{79D0F47D-A6CE-4B49-90A6-A2A3B9F6F36E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BFE79D02-67EE-4AAF-93DC-7306D8C86C9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BFE79D02-67EE-4AAF-93DC-7306D8C86C9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BFE79D02-67EE-4AAF-93DC-7306D8C86C9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BFE79D02-67EE-4AAF-93DC-7306D8C86C9A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7C6E301A-572C-4387-B191-2A78555EE0CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7C6E301A-572C-4387-B191-2A78555EE0CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7C6E301A-572C-4387-B191-2A78555EE0CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -53,6 +43,10 @@ Global
 		{8C97890D-3636-4406-AFE9-549B6EEC34B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C97890D-3636-4406-AFE9-549B6EEC34B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8C97890D-3636-4406-AFE9-549B6EEC34B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F46FF43C-A709-58E9-DED9-01C15C7DE78A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F46FF43C-A709-58E9-DED9-01C15C7DE78A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F46FF43C-A709-58E9-DED9-01C15C7DE78A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F46FF43C-A709-58E9-DED9-01C15C7DE78A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

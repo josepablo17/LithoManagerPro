@@ -1,0 +1,39 @@
+services:
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: lithomanager-api
+
+    ports:
+      - "8080:8080"
+
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ConnectionStrings__LithoManagerDatabase: "Server=sqlserver,1433;Database=LithoManagerDatabase;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True;"
+      Authentication__Jwt__SigningKeyBase64: "${JWT_SIGNING_KEY}"
+
+    depends_on:
+      - sqlserver
+
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+
+    container_name: lithomanager-sql
+
+    ports:
+      - "1433:1433"
+
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "${SQL_PASSWORD}"
+
+    volumes:
+      - lithomanager-sql-data:/var/opt/mssql
+
+
+volumes:
+  lithomanager-sql-data:

@@ -20,7 +20,6 @@
   <ItemGroup>
     <ProjectReference Include="..\LithoManager.Api\LithoManager.Api.csproj" />
     <ProjectReference Include="..\LithoManager.Application\LithoManager.Application.csproj" />
-    <ProjectReference Include="..\LithoManager.Infraestructure\LithoManager.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

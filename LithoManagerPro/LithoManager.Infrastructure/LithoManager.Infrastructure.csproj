@@ -18,7 +18,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LithoManager.Application\LithoManager.Application.csproj" />
-    <ProjectReference Include="..\LithoManager.Domain\LithoManager.Domain.csproj" />
   </ItemGroup>
 
 </Project>
