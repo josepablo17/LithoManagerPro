@@ -25,5 +25,11 @@ jobs:
         with:
           dotnet-version: '9.0.x'
 
+      - name: Show repository structure
+        run: |
+            pwd
+            ls -la
+            find . -maxdepth 3 -type f \( -name "*.sln" -o -name "*.slnx" \) -print
+
       - name: Restore .NET dependencies
         run: dotnet restore LithoManagerPro.sln
