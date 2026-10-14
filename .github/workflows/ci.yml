@@ -25,8 +25,14 @@ jobs:
         with:
           dotnet-version: '9.0.x'
 
-      - name: Restore .NET dependencies
-        run: dotnet restore LithoManagerPro/LithoManagerPro.sln
+      - name: Restore backend dependencies
+        run: dotnet restore LithoManagerPro/LithoManager.Api/LithoManager.Api.csproj
 
       - name: Build backend
         run: dotnet build LithoManagerPro/LithoManager.Api/LithoManager.Api.csproj --no-restore
+
+      - name: Restore unit test dependencies
+        run: dotnet restore LithoManagerPro/UnitTests/LithoManager.UnitTests.csproj
+
+      - name: Run unit tests
+        run: dotnet test LithoManagerPro/UnitTests/LithoManager.UnitTests.csproj --no-restore
