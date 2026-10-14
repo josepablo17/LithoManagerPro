@@ -27,3 +27,8 @@ jobs:
 
       - name: Restore .NET dependencies
         run: dotnet restore LithoManagerPro/LithoManagerPro.sln
+
+      - name: Build .NET solution
+        run: dotnet build LithoManagerPro/LithoManagerPro.sln --no-restore
+
+        
