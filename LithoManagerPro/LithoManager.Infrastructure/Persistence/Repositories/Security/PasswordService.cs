@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace LithoManager.Infrastructure.Security;
 
-internal sealed class PasswordService : IPasswordService
+public sealed class PasswordService : IPasswordService
 {
     private readonly PasswordHasher<object> _passwordHasher = new();
 

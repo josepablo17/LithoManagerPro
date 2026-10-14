@@ -1,5 +1,18 @@
 services:
 
+  frontend:
+    build:
+      context: ./LithoManager.Client
+      dockerfile: Dockerfile
+
+    container_name: lithomanager-client
+
+    ports:
+      - "3000:80"
+
+    depends_on:
+      - api
+
   api:
     build:
       context: .
