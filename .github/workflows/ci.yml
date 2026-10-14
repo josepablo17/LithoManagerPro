@@ -36,3 +36,24 @@ jobs:
 
       - name: Run unit tests
         run: dotnet test LithoManagerPro/UnitTests/LithoManager.UnitTests.csproj --no-restore
+
+  frontend:
+       name: Frontend Build
+       runs-on: ubuntu-latest
+
+       steps:
+         - name: Checkout repository
+           uses: actions/checkout@v4
+
+         - name: Setup Node
+           uses: actions/setup-node@v7
+           with:
+            node-version: '22'
+
+         - name: Install frontend dependencies
+           run: npm ci
+           working-directory: LithoManagerPro/LithoManager.Client
+
+         - name: Build frontend
+           run: npm run build
+           working-directory: LithoManagerPro/LithoManager.Client
