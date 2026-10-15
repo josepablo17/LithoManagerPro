@@ -965,10 +965,9 @@ public sealed class AuthenticationDatabaseFixture
                 };
 
         return new ConfigurationBuilder()
-            .AddUserSecrets<
-                AuthenticationDatabaseFixture>()
-            .AddInMemoryCollection(
-                testSettings)
+            .AddUserSecrets<AuthenticationDatabaseFixture>()
+            .AddEnvironmentVariables()
+            .AddInMemoryCollection(testSettings)
             .Build();
     }
 

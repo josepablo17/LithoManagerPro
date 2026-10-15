@@ -1,0 +1,206 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Name>LithoManager.Database</Name>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectVersion>4.1</ProjectVersion>
+    <ProjectGuid>{1dd9baf3-2edb-4eb2-aec1-9bd49df2f7a5}</ProjectGuid>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql160DatabaseSchemaProvider</DSP>
+    <OutputType>Database</OutputType>
+    <RootPath>
+    </RootPath>
+    <RootNamespace>LithoManager.Database</RootNamespace>
+    <AssemblyName>LithoManager.Database</AssemblyName>
+    <ModelCollation>1033, CI</ModelCollation>
+    <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
+    <DeployToDatabase>True</DeployToDatabase>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetLanguage>CS</TargetLanguage>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <SqlServerVerification>False</SqlServerVerification>
+    <IncludeCompositeObjects>True</IncludeCompositeObjects>
+    <TargetDatabaseSet>True</TargetDatabaseSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
+    <!-- Default to the v11.0 targets path if the targets file for the current VS version is not found -->
+    <SSDTExists Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets')">True</SSDTExists>
+    <VisualStudioVersion Condition="'$(SSDTExists)' == ''">11.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Condition="'$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <ItemGroup>
+    <Folder Include="Properties" />
+    <Folder Include="Schemas" />
+    <Folder Include="Tables" />
+    <Folder Include="StoredProcedures" />
+    <Folder Include="Seeds" />
+    <Folder Include="Scripts" />
+    <Folder Include="Tables\Audit" />
+    <Folder Include="Tables\Security" />
+    <Folder Include="Tables\HumanResources" />
+    <Folder Include="Seeds\Security" />
+    <Folder Include="Seeds\HumanResources" />
+    <Folder Include="Tables\LeaveManagement" />
+    <Folder Include="Tables\Payroll" />
+    <Folder Include="Tables\Documents" />
+    <Folder Include="Seeds\LeaveManagement" />
+    <Folder Include="Seeds\Payroll" />
+    <Folder Include="Seeds\Documents" />
+    <Folder Include="StoredProcedures\Security" />
+    <Folder Include="StoredProcedures\Audit" />
+    <Folder Include="StoredProcedures\HumanResources" />
+    <Folder Include="StoredProcedures\LeaveManagement" />
+    <Folder Include="StoredProcedures\Payroll" />
+    <Folder Include="StoredProcedures\Documents" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="Tables\Audit\AuditLogs.sql" />
+    <Build Include="Tables\Security\Roles.sql" />
+    <Build Include="Tables\Security\Users.sql" />
+    <Build Include="Tables\Security\RefreshTokens.sql" />
+    <Build Include="Tables\HumanResources\Departments.sql" />
+    <Build Include="Tables\HumanResources\Employees.sql" />
+    <Build Include="Tables\HumanResources\EmployeeSalaryHistory.sql" />
+    <Build Include="Tables\Payroll\PayrollConcepts.sql" />
+    <Build Include="Tables\Payroll\SocialContributionTypes.sql" />
+    <Build Include="Tables\Payroll\SocialContributionRates.sql" />
+    <Build Include="Tables\Payroll\SocialContributionMinimumBases.sql" />
+    <Build Include="Tables\Payroll\IncomeTaxBrackets.sql" />
+    <Build Include="Tables\Payroll\IncomeTaxCredits.sql" />
+    <Build Include="Tables\Payroll\WorkShiftTypes.sql" />
+    <Build Include="Tables\Payroll\EmployeeWorkSchedules.sql" />
+    <Build Include="Tables\Payroll\AttendanceRecords.sql" />
+    <Build Include="Tables\Payroll\OvertimeRules.sql" />
+    <Build Include="Tables\Payroll\OvertimeRecords.sql" />
+    <Build Include="Tables\Payroll\DisabilityTypes.sql" />
+    <Build Include="Tables\Payroll\EmployeeDisabilities.sql" />
+    <Build Include="Tables\Payroll\AguinaldoRules.sql" />
+    <Build Include="Tables\LeaveManagement\LeaveTypes.sql" />
+    <Build Include="Tables\LeaveManagement\LeaveRequestStatuses.sql" />
+    <Build Include="Tables\LeaveManagement\LeavePolicies.sql" />
+    <Build Include="Tables\LeaveManagement\EmployeeLeaveBalances.sql" />
+    <Build Include="Tables\LeaveManagement\LeaveRequests.sql" />
+    <Build Include="Tables\LeaveManagement\LeaveRequestStatusHistory.sql" />
+    <Build Include="Tables\LeaveManagement\LeaveBalanceTransactions.sql" />
+    <Build Include="Tables\Documents\DocumentTypes.sql" />
+    <Build Include="Tables\Documents\EmployeeRecords.sql" />
+    <Build Include="Tables\Documents\EmployeeDocuments.sql" />
+    <Build Include="Schemas\Audit.sql" />
+    <Build Include="Schemas\Documents.sql" />
+    <Build Include="Schemas\HumanResources.sql" />
+    <Build Include="Schemas\LeaveManagement.sql" />
+    <Build Include="Schemas\Payroll.sql" />
+    <Build Include="Schemas\Security.sql" />
+    <None Include="Seeds\Security\Roles.sql" />
+    <None Include="Seeds\HumanResources\EmployeeSalaryHistory.sql" />
+    <None Include="Seeds\LeaveManagement\LeaveRequestStatuses.sql" />
+    <None Include="Seeds\LeaveManagement\LeaveTypes.sql" />
+    <None Include="Seeds\LeaveManagement\LeavePolicies.sql" />
+    <None Include="Seeds\Payroll\LegalConfiguration.sql" />
+    <None Include="Seeds\Documents\DocumentTypes.sql" />
+    <Build Include="StoredProcedures\Security\GetUserForAuthentication.sql" />
+    <Build Include="StoredProcedures\Security\RegisterSuccessfulLogin.sql" />
+    <Build Include="StoredProcedures\Security\RegisterFailedLogin.sql" />
+    <Build Include="StoredProcedures\Security\CreateInitialSuperAdministrator.sql" />
+    <Build Include="StoredProcedures\Security\ChangeTemporaryPassword.sql" />
+    <Build Include="StoredProcedures\Security\GetCurrentUserById.sql" />
+    <Build Include="StoredProcedures\Security\ChangePassword.sql" />
+    <Build Include="StoredProcedures\Security\GetUserForAuthenticationById.sql" />
+    <Build Include="StoredProcedures\Security\GetUserTokenValidationById.sql" />
+    <Build Include="StoredProcedures\Audit\GetAuditLogByCorrelationId.sql" />
+    <Build Include="Tables\Security\PasswordResetTokens.sql" />
+    <Build Include="StoredProcedures\Security\CreatePasswordResetToken.sql" />
+    <Build Include="StoredProcedures\Security\RevokePasswordResetTokenAfterDeliveryFailure.sql" />
+    <Build Include="StoredProcedures\Security\GetPasswordResetContextByTokenHash.sql" />
+    <Build Include="StoredProcedures\Security\CompletePasswordReset.sql" />
+    <Build Include="StoredProcedures\Security\CreateRefreshToken.sql" />
+    <Build Include="StoredProcedures\Security\GetRefreshTokenContextByTokenHash.sql" />
+    <Build Include="StoredProcedures\Security\RotateRefreshToken.sql" />
+    <Build Include="StoredProcedures\Security\RevokeRefreshToken.sql" />
+    <Build Include="StoredProcedures\Security\RevokeUserRefreshTokens.sql" />
+    <Build Include="StoredProcedures\HumanResources\CreateDepartment.sql" />
+    <Build Include="StoredProcedures\HumanResources\GetDepartmentById.sql" />
+    <Build Include="StoredProcedures\HumanResources\GetDepartments.sql" />
+    <Build Include="StoredProcedures\HumanResources\UpdateDepartment.sql" />
+    <Build Include="StoredProcedures\HumanResources\SetDepartmentStatus.sql" />
+    <Build Include="StoredProcedures\HumanResources\GetEmployeeIdentificationTypes.sql" />
+    <Build Include="StoredProcedures\HumanResources\GetAssignableEmployeeUsers.sql" />
+    <Build Include="StoredProcedures\HumanResources\CreateEmployee.sql" />
+    <Build Include="StoredProcedures\HumanResources\GetEmployeeById.sql" />
+    <Build Include="StoredProcedures\HumanResources\GetEmployees.sql" />
+    <Build Include="StoredProcedures\HumanResources\GetEmployeeSalaryHistory.sql" />
+    <Build Include="StoredProcedures\HumanResources\UpdateEmployee.sql" />
+    <Build Include="StoredProcedures\HumanResources\SetEmployeeStatus.sql" />
+    <Build Include="StoredProcedures\Payroll\GetPayrollConcepts.sql" />
+    <Build Include="StoredProcedures\Payroll\GetSocialContributionTypes.sql" />
+    <Build Include="StoredProcedures\Payroll\GetSocialContributionRates.sql" />
+    <Build Include="StoredProcedures\Payroll\GetSocialContributionMinimumBases.sql" />
+    <Build Include="StoredProcedures\Payroll\GetIncomeTaxBrackets.sql" />
+    <Build Include="StoredProcedures\Payroll\GetIncomeTaxCredits.sql" />
+    <Build Include="StoredProcedures\Payroll\GetWorkShiftTypes.sql" />
+    <Build Include="StoredProcedures\Payroll\GetOvertimeRules.sql" />
+    <Build Include="StoredProcedures\Payroll\GetDisabilityTypes.sql" />
+    <Build Include="StoredProcedures\Payroll\GetAguinaldoRules.sql" />
+    <Build Include="StoredProcedures\Payroll\SetEmployeeWorkSchedule.sql" />
+    <Build Include="StoredProcedures\Payroll\SaveAttendanceRecord.sql" />
+    <Build Include="StoredProcedures\Payroll\GetAttendanceRecords.sql" />
+    <Build Include="StoredProcedures\Payroll\GetAttendanceRecordById.sql" />
+    <Build Include="StoredProcedures\Payroll\CreateOvertimeRecord.sql" />
+    <Build Include="StoredProcedures\Payroll\GetOvertimeRecords.sql" />
+    <Build Include="StoredProcedures\Payroll\GetOvertimeRecordById.sql" />
+    <Build Include="StoredProcedures\Payroll\RespondOvertimeRecord.sql" />
+    <Build Include="StoredProcedures\Payroll\CancelOvertimeRecord.sql" />
+    <Build Include="StoredProcedures\Payroll\CreateEmployeeDisability.sql" />
+    <Build Include="StoredProcedures\Payroll\GetEmployeeDisabilities.sql" />
+    <Build Include="StoredProcedures\Payroll\GetEmployeeDisabilityById.sql" />
+    <Build Include="StoredProcedures\Payroll\ApproveEmployeeDisability.sql" />
+    <Build Include="StoredProcedures\Payroll\CancelEmployeeDisability.sql" />
+    <Build Include="StoredProcedures\LeaveManagement\GetLeaveTypes.sql" />
+    <Build Include="StoredProcedures\LeaveManagement\GetLeaveRequestStatuses.sql" />
+    <Build Include="StoredProcedures\LeaveManagement\GetEmployeeLeaveBalance.sql" />
+    <Build Include="StoredProcedures\LeaveManagement\AdjustEmployeeLeaveBalance.sql" />
+    <Build Include="StoredProcedures\LeaveManagement\GetMyLeaveRequests.sql" />
+    <Build Include="StoredProcedures\LeaveManagement\GetLeaveRequests.sql" />
+    <Build Include="StoredProcedures\LeaveManagement\GetLeaveRequestById.sql" />
+    <Build Include="StoredProcedures\LeaveManagement\CreateLeaveRequest.sql" />
+    <Build Include="StoredProcedures\LeaveManagement\CancelLeaveRequest.sql" />
+    <Build Include="StoredProcedures\LeaveManagement\RespondLeaveRequest.sql" />
+    <Build Include="StoredProcedures\Documents\GetDocumentTypes.sql" />
+    <Build Include="StoredProcedures\Documents\EnsureEmployeeRecord.sql" />
+    <Build Include="StoredProcedures\Documents\GetEmployeeDocuments.sql" />
+    <Build Include="StoredProcedures\Documents\GetEmployeeDocumentById.sql" />
+    <Build Include="StoredProcedures\Documents\GetEmployeeDocumentDownloadContext.sql" />
+    <Build Include="StoredProcedures\Documents\CreateEmployeeDocument.sql" />
+    <Build Include="StoredProcedures\Documents\UpdateEmployeeDocument.sql" />
+    <Build Include="StoredProcedures\Documents\SetEmployeeDocumentStatus.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="Scripts\PostDeployment.sql" />
+  </ItemGroup>
+</Project>

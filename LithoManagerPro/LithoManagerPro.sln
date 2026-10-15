@@ -5,7 +5,7 @@ VisualStudioVersion = 17.14.36705.20
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LithoManager.Application", "LithoManager.Application\LithoManager.Application.csproj", "{7C6E301A-572C-4387-B191-2A78555EE0CD}"
 EndProject
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "LithoManager.Database", "LithoManager.Database\LithoManager.Database.sqlproj", "{1DD9BAF3-2EDB-4EB2-AEC1-9BD49DF2F7A5}"
+Project("{42EA0DBD-9CF1-443E-919E-BE9C484E4577}") = "LithoManager.Database", "LithoManager.Database\LithoManager.Database.sqlproj", "{1DD9BAF3-2EDB-4EB2-AEC1-9BD49DF2F7A5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LithoManager.Api", "LithoManager.Api\LithoManager.Api.csproj", "{72AC7670-1370-4F15-9D8F-A15C0F139942}"
 EndProject
