@@ -38,22 +38,146 @@ jobs:
         run: dotnet test LithoManagerPro/UnitTests/LithoManager.UnitTests.csproj --no-restore
 
   frontend:
-       name: Frontend Build
-       runs-on: ubuntu-latest
+    name: Frontend Build
+    runs-on: ubuntu-latest
 
-       steps:
-         - name: Checkout repository
-           uses: actions/checkout@v4
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-         - name: Setup Node
-           uses: actions/setup-node@v7
-           with:
-            node-version: '22'
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: '22'
 
-         - name: Install frontend dependencies
-           run: npm ci
-           working-directory: LithoManagerPro/LithoManager.Client
+      - name: Install frontend dependencies
+        run: npm ci
+        working-directory: LithoManagerPro/LithoManager.Client
 
-         - name: Build frontend
-           run: npm run build
-           working-directory: LithoManagerPro/LithoManager.Client
+      - name: Build frontend
+        run: npm run build
+        working-directory: LithoManagerPro/LithoManager.Client
+
+      - name: Run frontend tests
+        run: npm test
+        working-directory: LithoManagerPro/LithoManager.Client
+
+  database:
+    name: Database Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Restore database project
+        run: dotnet restore LithoManagerPro/LithoManager.Database/LithoManager.Database.sqlproj
+
+      - name: Build database project
+        run: dotnet build LithoManagerPro/LithoManager.Database/LithoManager.Database.sqlproj --no-restore --configuration Release
+
+      - name: Upload DACPAC
+        uses: actions/upload-artifact@v7
+        with:
+          name: lithomanager-dacpac
+          path: LithoManagerPro/LithoManager.Database/bin/Release/LithoManager.Database.dacpac
+
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+
+    needs:
+      - backend
+      - database
+
+    services:
+      sqlserver:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        env:
+          ACCEPT_EULA: "Y"
+          MSSQL_SA_PASSWORD: ${{ secrets.CI_SQL_PASSWORD }}
+        ports:
+          - 1433:1433
+
+    env:
+      ConnectionStrings__LithoManagerDatabase: "Server=localhost,1433;Database=LithoManagerProTests;User Id=sa;Password=${{ secrets.CI_SQL_PASSWORD }};Encrypt=False;TrustServerCertificate=True"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Wait for SQL Server
+        env:
+          CI_SQL_PASSWORD: ${{ secrets.CI_SQL_PASSWORD }}
+        run: |
+          CONTAINER_ID=$(docker ps --filter "ancestor=mcr.microsoft.com/mssql/server:2022-latest" --format "{{.ID}}" | head -n 1)
+
+          for i in {1..30}; do
+            if docker exec "$CONTAINER_ID" /opt/mssql-tools18/bin/sqlcmd \
+              -S localhost \
+              -U sa \
+              -P "$CI_SQL_PASSWORD" \
+              -C \
+              -Q "SELECT 1"; then
+              echo "SQL Server is ready"
+              exit 0
+            fi
+
+            echo "Waiting for SQL Server..."
+            sleep 2
+          done
+
+          echo "SQL Server did not become ready"
+          exit 1
+
+      - name: Download DACPAC
+        uses: actions/download-artifact@v5
+        with:
+          name: lithomanager-dacpac
+          path: dacpac
+
+      - name: Install SqlPackage
+        run: |
+          dotnet tool install --global microsoft.sqlpackage --allow-roll-forward
+          echo "$HOME/.dotnet/tools" >> "$GITHUB_PATH"
+
+      - name: Deploy test database
+        run: >
+          sqlpackage
+          /Action:Publish
+          /SourceFile:dacpac/LithoManager.Database.dacpac
+          /TargetConnectionString:"Server=localhost,1433;Database=LithoManagerProTests;User Id=sa;Password=${{ secrets.CI_SQL_PASSWORD }};Encrypt=False;TrustServerCertificate=True"
+
+      - name: Restore integration test dependencies
+        run: dotnet restore LithoManagerPro/IntegrationTests/LithoManager.IntegrationTests.csproj
+
+      - name: Run integration tests
+        run: dotnet test LithoManagerPro/IntegrationTests/LithoManager.IntegrationTests.csproj --no-restore
+
+  docker:
+    name: Docker Build
+    runs-on: ubuntu-latest
+
+    needs:
+      - backend
+      - frontend
+      - database
+      - integration-tests
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build Docker images
+        run: docker compose build
+        working-directory: LithoManagerPro
