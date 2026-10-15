@@ -28,6 +28,7 @@ public sealed class LithoManagerWebApplicationFactory
             new ConfigurationBuilder()
                 .AddUserSecrets<
                     LithoManagerWebApplicationFactory>()
+                .AddEnvironmentVariables()
                 .Build();
 
         string connectionString =
@@ -35,7 +36,7 @@ public sealed class LithoManagerWebApplicationFactory
                 "LithoManagerDatabase")
             ?? throw new InvalidOperationException(
                 "The IntegrationTests connection " +
-                "string was not found in User Secrets.");
+                "string was not found.");
 
         ValidateTestConnectionString(
             connectionString);
