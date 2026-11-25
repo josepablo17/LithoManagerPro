@@ -6,6 +6,7 @@ import { PlaceholderPage } from './app/PlaceholderPage.jsx'
 import { DocumentsPage } from './features/documents/pages/DocumentsPage.jsx'
 import { DepartmentsPage } from './features/humanResources/pages/DepartmentsPage.jsx'
 import { EmployeesPage } from './features/humanResources/pages/EmployeesPage.jsx'
+import { LeaveBalancesPage } from './features/leaveManagement/pages/LeaveBalancesPage.jsx'
 import { LeaveRequestsPage } from './features/leaveManagement/pages/LeaveRequestsPage.jsx'
 import { PayrollRunDetailPage } from './features/payroll/pages/PayrollRunDetailPage.jsx'
 import { PayrollRunsPage } from './features/payroll/pages/PayrollRunsPage.jsx'
@@ -39,12 +40,7 @@ function App() {
         />
         <Route
           path="leave-management/balances"
-          element={
-            <PlaceholderPage
-              title="Saldos"
-              description="Consulta saldos disponibles y acumulados."
-            />
-          }
+          element={<LeaveBalancesPage />}
         />
         <Route path="documents" element={<DocumentsPage />} />
         <Route

@@ -28,7 +28,7 @@ Esquemas de BD: `Security`, `HumanResources`, `LeaveManagement`, `Documents`, `P
 | Departamentos | ✅ | ✅ | CRUD |
 | Empleados | ✅ | ✅ | CRUD completo |
 | Solicitudes de vacaciones y permisos | ✅ | ✅ | Crear, aprobar o rechazar y cancelar |
-| Saldos de vacaciones | ✅ | ❌ | API lista, la ruta `leave-management/balances` es una pantalla provisional |
+| Saldos de vacaciones | ✅ | ✅ | Mi saldo con desglose; los administradores consultan y ajustan el saldo de cualquier empleado |
 | Documentos de empleados | ✅ | ✅ | Almacenamiento local |
 | Planilla: configuración | 🟡 | ❌ | Solo lectura (ver abajo) |
 | Planilla: operaciones | 🟡 | ❌ | Horarios, asistencia, horas extra e incapacidades (API sin pantallas) |
@@ -89,7 +89,11 @@ Pendiente de planilla:
    - [ ] Eliminar `LithoManager.Database - Copy.sqlproj` si sobra
    - [ ] Levantar todo con `docker compose` y crear el administrador con Bootstrap
 2. **Cerrar lo que ya tiene backend**
-   - [ ] Pantalla de saldos de vacaciones
+   - [x] Pantalla de saldos de vacaciones (25 nov, probada contra la base de datos local)
+   - [ ] Restaurar la sesión al recargar: hoy el cliente guarda el token solo en memoria, así que cualquier recarga devuelve al login aunque el backend ya tiene refresh tokens
+   - [ ] `AdjustEmployeeLeaveBalance` devuelve el saldo sin los datos de la política (el derecho anual llega en 0); el cliente vuelve a consultar el saldo como solución temporal
+   - [ ] HumanResourcesStaff puede ver saldos en la API pero no listar empleados, así que solo ve "Mi saldo"
+   - [ ] Los nombres de tipos de permiso y de políticas están en inglés en los seeds ("Vacation", "Costa Rica Vacation Standard")
 3. **Planilla** (el módulo más diferenciador para la entrevista)
    - [x] Tablas y procedimientos de períodos y detalle de planilla
    - [x] Servicio de cálculo con pruebas unitarias para cada regla: CCSS, base mínima, tramos de renta, horas extra, incapacidades y aguinaldo (33 pruebas)
