@@ -25,6 +25,52 @@ export function getMyLeaveBalance({
   })
 }
 
+export function getEmployeeLeaveBalance({
+  accessToken,
+  employeeId,
+  leaveTypeCode,
+  signal,
+}) {
+  const query = new URLSearchParams()
+
+  if (leaveTypeCode?.trim()) {
+    query.set('leaveTypeCode', leaveTypeCode.trim())
+  }
+
+  const employeePath =
+    `${balancesPath}/employees/${employeeId}`
+
+  const path = query.size > 0
+    ? `${employeePath}?${query.toString()}`
+    : employeePath
+
+  return apiRequest(path, {
+    accessToken,
+    signal,
+  })
+}
+
+export function adjustEmployeeLeaveBalance({
+  accessToken,
+  employeeId,
+  leaveTypeCode,
+  adjustedDaysDelta,
+  signal,
+}) {
+  return apiRequest(
+    `${balancesPath}/employees/${employeeId}/adjustments`,
+    {
+      method: 'PATCH',
+      accessToken,
+      body: {
+        leaveTypeCode,
+        adjustedDaysDelta,
+      },
+      signal,
+    },
+  )
+}
+
 export function getLeaveRequestStatuses({
   accessToken,
   isActive = true,
