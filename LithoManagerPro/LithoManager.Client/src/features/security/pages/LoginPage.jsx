@@ -1,8 +1,13 @@
 import { useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import {
+  Navigate,
+  useLocation,
+  useNavigate,
+} from 'react-router-dom'
 import { Alert } from '../../../components/ui/Alert.jsx'
 import { Button } from '../../../components/ui/Button.jsx'
 import { TextInput } from '../../../components/ui/TextInput.jsx'
+import { SessionRestoringScreen } from '../components/SessionRestoringScreen.jsx'
 import { useAuth } from '../hooks/useAuth.js'
 import styles from './LoginPage.module.css'
 
@@ -10,11 +15,24 @@ export function LoginPage() {
   const [emailAddress, setEmailAddress] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
-  const { login, isAuthenticating } = useAuth()
+  const {
+    login,
+    isAuthenticating,
+    isAuthenticated,
+    isRestoringSession,
+  } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
 
   const destination = location.state?.from?.pathname ?? '/'
+
+  if (isRestoringSession) {
+    return <SessionRestoringScreen />
+  }
+
+  if (isAuthenticated) {
+    return <Navigate to={destination} replace />
+  }
 
   async function handleSubmit(event) {
     event.preventDefault()

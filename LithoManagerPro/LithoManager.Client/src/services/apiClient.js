@@ -20,6 +20,7 @@ export async function apiRequest(path, options = {}) {
     accessToken,
     headers,
     signal,
+    keepalive = false,
   } = options
 
   const requestHeaders = new Headers(headers)
@@ -43,6 +44,7 @@ export async function apiRequest(path, options = {}) {
     credentials: 'include',
     body: createRequestBody(body, isFormData),
     signal,
+    keepalive,
   })
 
   if (!response.ok) {
