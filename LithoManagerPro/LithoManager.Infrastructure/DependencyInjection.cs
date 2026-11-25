@@ -67,6 +67,10 @@ public static class DependencyInjection
             PayrollRepository>();
 
         services.AddScoped<
+            IPayrollRunRepository,
+            PayrollRunRepository>();
+
+        services.AddScoped<
             IDocumentRepository,
             DocumentRepository>();
 

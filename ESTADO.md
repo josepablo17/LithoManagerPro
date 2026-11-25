@@ -31,8 +31,8 @@ Esquemas de BD: `Security`, `HumanResources`, `LeaveManagement`, `Documents`, `P
 | Saldos de vacaciones | ✅ | ✅ | Mi saldo con desglose; los administradores consultan y ajustan el saldo de cualquier empleado |
 | Documentos de empleados | ✅ | ✅ | Almacenamiento local |
 | Planilla: configuración | 🟡 | ❌ | Solo lectura (ver abajo) |
-| Planilla: operaciones | 🟡 | ❌ | Horarios, asistencia, horas extra e incapacidades |
-| Planilla: cálculo | ❌ | ❌ | **Siguiente pieza grande** |
+| Planilla: operaciones | 🟡 | ❌ | Horarios, asistencia, horas extra e incapacidades (API sin pantallas) |
+| Planilla: cálculo mensual y aguinaldo | ✅ | ✅ | Crear, calcular, recalcular y cerrar; desglose por empleado |
 | Administración de usuarios | ❌ | ❌ | `security/users` es una pantalla provisional |
 | Formularios | ❌ | ❌ | `forms` es una pantalla provisional |
 | Chat interno | ❌ | ❌ | `chat` es una pantalla provisional |
@@ -55,12 +55,30 @@ Operaciones:
 - `POST overtime-records`, `PATCH .../response` y `PATCH .../cancel`: registrar, aprobar o rechazar y cancelar horas extra
 - `POST employee-disabilities` y sus `PATCH`: registrar y actualizar incapacidades
 
-Falta:
-- Períodos de planilla (quincenal o mensual) con sus estados: abierto, calculado y cerrado
-- Motor de cálculo: salario bruto, horas extra, rebajo por incapacidades, CCSS obrera y patronal, renta, neto
-- Detalle por empleado y por concepto, y las boletas de pago
-- Cálculo y pago del aguinaldo
-- Pantallas del frontend
+### Planilla: cálculo (`PayrollRunsController`, `api/payroll/runs`)
+
+Flujo: **Abierta → Calculada** (se puede recalcular) **→ Cerrada** (definitiva). Una planilla mensual por mes y un aguinaldo por año.
+
+- Tablas `Payroll.PayrollRuns`, `PayrollRunEmployees` (datos del empleado copiados al calcular) y `PayrollRunLines` (desglose por concepto).
+- El cálculo vive en C# (`Features/Payroll/Runs/Calculation`), en clases puras sin base de datos; SQL entrega los datos de entrada (`GetPayrollCalculationInputs`, `GetAguinaldoCalculationInputs`) y guarda los resultados como JSON (`SavePayrollRunResults` con `OPENJSON`).
+- Errores SQL en el rango 581xx–583xx; la validación del actor está centralizada en `Payroll.AuthorizePayrollRunActor`.
+
+Reglas de `PayrollCalculator` (mensual):
+- Mes comercial de 30 días: el mes completo paga exactamente el salario; un mes parcial (ingreso o salida) paga salario / 30 por día calendario.
+- Cambios de salario dentro del mes se prorratean por día con el historial salarial.
+- Incapacidades aprobadas que reducen días: se rebaja el salario de esos días (un día no se rebaja dos veces). Lo que paga el patrono se agrega como subsidio no salarial.
+- Horas extra aprobadas: salario / 30 / horas de la jornada × multiplicador (8 h si no hay horario, con advertencia).
+- CCSS: obrera 10,83 % (SEM 5,5 + IVM 4,33 + Banco Popular 1) y patronal 26,83 %. Bajo la base mínima contributiva (prorrateada por días), el trabajador paga sobre su salario y el patrono cubre la diferencia, en líneas separadas.
+- Renta: tramos mensuales progresivos.
+
+Reglas de `AguinaldoCalculator`: suma de salarios de las planillas mensuales **cerradas** del 1 de diciembre al 30 de noviembre ÷ 12, sin CCSS ni renta. El rebajo por maternidad se devuelve a la base; el de enfermedad común no. Advierte los meses sin planilla cerrada.
+
+Pendiente de planilla:
+- Créditos fiscales por hijos y cónyuge (falta registrar dependientes por empleado)
+- Boleta de pago por empleado (PDF o vista imprimible)
+- Pantallas para horarios, asistencia, horas extra e incapacidades
+- Planilla quincenal
+- Eliminar una planilla abierta creada por error
 
 ## Hoja de ruta sugerida
 
@@ -72,15 +90,16 @@ Falta:
    - [ ] Levantar todo con `docker compose` y crear el administrador con Bootstrap
 2. **Cerrar lo que ya tiene backend**
    - [x] Pantalla de saldos de vacaciones (25 nov, probada contra la base de datos local)
-   - [ ] Restaurar la sesión al recargar: hoy el cliente guarda el token solo en memoria, así que cualquier recarga devuelve al login aunque el backend ya tiene refresh tokens
+   - [x] Restaurar la sesión al recargar (25 nov: el cliente usa `/api/auth/refresh` al cargar, con una sola petición compartida por la rotación de tokens, renueva el token antes de que expire, y el cierre de sesión revoca el refresh token con `/api/auth/logout`)
    - [ ] `AdjustEmployeeLeaveBalance` devuelve el saldo sin los datos de la política (el derecho anual llega en 0); el cliente vuelve a consultar el saldo como solución temporal
    - [ ] HumanResourcesStaff puede ver saldos en la API pero no listar empleados, así que solo ve "Mi saldo"
    - [ ] Los nombres de tipos de permiso y de políticas están en inglés en los seeds ("Vacation", "Costa Rica Vacation Standard")
 3. **Planilla** (el módulo más diferenciador para la entrevista)
-   - [ ] Tablas y procedimientos de períodos y detalle de planilla
-   - [ ] Servicio de cálculo con pruebas unitarias para cada regla: CCSS, tramos de renta y horas extra
-   - [ ] Endpoints para calcular, cerrar y consultar la planilla y las boletas
-   - [ ] Pantallas de configuración, operaciones y corrida de planilla
+   - [x] Tablas y procedimientos de períodos y detalle de planilla
+   - [x] Servicio de cálculo con pruebas unitarias para cada regla: CCSS, base mínima, tramos de renta, horas extra, incapacidades y aguinaldo (33 pruebas)
+   - [x] Endpoints para crear, calcular, cerrar y consultar la planilla
+   - [x] Pantallas de lista, detalle y desglose por empleado (probadas el 25 nov contra la base local)
+   - [ ] Boletas de pago y pantallas de operaciones (ver "Pendiente de planilla")
 4. **Administración de usuarios**: listar, crear, asignar roles y desactivar
 5. **Opcionales**: formularios, chat y dashboard con métricas reales
 
