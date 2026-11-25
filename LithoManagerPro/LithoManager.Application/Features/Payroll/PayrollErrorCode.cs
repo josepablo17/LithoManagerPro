@@ -15,5 +15,6 @@ public enum PayrollErrorCode
     DuplicateRecord = 10,
     DateOverlap = 11,
     InvalidState = 12,
-    ConcurrencyConflict = 13
+    ConcurrencyConflict = 13,
+    PayrollRunNotFound = 14
 }

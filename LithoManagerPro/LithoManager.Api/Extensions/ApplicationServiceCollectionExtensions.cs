@@ -15,6 +15,7 @@ using LithoManager.Application.Features.Authentication
     .RefreshSession;
 using LithoManager.Application.Features.Authentication
     .ResetPassword;
+using LithoManager.Application.Features.Payroll.Runs;
 using LithoManager.Application.Features
     .Documents.CreateEmployeeDocument;
 using LithoManager.Application.Features
@@ -295,6 +296,10 @@ public static class ApplicationServiceCollectionExtensions
         services.AddScoped<
             IPayrollConfigurationService,
             PayrollConfigurationService>();
+
+        services.AddScoped<
+            IPayrollRunService,
+            PayrollRunService>();
 
         services.AddScoped<
             ISetEmployeeWorkScheduleService,

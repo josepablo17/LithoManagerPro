@@ -7,6 +7,8 @@ import { DocumentsPage } from './features/documents/pages/DocumentsPage.jsx'
 import { DepartmentsPage } from './features/humanResources/pages/DepartmentsPage.jsx'
 import { EmployeesPage } from './features/humanResources/pages/EmployeesPage.jsx'
 import { LeaveRequestsPage } from './features/leaveManagement/pages/LeaveRequestsPage.jsx'
+import { PayrollRunDetailPage } from './features/payroll/pages/PayrollRunDetailPage.jsx'
+import { PayrollRunsPage } from './features/payroll/pages/PayrollRunsPage.jsx'
 import { ProtectedRoute } from './features/security/components/ProtectedRoute.jsx'
 import { LoginPage } from './features/security/pages/LoginPage.jsx'
 import { AppLayout } from './layouts/AppLayout.jsx'
@@ -54,14 +56,10 @@ function App() {
             />
           }
         />
+        <Route path="payroll" element={<PayrollRunsPage />} />
         <Route
-          path="payroll"
-          element={
-            <PlaceholderPage
-              title="Planilla"
-              description="Consulta registros y conceptos de planilla."
-            />
-          }
+          path="payroll/runs/:payrollRunId"
+          element={<PayrollRunDetailPage />}
         />
         <Route
           path="chat"

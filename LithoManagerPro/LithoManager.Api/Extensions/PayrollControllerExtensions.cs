@@ -158,6 +158,14 @@ public static class PayrollControllerExtensions
                 "Actualice la información e intente nuevamente."
             ),
 
+            PayrollErrorCode.PayrollRunNotFound =>
+            (
+                StatusCodes.Status404NotFound,
+                "payroll_run_not_found",
+                "Planilla no encontrada",
+                "La planilla indicada no existe."
+            ),
+
             _ =>
             (
                 StatusCodes.Status500InternalServerError,
