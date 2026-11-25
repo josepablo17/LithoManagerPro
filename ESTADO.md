@@ -90,7 +90,7 @@ Pendiente de planilla:
    - [ ] Levantar todo con `docker compose` y crear el administrador con Bootstrap
 2. **Cerrar lo que ya tiene backend**
    - [x] Pantalla de saldos de vacaciones (25 nov, probada contra la base de datos local)
-   - [ ] Restaurar la sesión al recargar: hoy el cliente guarda el token solo en memoria, así que cualquier recarga devuelve al login aunque el backend ya tiene refresh tokens
+   - [x] Restaurar la sesión al recargar (25 nov: el cliente usa `/api/auth/refresh` al cargar, con una sola petición compartida por la rotación de tokens, renueva el token antes de que expire, y el cierre de sesión revoca el refresh token con `/api/auth/logout`)
    - [ ] `AdjustEmployeeLeaveBalance` devuelve el saldo sin los datos de la política (el derecho anual llega en 0); el cliente vuelve a consultar el saldo como solución temporal
    - [ ] HumanResourcesStaff puede ver saldos en la API pero no listar empleados, así que solo ve "Mi saldo"
    - [ ] Los nombres de tipos de permiso y de políticas están en inglés en los seeds ("Vacation", "Costa Rica Vacation Standard")
