@@ -20,3 +20,9 @@ body {
   color: var(--color-surface);
   background: var(--color-primary);
 }
+
+@media print {
+  body {
+    background: #ffffff;
+  }
+}

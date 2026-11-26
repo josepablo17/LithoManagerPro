@@ -32,7 +32,7 @@ Esquemas de BD: `Security`, `HumanResources`, `LeaveManagement`, `Documents`, `P
 | Documentos de empleados | ✅ | ✅ | Almacenamiento local |
 | Planilla: configuración | 🟡 | ❌ | Solo lectura (ver abajo) |
 | Planilla: operaciones | ✅ | ✅ | Horas extra, incapacidades y horarios en `/payroll/operations`; asistencia solo por API |
-| Planilla: cálculo mensual y aguinaldo | ✅ | ✅ | Crear, calcular, recalcular y cerrar; desglose por empleado |
+| Planilla: cálculo mensual y aguinaldo | ✅ | ✅ | Crear, calcular, recalcular y cerrar; desglose y boleta imprimible por empleado |
 | Administración de usuarios | ❌ | ❌ | `security/users` es una pantalla provisional |
 | Formularios | ❌ | ❌ | `forms` es una pantalla provisional |
 | Chat interno | ❌ | ❌ | `chat` es una pantalla provisional |
@@ -75,7 +75,7 @@ Reglas de `AguinaldoCalculator`: suma de salarios de las planillas mensuales **c
 
 Pendiente de planilla:
 - Créditos fiscales por hijos y cónyuge (falta registrar dependientes por empleado)
-- Boleta de pago por empleado (PDF o vista imprimible)
+- "Mis boletas": que cada empleado vea sus propias boletas (hoy solo RRHH las abre desde la planilla; requiere un endpoint propio filtrado por el usuario)
 - Pantalla de asistencia (la API existe)
 - Avisar o impedir aprobar o cancelar horas extra e incapacidades de un período cuya planilla ya está cerrada
 - Planilla quincenal
@@ -101,7 +101,7 @@ Pendiente de planilla:
    - [x] Endpoints para crear, calcular, cerrar y consultar la planilla
    - [x] Pantallas de lista, detalle y desglose por empleado (probadas el 25 nov contra la base local)
    - [x] Pantallas de horas extra, incapacidades y horarios (26 nov, probadas con la planilla de diciembre 2026)
-   - [ ] Boletas de pago (ver "Pendiente de planilla")
+   - [x] Boleta de pago imprimible por empleado (26 nov: `/payroll/runs/:id/employees/:employeeId/payslip`, "Imprimir o guardar PDF" con estilos de impresión, aportes patronales opcionales y aviso de borrador si la planilla no está cerrada)
 4. **Administración de usuarios**: listar, crear, asignar roles y desactivar
 5. **Opcionales**: formularios, chat y dashboard con métricas reales
 

@@ -222,3 +222,46 @@ export function getRunTypeLabel(runType) {
 function capitalize(text) {
   return text ? text[0].toUpperCase() + text.slice(1) : text
 }
+
+export function payslipPath(payrollRunId, employeeId) {
+  return `/payroll/runs/${payrollRunId}/employees/${employeeId}/payslip`
+}
+
+/** Short detail for a payroll line: days, hours, rate x base... */
+export function describeLine(line) {
+  const kind = line.conceptKind
+
+  if (kind === 'Deduction' || kind === 'EmployerContribution') {
+    if (line.rate !== null && line.baseAmount !== null) {
+      return `${formatPercent(line.rate)} de ${formatCurrency(line.baseAmount)}`
+    }
+
+    if (line.baseAmount !== null) {
+      return `Base gravable ${formatCurrency(line.baseAmount)}`
+    }
+
+    return ''
+  }
+
+  // Disability deductions are base salary lines with the disability type
+  // as reference. Their quantity is in 30-day commercial days (2.9 for
+  // 3 days of December), which is confusing; the description already has
+  // the dates.
+  if (line.payrollConceptCode === 'BaseSalary' && line.referenceCode) {
+    return ''
+  }
+
+  if (line.payrollConceptCode === 'Overtime') {
+    return `${formatNumber(line.quantity)} h`
+  }
+
+  if (line.payrollConceptCode === 'Aguinaldo') {
+    return `Base ${formatCurrency(line.baseAmount)}`
+  }
+
+  if (line.quantity !== null) {
+    return `${formatNumber(line.quantity)} días`
+  }
+
+  return ''
+}
