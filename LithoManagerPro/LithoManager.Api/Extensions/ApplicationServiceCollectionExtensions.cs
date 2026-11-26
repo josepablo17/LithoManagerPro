@@ -96,6 +96,12 @@ using LithoManager.Application.Features
     .Payroll.SaveAttendanceRecord;
 using LithoManager.Application.Features
     .Payroll.SetEmployeeWorkSchedule;
+using LithoManager.Application.Features
+    .Payroll.GetEmployeeWorkSchedules;
+using LithoManager.Application.Features
+    .Payroll.GetOvertimeRecords;
+using LithoManager.Application.Features
+    .Payroll.GetEmployeeDisabilities;
 using LithoManager.Application.Security;
 using Microsoft.Extensions.Configuration;
 
@@ -304,6 +310,18 @@ public static class ApplicationServiceCollectionExtensions
         services.AddScoped<
             ISetEmployeeWorkScheduleService,
             SetEmployeeWorkScheduleService>();
+
+        services.AddScoped<
+            IGetEmployeeWorkSchedulesService,
+            GetEmployeeWorkSchedulesService>();
+
+        services.AddScoped<
+            IGetOvertimeRecordsService,
+            GetOvertimeRecordsService>();
+
+        services.AddScoped<
+            IGetEmployeeDisabilitiesService,
+            GetEmployeeDisabilitiesService>();
 
         services.AddScoped<
             ISaveAttendanceRecordService,

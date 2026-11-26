@@ -31,7 +31,7 @@ Esquemas de BD: `Security`, `HumanResources`, `LeaveManagement`, `Documents`, `P
 | Saldos de vacaciones | ✅ | ✅ | Mi saldo con desglose; los administradores consultan y ajustan el saldo de cualquier empleado |
 | Documentos de empleados | ✅ | ✅ | Almacenamiento local |
 | Planilla: configuración | 🟡 | ❌ | Solo lectura (ver abajo) |
-| Planilla: operaciones | 🟡 | ❌ | Horarios, asistencia, horas extra e incapacidades (API sin pantallas) |
+| Planilla: operaciones | ✅ | ✅ | Horas extra, incapacidades y horarios en `/payroll/operations`; asistencia solo por API |
 | Planilla: cálculo mensual y aguinaldo | ✅ | ✅ | Crear, calcular, recalcular y cerrar; desglose por empleado |
 | Administración de usuarios | ❌ | ❌ | `security/users` es una pantalla provisional |
 | Formularios | ❌ | ❌ | `forms` es una pantalla provisional |
@@ -49,11 +49,11 @@ Configuración (GET):
 - Tipos de turno y reglas de horas extra
 - Tipos de incapacidad y reglas de aguinaldo
 
-Operaciones:
-- `POST work-schedules`: asignar horario
-- `POST attendance-records`: registrar asistencia
-- `POST overtime-records`, `PATCH .../response` y `PATCH .../cancel`: registrar, aprobar o rechazar y cancelar horas extra
-- `POST employee-disabilities` y sus `PATCH`: registrar y actualizar incapacidades
+Operaciones (las lecturas están en `PayrollOperationsQueryController`):
+- `GET/POST work-schedules`: horario actual por empleado y asignarlo (cierra el anterior el día previo; las horas semanales salen de la jornada)
+- `POST attendance-records`: registrar asistencia (sin pantalla)
+- `GET/POST overtime-records`, `PATCH .../response` y `PATCH .../cancel`: listar, registrar, aprobar o rechazar (con motivo) y cancelar horas extra
+- `GET/POST employee-disabilities`, `PATCH .../approval` y `PATCH .../cancel`: listar, registrar, aprobar y cancelar (con motivo) incapacidades
 
 ### Planilla: cálculo (`PayrollRunsController`, `api/payroll/runs`)
 
@@ -76,7 +76,8 @@ Reglas de `AguinaldoCalculator`: suma de salarios de las planillas mensuales **c
 Pendiente de planilla:
 - Créditos fiscales por hijos y cónyuge (falta registrar dependientes por empleado)
 - Boleta de pago por empleado (PDF o vista imprimible)
-- Pantallas para horarios, asistencia, horas extra e incapacidades
+- Pantalla de asistencia (la API existe)
+- Avisar o impedir aprobar o cancelar horas extra e incapacidades de un período cuya planilla ya está cerrada
 - Planilla quincenal
 - Eliminar una planilla abierta creada por error
 
@@ -99,7 +100,8 @@ Pendiente de planilla:
    - [x] Servicio de cálculo con pruebas unitarias para cada regla: CCSS, base mínima, tramos de renta, horas extra, incapacidades y aguinaldo (33 pruebas)
    - [x] Endpoints para crear, calcular, cerrar y consultar la planilla
    - [x] Pantallas de lista, detalle y desglose por empleado (probadas el 25 nov contra la base local)
-   - [ ] Boletas de pago y pantallas de operaciones (ver "Pendiente de planilla")
+   - [x] Pantallas de horas extra, incapacidades y horarios (26 nov, probadas con la planilla de diciembre 2026)
+   - [ ] Boletas de pago (ver "Pendiente de planilla")
 4. **Administración de usuarios**: listar, crear, asignar roles y desactivar
 5. **Opcionales**: formularios, chat y dashboard con métricas reales
 

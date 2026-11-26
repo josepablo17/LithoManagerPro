@@ -1,4 +1,4 @@
-import { Plus, RefreshCcw, X } from 'lucide-react'
+import { ClipboardCheck, Plus, RefreshCcw, X } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Alert } from '../../../components/ui/Alert.jsx'
@@ -83,12 +83,21 @@ export function PayrollRunsPage() {
             sociales de la CCSS, impuesto sobre la renta y neto a pagar.
           </p>
         </div>
-        {canManage ? (
-          <Button onClick={() => setCreateModalOpen(true)}>
-            <Plus size={18} aria-hidden="true" />
-            Nueva planilla
+        <div className={payrollStyles.headerActions}>
+          <Button
+            variant="secondary"
+            onClick={() => navigate('/payroll/operations')}
+          >
+            <ClipboardCheck size={18} aria-hidden="true" />
+            Horas extra, incapacidades y horarios
           </Button>
-        ) : null}
+          {canManage ? (
+            <Button onClick={() => setCreateModalOpen(true)}>
+              <Plus size={18} aria-hidden="true" />
+              Nueva planilla
+            </Button>
+          ) : null}
+        </div>
       </div>
 
       <div className={styles.toolbar}>

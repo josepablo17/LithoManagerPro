@@ -66,6 +66,12 @@ public interface IPayrollRepository
             bool? isActive,
             CancellationToken cancellationToken);
 
+    Task<IReadOnlyList<EmployeeWorkScheduleData>>
+        GetEmployeeWorkSchedulesAsync(
+            int? employeeId,
+            bool includeHistory,
+            CancellationToken cancellationToken);
+
     Task<EmployeeWorkScheduleData> SetEmployeeWorkScheduleAsync(
         int employeeId,
         int workShiftTypeId,

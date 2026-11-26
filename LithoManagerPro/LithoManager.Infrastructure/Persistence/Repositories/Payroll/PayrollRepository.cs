@@ -42,6 +42,8 @@ public sealed class PayrollRepository : IPayrollRepository
         "Payroll.GetEmployeeDisabilities";
     private const string GetEmployeeDisabilityByIdProcedure =
         "Payroll.GetEmployeeDisabilityById";
+    private const string GetEmployeeWorkSchedulesProcedure =
+        "Payroll.GetEmployeeWorkSchedules";
     private const string SetEmployeeWorkScheduleProcedure =
         "Payroll.SetEmployeeWorkSchedule";
     private const string SaveAttendanceRecordProcedure =
@@ -418,6 +420,29 @@ public sealed class PayrollRepository : IPayrollRepository
             _connectionFactory.CreateConnection();
 
         return await QueryAsync<EmployeeDisabilityData>(
+            connection,
+            command);
+    }
+
+    public async Task<IReadOnlyList<EmployeeWorkScheduleData>>
+        GetEmployeeWorkSchedulesAsync(
+            int? employeeId,
+            bool includeHistory,
+            CancellationToken cancellationToken)
+    {
+        CommandDefinition command = CreateCommand(
+            GetEmployeeWorkSchedulesProcedure,
+            new
+            {
+                EmployeeId = employeeId,
+                IncludeHistory = includeHistory
+            },
+            cancellationToken);
+
+        await using var connection =
+            _connectionFactory.CreateConnection();
+
+        return await QueryAsync<EmployeeWorkScheduleData>(
             connection,
             command);
     }
