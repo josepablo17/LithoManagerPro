@@ -8,6 +8,7 @@ import { DepartmentsPage } from './features/humanResources/pages/DepartmentsPage
 import { EmployeesPage } from './features/humanResources/pages/EmployeesPage.jsx'
 import { LeaveBalancesPage } from './features/leaveManagement/pages/LeaveBalancesPage.jsx'
 import { LeaveRequestsPage } from './features/leaveManagement/pages/LeaveRequestsPage.jsx'
+import { PayrollOperationsPage } from './features/payroll/pages/PayrollOperationsPage.jsx'
 import { PayrollRunDetailPage } from './features/payroll/pages/PayrollRunDetailPage.jsx'
 import { PayrollRunsPage } from './features/payroll/pages/PayrollRunsPage.jsx'
 import { ProtectedRoute } from './features/security/components/ProtectedRoute.jsx'
@@ -53,6 +54,10 @@ function App() {
           }
         />
         <Route path="payroll" element={<PayrollRunsPage />} />
+        <Route
+          path="payroll/operations"
+          element={<PayrollOperationsPage />}
+        />
         <Route
           path="payroll/runs/:payrollRunId"
           element={<PayrollRunDetailPage />}

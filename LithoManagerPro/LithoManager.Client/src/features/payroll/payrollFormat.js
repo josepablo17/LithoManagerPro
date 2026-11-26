@@ -105,6 +105,116 @@ export function getStatusVariant(status) {
   return variants[status] ?? 'neutral'
 }
 
+// The payroll catalogs are seeded in English; these are the labels shown
+// in the screens, falling back to the catalog name for unknown codes.
+const overtimeRuleLabels = {
+  Standard: 'Ordinarias',
+  Holiday: 'En feriado',
+}
+
+const disabilityTypeLabels = {
+  CommonIllness: 'Enfermedad común',
+  OccupationalRisk: 'Riesgo del trabajo',
+  Maternity: 'Maternidad',
+}
+
+const workShiftLabels = {
+  Day: 'Diurna',
+  Mixed: 'Mixta',
+  Night: 'Nocturna',
+}
+
+export const issuerInstitutions = [
+  { value: 'CCSS', label: 'CCSS' },
+  { value: 'INS', label: 'INS' },
+  { value: 'Employer', label: 'Patrono' },
+  { value: 'Other', label: 'Otra' },
+]
+
+export function getOvertimeRuleLabel(code, fallback) {
+  return overtimeRuleLabels[code] ?? fallback ?? code
+}
+
+export function getDisabilityTypeLabel(code, fallback) {
+  return disabilityTypeLabels[code] ?? fallback ?? code
+}
+
+export function getWorkShiftLabel(code, fallback) {
+  return workShiftLabels[code] ?? fallback ?? code
+}
+
+export function getIssuerInstitutionLabel(value) {
+  return issuerInstitutions.find((item) => item.value === value)?.label ?? value
+}
+
+export function getApprovalStatusLabel(status) {
+  const labels = {
+    Pending: 'Pendiente',
+    Approved: 'Aprobada',
+    Rejected: 'Rechazada',
+    Cancelled: 'Cancelada',
+  }
+
+  return labels[status] ?? status
+}
+
+export function getApprovalStatusVariant(status) {
+  const variants = {
+    Pending: 'warning',
+    Approved: 'success',
+    Rejected: 'danger',
+    Cancelled: 'neutral',
+  }
+
+  return variants[status] ?? 'neutral'
+}
+
+/** Inclusive number of calendar days between two ISO dates. */
+export function countDays(startDate, endDate) {
+  if (!startDate || !endDate) {
+    return 0
+  }
+
+  const start = Date.parse(`${String(startDate).slice(0, 10)}T00:00:00Z`)
+  const end = Date.parse(`${String(endDate).slice(0, 10)}T00:00:00Z`)
+
+  return Math.round((end - start) / 86_400_000) + 1
+}
+
+export function todayIsoDate() {
+  const now = new Date()
+  const offset = now.getTimezoneOffset() * 60_000
+
+  return new Date(now.getTime() - offset).toISOString().slice(0, 10)
+}
+
+/** User-facing message for errors from the payroll operations API. */
+export function getOperationErrorMessage(error) {
+  const messages = {
+    invalid_state:
+      'El registro ya cambió de estado. Actualizamos la lista para mostrar el estado actual.',
+    concurrency_conflict:
+      'El registro fue modificado en otra sesión. Actualizamos la lista; inténtalo de nuevo.',
+    date_overlap:
+      'El empleado ya tiene un registro activo en esas fechas.',
+    duplicate_record:
+      'Ya existe un registro con ese número de referencia.',
+    employee_inactive: 'El empleado no está activo.',
+    configuration_not_found:
+      'El tipo seleccionado no está vigente para esa fecha.',
+  }
+
+  return messages[error?.errorCode]
+    ?? error?.message
+    ?? 'No pudimos completar la operación. Inténtalo de nuevo.'
+}
+
+/** Errors after which the list should be reloaded. */
+export function isStaleRecordError(error) {
+  return error?.errorCode === 'invalid_state'
+    || error?.errorCode === 'concurrency_conflict'
+}
+
 export function getRunTypeLabel(runType) {
   return runType === 'Aguinaldo' ? 'Aguinaldo' : 'Mensual'
 }

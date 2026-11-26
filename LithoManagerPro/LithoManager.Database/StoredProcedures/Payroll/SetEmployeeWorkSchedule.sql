@@ -1,7 +1,8 @@
 CREATE PROCEDURE [Payroll].[SetEmployeeWorkSchedule]
     @EmployeeId int,
     @WorkShiftTypeId int,
-    @WeeklyOrdinaryHours decimal(5,2),
+    -- Optional: when omitted, the shift's MaxOrdinaryHoursPerWeek is used.
+    @WeeklyOrdinaryHours decimal(5,2) = NULL,
     @WorksMonday bit = 1,
     @WorksTuesday bit = 1,
     @WorksWednesday bit = 1,
@@ -40,8 +41,8 @@ BEGIN
             1;
     END;
 
-    IF @WeeklyOrdinaryHours IS NULL
-       OR @WeeklyOrdinaryHours <= 0
+    IF @WeeklyOrdinaryHours IS NOT NULL
+       AND @WeeklyOrdinaryHours <= 0
     BEGIN
         THROW 56103,
             N'WeeklyOrdinaryHours must be greater than zero.',
@@ -213,6 +214,9 @@ BEGIN
                 N'The work shift type was not found or is not effective.',
                 1;
         END;
+
+        SET @WeeklyOrdinaryHours =
+            COALESCE(@WeeklyOrdinaryHours, @MaxOrdinaryHoursPerWeek);
 
         IF @WeeklyOrdinaryHours > @MaxOrdinaryHoursPerWeek
         BEGIN
