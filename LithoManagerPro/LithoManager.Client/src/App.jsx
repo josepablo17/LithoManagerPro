@@ -11,6 +11,7 @@ import { LeaveRequestsPage } from './features/leaveManagement/pages/LeaveRequest
 import { PayrollOperationsPage } from './features/payroll/pages/PayrollOperationsPage.jsx'
 import { PayrollRunDetailPage } from './features/payroll/pages/PayrollRunDetailPage.jsx'
 import { PayrollRunsPage } from './features/payroll/pages/PayrollRunsPage.jsx'
+import { PayslipPage } from './features/payroll/pages/PayslipPage.jsx'
 import { ProtectedRoute } from './features/security/components/ProtectedRoute.jsx'
 import { LoginPage } from './features/security/pages/LoginPage.jsx'
 import { AppLayout } from './layouts/AppLayout.jsx'
@@ -61,6 +62,10 @@ function App() {
         <Route
           path="payroll/runs/:payrollRunId"
           element={<PayrollRunDetailPage />}
+        />
+        <Route
+          path="payroll/runs/:payrollRunId/employees/:employeeId/payslip"
+          element={<PayslipPage />}
         />
         <Route
           path="chat"

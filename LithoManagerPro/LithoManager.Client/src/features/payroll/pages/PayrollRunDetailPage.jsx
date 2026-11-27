@@ -1,6 +1,7 @@
 import {
   ArrowLeft,
   Calculator,
+  FileText,
   Lock,
   X,
 } from 'lucide-react'
@@ -12,10 +13,11 @@ import { Button } from '../../../components/ui/Button.jsx'
 import styles from '../../../app/Page.module.css'
 import { useAuth } from '../../security/hooks/useAuth.js'
 import {
+  describeLine,
+  payslipPath,
   formatCurrency,
   formatDate,
   formatNumber,
-  formatPercent,
   formatPeriod,
   getStatusLabel,
   getStatusVariant,
@@ -346,7 +348,7 @@ export function PayrollRunDetailPage() {
                   </td>
                 ) : null}
                 <td>
-                  <div className={payrollStyles.actionsCell}>
+                  <div className={`${payrollStyles.actionsCell} ${payrollStyles.rowActions}`}>
                     <Button
                       variant="secondary"
                       size="small"
@@ -355,6 +357,14 @@ export function PayrollRunDetailPage() {
                     >
                       Detalle
                     </Button>
+                    <Link
+                      className={payrollStyles.slipLink}
+                      to={payslipPath(run.payrollRunId, employee.employeeId)}
+                      aria-label={`Boleta de ${employee.employeeName}`}
+                    >
+                      <FileText size={16} aria-hidden="true" />
+                      Boleta
+                    </Link>
                   </div>
                 </td>
               </tr>
@@ -568,10 +578,21 @@ function EmployeeLinesModal({
             : null}
 
           {!isLoading && !loadError ? (
-            <div className={payrollStyles.netRow}>
-              <span>Neto a pagar</span>
-              <span>{formatCurrency(employee.netAmount)}</span>
-            </div>
+            <>
+              <div className={payrollStyles.netRow}>
+                <span>Neto a pagar</span>
+                <span>{formatCurrency(employee.netAmount)}</span>
+              </div>
+              <div className={payrollStyles.formActions}>
+                <Link
+                  className={payrollStyles.slipLink}
+                  to={payslipPath(run.payrollRunId, employee.employeeId)}
+                >
+                  <FileText size={16} aria-hidden="true" />
+                  Ver boleta de pago
+                </Link>
+              </div>
+            </>
           ) : null}
         </div>
       </section>
@@ -579,32 +600,3 @@ function EmployeeLinesModal({
   )
 }
 
-function describeLine(line) {
-  const kind = line.conceptKind
-
-  if (kind === 'Deduction' || kind === 'EmployerContribution') {
-    if (line.rate !== null && line.baseAmount !== null) {
-      return `${formatPercent(line.rate)} de ${formatCurrency(line.baseAmount)}`
-    }
-
-    if (line.baseAmount !== null) {
-      return `Base gravable ${formatCurrency(line.baseAmount)}`
-    }
-
-    return ''
-  }
-
-  if (line.payrollConceptCode === 'Overtime') {
-    return `${formatNumber(line.quantity)} h`
-  }
-
-  if (line.payrollConceptCode === 'Aguinaldo') {
-    return `Base ${formatCurrency(line.baseAmount)}`
-  }
-
-  if (line.quantity !== null) {
-    return `${formatNumber(line.quantity)} días`
-  }
-
-  return ''
-}

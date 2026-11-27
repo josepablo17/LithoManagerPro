@@ -200,3 +200,22 @@
     padding: var(--spacing-lg);
   }
 }
+
+/* Printing (pay slips): only the page content is printed. */
+@media print {
+  .shell {
+    display: block;
+    min-height: 0;
+    background: none;
+  }
+
+  .sidebar,
+  .topbar,
+  .overlay {
+    display: none;
+  }
+
+  .content {
+    padding: 0;
+  }
+}
